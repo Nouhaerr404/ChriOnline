@@ -1,96 +1,97 @@
 package ma.ensate.server.network;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- * Serveur TCP principal pour l'application ChriOnline
- * Écoute les connexions entrantes et crée un ClientHandler pour chaque client
- */
 public class TCPServer {
-    
-    private static final int DEFAULT_PORT = 8888;
+
+    private static final Logger logger = LogManager.getLogger(TCPServer.class);
+    private static final int DEFAULT_PORT = 5000;
+
     private ServerSocket serverSocket;
     private boolean running = false;
 
-    /**
-     * Démarre le serveur TCP
-     */
+    // =============================================
+    // DÉMARRER LE SERVEUR (avec port flexible)
+    // =============================================
     public void start(int port) {
         try {
             serverSocket = new ServerSocket(port);
             running = true;
-            System.out.println("╔════════════════════════════════════════════════════════════╗");
-            System.out.println("║          SERVEUR TCP CHRIONLINE DÉMARRÉ                   ║");
-            System.out.println("║          Port: " + port + "                                      ║");
-            System.out.println("║          En attente de connexions...                     ║");
-            System.out.println("╚════════════════════════════════════════════════════════════╝");
-            System.out.println();
 
-            // Boucle principale d'acceptation des connexions
+            logger.info("╔════════════════════════════════════════╗");
+            logger.info("║     SERVEUR CHRIONLINE DÉMARRÉ        ║");
+            logger.info("║     Port : " + port + "                         ║");
+            logger.info("║     En attente de connexions...       ║");
+            logger.info("╚════════════════════════════════════════╝");
+
             while (running) {
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("Nouvelle connexion: " + clientSocket.getInetAddress());
-                
-                // Créer un handler pour ce client dans un thread séparé
-                ClientHandler clientHandler = new ClientHandler(clientSocket);
-                clientHandler.start();
+                logger.info("🔌 Nouveau client connecté : "
+                        + clientSocket.getInetAddress().getHostAddress());
+
+                Thread t = new Thread(new ClientHandler(clientSocket));
+                t.start();
+                logger.info(" Thread créé — clients actifs : "
+                        + Thread.activeCount());
             }
-            
+
         } catch (IOException e) {
             if (running) {
-                System.err.println("Erreur du serveur: " + e.getMessage());
-                e.printStackTrace();
+                logger.error(" Erreur TCPServer : " + e.getMessage());
             }
         }
     }
 
-    /**
-     * Démarre le serveur sur le port par défaut
-     */
+    // =============================================
+    // DÉMARRER SUR LE PORT PAR DÉFAUT (5000)
+    // =============================================
     public void start() {
         start(DEFAULT_PORT);
     }
 
-    /**
-     * Arrête le serveur
-     */
+    // =============================================
+    // ARRÊTER LE SERVEUR PROPREMENT
+    // =============================================
     public void stop() {
         running = false;
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
-                System.out.println("Serveur arrêté.");
+                logger.info("TCPServer arrêté proprement.");
             }
         } catch (IOException e) {
-            System.err.println("Erreur lors de l'arrêt du serveur: " + e.getMessage());
+            logger.error("Erreur lors de l'arrêt du TCPServer : "
+                    + e.getMessage());
         }
     }
 
-    /**
-     * Point d'entrée principal du serveur
-     */
+    // =============================================
+    // POINT D'ENTRÉE PRINCIPAL
+    // =============================================
     public static void main(String[] args) {
         TCPServer server = new TCPServer();
-        
-        // Gérer l'arrêt propre du serveur
+
+        // ShutdownHook — arrêt propre quand on ferme le programme
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("\nArrêt du serveur...");
+            logger.info(" Arrêt du TCPServer...");
             server.stop();
         }));
-        
-        // Démarrer le serveur
+
         int port = DEFAULT_PORT;
         if (args.length > 0) {
             try {
                 port = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                System.err.println("Port invalide, utilisation du port par défaut: " + DEFAULT_PORT);
+                logger.warn("Port invalide, utilisation du port par défaut : "
+                        + DEFAULT_PORT);
             }
         }
-        
+
         server.start(port);
     }
 }
-

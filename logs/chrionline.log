@@ -68,3 +68,23 @@
 2026-03-14 05:27:19 [INFO] ? Session ouverte pour : nouhaer05@gmail.com
 2026-03-14 05:27:19 [INFO]  Login rÇussi : nouhaer05@gmail.com
 2026-03-14 05:27:19 [INFO] Page produits pas encore disponible.
+2026-03-14 05:54:33 [INFO]  D√©marrage du serveur ChriOnline sur le port 5000
+2026-03-14 05:54:33 [INFO]  Serveur pr√™t ‚Äî en attente de clients...
+2026-03-14 05:55:06 [INFO]  Nouveau client connect√© : 127.0.0.1
+2026-03-14 05:55:06 [INFO]  Thread cr√©√© ‚Äî clients actifs : 3
+2026-03-14 05:55:06 [INFO] Handler d√©marr√© pour : 127.0.0.1
+2026-03-14 05:55:06 [INFO] ? ConnectÇ au serveur localhost:5000
+2026-03-14 05:55:06 [INFO] Connexion serveur Çtablie
+2026-03-14 05:55:25 [INFO]  Action re√ßue : LOGIN | Client : 127.0.0.1
+2026-03-14 05:55:26 [ERROR] Erreur BD login : Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2026-03-14 05:55:26 [INFO] ? RÇponse reáue : Erreur serveur.
+2026-03-14 05:55:29 [INFO]  Action re√ßue : LOGIN | Client : 127.0.0.1
+2026-03-14 05:55:29 [ERROR] Erreur BD login : Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2026-03-14 05:55:29 [INFO] ? RÇponse reáue : Erreur serveur.
+2026-03-14 05:55:34 [INFO] ? DÇconnectÇ du serveur.
+2026-03-14 05:55:34 [INFO]  Client d√©connect√© : 127.0.0.1
+2026-03-14 05:55:34 [INFO] Application fermÇe.
