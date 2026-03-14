@@ -7,17 +7,23 @@ public class Request implements Serializable {
 
     private String action;
     private Object data;
+    private String token; // ← AJOUTER CE CHAMP
 
     public Request() {}
 
     public Request(String action, Object data) {
         this.action = action;
-        this.data = data;
+        this.data   = data;
+    }
+
+    public Request(String action, Object data, String token) {
+        this.action = action;
+        this.data   = data;
+        this.token  = token;
     }
 
     public Request(String action) {
         this.action = action;
-        this.data = null;
     }
 
     public String getAction() { return action; }
@@ -26,8 +32,11 @@ public class Request implements Serializable {
     public Object getData() { return data; }
     public void setData(Object data) { this.data = data; }
 
+    public String getToken() { return token; }  // ← AJOUTER
+    public void setToken(String token) { this.token = token; } // ← AJOUTER
+
     @Override
     public String toString() {
-        return "Request{action=" + action + ", data=" + data + "}";
+        return "Request{action=" + action + "}";
     }
 }

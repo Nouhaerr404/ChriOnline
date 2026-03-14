@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ma.ensate.client.views.LoginView"
+      alignment="CENTER"
+      spacing="15"
+      style="-fx-background-color: #f0f4f8; -fx-padding: 50;">
+
+    <!-- TITRE -->
+    <Label text="ChriOnline"
+           style="-fx-font-size: 32px; -fx-font-weight: bold;
+                  -fx-text-fill: #1a73e8;"/>
+
+    <Label text="Connectez-vous à votre compte"
+           style="-fx-font-size: 14px; -fx-text-fill: #666;"/>
+
+    <!-- CARTE -->
+    <VBox spacing="15"
+          style="-fx-background-color: white;
+                 -fx-padding: 30;
+                 -fx-background-radius: 10;
+                 -fx-effect: dropshadow(gaussian, #ccc, 10, 0, 0, 2);"
+          maxWidth="400">
+
+        <!-- EMAIL -->
+        <Label text="Email"
+               style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
+        <TextField fx:id="emailField"
+                   promptText="Votre email"
+                   style="-fx-padding: 10; -fx-background-radius: 5;
+                          -fx-border-color: #ddd; -fx-border-radius: 5;"/>
+
+        <!-- MOT DE PASSE -->
+        <Label text="Mot de passe"
+               style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
+        <PasswordField fx:id="passwordField"
+                       promptText="Votre mot de passe"
+                       style="-fx-padding: 10; -fx-background-radius: 5;
+                              -fx-border-color: #ddd; -fx-border-radius: 5;"/>
+
+        <!-- MESSAGE ERREUR -->
+        <Label fx:id="messageLabel"
+               text=""
+               style="-fx-text-fill: red; -fx-font-size: 12px;"
+               wrapText="true"/>
+
+        <!-- BOUTON LOGIN -->
+        <Button fx:id="loginButton"
+                text="Se connecter"
+                onAction="#handleLogin"
+                maxWidth="Infinity"
+                style="-fx-background-color: #1a73e8;
+                       -fx-text-fill: white;
+                       -fx-font-size: 14px;
+                       -fx-padding: 12;
+                       -fx-background-radius: 5;
+                       -fx-cursor: hand;"/>
+
+        <!-- LIEN INSCRIPTION -->
+        <HBox alignment="CENTER" spacing="5">
+            <Label text="Pas encore de compte ?"
+                   style="-fx-text-fill: #666;"/>
+            <Hyperlink text="S'inscrire"
+                       onAction="#allerInscription"
+                       style="-fx-text-fill: #1a73e8;"/>
+        </HBox>
+
+    </VBox>
+</VBox>
