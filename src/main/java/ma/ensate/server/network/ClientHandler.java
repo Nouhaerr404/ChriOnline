@@ -8,6 +8,7 @@ import ma.ensate.server.dao.ClientDAO;
 import ma.ensate.server.dao.ProduitDAO;
 import ma.ensate.server.services.CommandeService;
 import ma.ensate.server.services.PaymentService;
+import ma.ensate.server.services.ProductService;
 import ma.ensate.server.services.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +33,7 @@ public class ClientHandler implements Runnable {
     private final PaymentService  paymentService;
     private final ClientDAO       clientDAO;
     private final ProduitDAO      produitDAO;
+    private final ProductService  productService;
 
 
     private static final Set<String> ACTIONS_PUBLIQUES =
@@ -43,6 +45,7 @@ public class ClientHandler implements Runnable {
         this.paymentService  = new PaymentService();
         this.clientDAO       = new ClientDAO();
         this.produitDAO      = new ProduitDAO();
+        this.productService  = new ProductService();
     }
 
     @Override
@@ -91,6 +94,7 @@ public class ClientHandler implements Runnable {
 
     private Response traiterRequete(Request request) {
         String action = request.getAction();
+        System.out.println("SERVER LOG: Handling action [" + action + "]");
         try {
             switch (action) {
 
@@ -106,11 +110,13 @@ public class ClientHandler implements Runnable {
 
                 // ── Personne 2 — Produits ──────────────────
                 case "GET_ALL_PRODUCTS":
+                    return productService.getAllProducts();
                 case "GET_PRODUCT_BY_ID":
+                    return productService.getProductById(request.getData());
                 case "GET_BY_CATEGORY":
+                    return productService.getProductsByCategory(request.getData());
                 case "GET_ALL_CATEGORIES":
-
-                    return new Response(false, "Non implémenté encore.");
+                    return productService.getAllCategories();
 
                 // ── Personne 3 — Panier ────────────────────
                 case "GET_CART":

@@ -46,7 +46,7 @@ public class ClientTCP {
     // ENVOYER UNE REQUÊTE — SANS TOKEN
     // (LOGIN et REGISTER uniquement)
     // =============================================
-    public Response envoyerRequete(Request request) throws Exception {
+    public synchronized Response envoyerRequete(Request request) throws Exception {
         // Reconnexion automatique si besoin
         if (socket == null || socket.isClosed()) {
             connecter();
