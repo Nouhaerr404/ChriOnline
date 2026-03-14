@@ -27,7 +27,10 @@ public class LigneCommande implements Serializable {
     public void setId(int id) { this.id = id; }
 
     public String getCommandeId() { return commandeId; }
-    public void setCommandeId(String commandeId) { this.commandeId = commandeId; }
+    public void setCommandeId(String commandeId) {
+        this.commandeId = commandeId;
+        this.prixLigne = this.priceAtOrder * quantite;
+    }
 
     public Produit getProduit() { return produit; }
     public void setProduit(Produit produit) { this.produit = produit; }

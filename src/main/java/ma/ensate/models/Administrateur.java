@@ -1,8 +1,6 @@
 package ma.ensate.models;
 
-import java.io.Serializable;
-
-public class Administrateur extends Utilisateur implements Serializable {
+public class Administrateur extends Utilisateur {
     private static final long serialVersionUID = 1L;
 
     public Administrateur() {
