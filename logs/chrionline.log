@@ -650,3 +650,49 @@ The last packet sent successfully to the server was 0 milliseconds ago. The driv
 2026-03-15 13:51:11 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
 2026-03-15 13:51:11 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
 2026-03-15 13:51:11 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 14:31:56 [INFO] ╔════════════════════════════════════════╗
+2026-03-15 14:31:56 [INFO] ║     SERVEUR CHRIONLINE DÉMARRÉ        ║
+2026-03-15 14:31:56 [INFO] ║     Port : 5001                         ║
+2026-03-15 14:31:56 [INFO] ║     En attente de connexions...       ║
+2026-03-15 14:31:56 [INFO] ╚════════════════════════════════════════╝
+2026-03-15 14:32:22 [INFO] 🔌 Nouveau client connecté : 127.0.0.1
+2026-03-15 14:32:22 [INFO]  Thread créé — clients actifs : 3
+2026-03-15 14:32:22 [INFO] Handler démarré pour : 127.0.0.1
+2026-03-15 14:32:22 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-15 14:32:22 [INFO] Connexion serveur établie
+2026-03-15 14:32:32 [INFO]  Action reçue : LOGIN | Client : 127.0.0.1
+2026-03-15 14:32:33 [WARN] Échec login pour : isdq | Tentative 1/3
+2026-03-15 14:32:33 [INFO] 📨 Réponse reçue : Email ou mot de passe incorrect.
+2026-03-15 14:32:53 [INFO]  Action reçue : LOGIN | Client : 127.0.0.1
+2026-03-15 14:32:53 [INFO] Token sauvegardé pour userId : 11
+2026-03-15 14:32:53 [INFO] ✅ Login réussi : ismaillyamani4@gmail.com
+2026-03-15 14:32:53 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-15 14:32:53 [INFO] ✅ Session ouverte pour : ismaillyamani4@gmail.com
+2026-03-15 14:32:53 [INFO]  Login réussi : ismaillyamani4@gmail.com
+2026-03-15 14:32:53 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-15 14:32:53 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 14:32:53 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 14:32:53 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 14:32:54 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 14:32:54 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 14:33:03 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-15 14:33:03 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 14:33:03 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 14:33:03 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 14:33:03 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 14:33:03 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 14:33:04 [INFO]  Action reçue : LOGOUT | Client : 127.0.0.1
+2026-03-15 14:33:04 [INFO] Token supprimé pour userId : 11
+2026-03-15 14:33:04 [INFO] ✅ Déconnexion userId : 11
+2026-03-15 14:33:04 [INFO] 📨 Réponse reçue : Déconnexion réussie.
+2026-03-15 14:33:04 [INFO] 🔌 Session fermée pour : ismaillyamani4@gmail.com
+2026-03-15 14:33:09 [ERROR]  Erreur handler 127.0.0.1 : Connection reset
+2026-03-15 14:33:32 [INFO]  Arrêt du TCPServer...
+2026-03-15 14:33:32 [INFO] TCPServer arrêté proprement.
+2026-03-15 14:35:55 [INFO] ╔════════════════════════════════════════╗
+2026-03-15 14:35:55 [INFO] ║     SERVEUR CHRIONLINE DÉMARRÉ        ║
+2026-03-15 14:35:55 [INFO] ║     Port : 5000                         ║
+2026-03-15 14:35:55 [INFO] ║     En attente de connexions...       ║
+2026-03-15 14:35:55 [INFO] ╚════════════════════════════════════════╝
+2026-03-15 14:36:11 [INFO]  Arrêt du TCPServer...
+2026-03-15 14:36:11 [INFO] TCPServer arrêté proprement.
