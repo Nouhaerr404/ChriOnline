@@ -126,8 +126,20 @@ public class ProduitsView {
         card.getChildren().addAll(nameLabel, priceLabel, stockLabel);
 
         card.setOnMouseClicked(event -> {
-            System.out.println("Produit cliqué : " + produit.getNom());
-            // TODO: Naviguer vers les détails du produit
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/produit_details.fxml"));
+                Parent root = loader.load();
+                
+                ProduitDetailsView controller = loader.getController();
+                controller.setProduit(produit);
+                
+                Stage stage = (Stage) productsFlowPane.getScene().getWindow();
+                stage.getScene().setRoot(root);
+                stage.setTitle("ChriOnline — " + produit.getNom());
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
 
         return card;

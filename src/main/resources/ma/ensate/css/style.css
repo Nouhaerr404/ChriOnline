@@ -91,3 +91,35 @@
     -fx-background-color: rgba(231, 76, 60, 0.1);
     background-color: rgba(231, 76, 60, 0.1);
 }
+
+/* Product Details Styles */
+.product-image-container {
+    -fx-background-color: white;
+    background-color: white;
+    -fx-background-radius: 20;
+    -fx-border-color: #ecf0f1;
+    border-color: #ecf0f1;
+    -fx-border-width: 1;
+    border-width: 1;
+    -fx-border-radius: 20;
+    border-radius: 20;
+    -fx-padding: 10;
+    padding: 10;
+}
+
+.add-to-cart-btn {
+    -fx-background-color: #27ae60;
+    background-color: #27ae60;
+    -fx-background-radius: 30;
+    -fx-cursor: hand;
+    cursor: hand;
+    -fx-transition: 0.3s;
+    transition: 0.3s;
+}
+
+.add-to-cart-btn:hover {
+    -fx-background-color: #2ecc71;
+    background-color: #2ecc71;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
