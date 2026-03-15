@@ -6,11 +6,12 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import ma.ensate.util.ConfigLoader;
 
 public class TCPServer {
 
     private static final Logger logger = LogManager.getLogger(TCPServer.class);
-    private static final int DEFAULT_PORT = 5001;
+    private static final int DEFAULT_PORT = ConfigLoader.getInt("SERVER_PORT", 5001);
 
     private ServerSocket serverSocket;
     private boolean running = false;

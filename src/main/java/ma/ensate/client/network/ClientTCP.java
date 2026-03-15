@@ -7,13 +7,14 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.net.Socket;
+import ma.ensate.util.ConfigLoader;
 
 public class ClientTCP {
 
     private static final Logger logger = LogManager.getLogger(ClientTCP.class);
 
-    private static final String HOST = "localhost";
-    private static final int    PORT = 5001;
+    private static final String HOST = ConfigLoader.get("SERVER_HOST", "localhost");
+    private static final int    PORT = ConfigLoader.getInt("SERVER_PORT", 5001);
 
     // Singleton — une seule connexion pour toute l'app
     private static ClientTCP instance;

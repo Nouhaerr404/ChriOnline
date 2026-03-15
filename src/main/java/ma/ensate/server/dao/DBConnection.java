@@ -3,12 +3,13 @@ package ma.ensate.server.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import ma.ensate.util.ConfigLoader;
 
 public class DBConnection {
 
-    private static final String URL      = "jdbc:mysql://localhost:3306/chrionline";
-    private static final String USER     = "root";
-    private static final String PASSWORD = "";
+    private static final String URL      = ConfigLoader.get("DB_URL", "jdbc:mysql://localhost:8889/chrionline");
+    private static final String USER     = ConfigLoader.get("DB_USER", "root");
+    private static final String PASSWORD = ConfigLoader.get("DB_PASSWORD", "root");
 
     private static Connection instance = null;
 
