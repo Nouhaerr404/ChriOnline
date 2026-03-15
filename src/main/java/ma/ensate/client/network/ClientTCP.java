@@ -13,7 +13,7 @@ public class ClientTCP {
     private static final Logger logger = LogManager.getLogger(ClientTCP.class);
 
     private static final String HOST = "localhost";
-    private static final int    PORT = 5000;
+    private static final int    PORT = 5001;
 
     // Singleton — une seule connexion pour toute l'app
     private static ClientTCP instance;
@@ -46,7 +46,7 @@ public class ClientTCP {
     // ENVOYER UNE REQUÊTE — SANS TOKEN
     // (LOGIN et REGISTER uniquement)
     // =============================================
-    public Response envoyerRequete(Request request) throws Exception {
+    public synchronized Response envoyerRequete(Request request) throws Exception {
         // Reconnexion automatique si besoin
         if (socket == null || socket.isClosed()) {
             connecter();

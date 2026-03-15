@@ -106,26 +106,21 @@ public class LoginView {
     // =============================================
     private void ouvrirPagePrincipale() {
         try {
-            // TODO : remplacer par la vraie page principale
-            // quand Personne 2 aura créé ProduitsView
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/ma/ensate/fxml/produits.fxml"));
             Parent root  = loader.load();
             Stage  stage = (Stage) emailField.getScene().getWindow();
             stage.setScene(new Scene(root, 900, 600));
-            stage.setTitle("ChriOnline — Bienvenue "
-                    + SessionManager.getInstance().getNomUtilisateur());
+            stage.setTitle("ChriOnline — " + SessionManager.getInstance().getNomUtilisateur());
         } catch (Exception e) {
-            // Si la page produits n'existe pas encore
-            // afficher juste un message de succès
-            messageLabel.setText(" Connecté en tant que : "
-                    + SessionManager.getInstance().getNomUtilisateur());
-            messageLabel.setStyle("-fx-text-fill: green;");
-            logger.info("Page produits pas encore disponible.");
+            // produits.fxml pas encore disponible (P2 n'a pas pushé)
+            // navigation temporaire vers PanierView pour les tests
+            logger.info("produits.fxml indisponible — ouverture PanierView (temp)");
+            Utilisateur u = SessionManager.getInstance().getUtilisateur();
+            Stage stage   = (Stage) emailField.getScene().getWindow();
+            new PanierView(stage, ClientTCP.getInstance(), u.getId(), u.getSessionToken()).afficher();
         }
     }
-
-    // =============================================
     // UTILITAIRES
     // =============================================
     private void afficherErreur(String msg) {

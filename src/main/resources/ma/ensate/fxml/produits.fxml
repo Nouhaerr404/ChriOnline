@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.ProduitsView">
+   <children>
+      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <VBox spacing="15.0" styleClass="header-section" BorderPane.alignment="CENTER">
+               <children>
+                   <HBox alignment="CENTER_LEFT" spacing="20.0">
+                      <children>
+                         <Label text="ChriOnline — Boutique" textFill="WHITE">
+                            <font>
+                               <Font name="System Bold" size="24.0" />
+                            </font>
+                         </Label>
+                         <AnchorPane HBox.hgrow="ALWAYS" />
+                         <ComboBox fx:id="categoryComboBox" onAction="#handleCategoryFilter" prefWidth="200.0" promptText="Filtrer par catégorie" styleClass="filter-combo" />
+                         <HBox spacing="10.0" alignment="CENTER_RIGHT">
+                            <children>
+                               <Label onMouseClicked="#goToCart" styleClass="nav-link" text="Panier" textFill="WHITE" />
+                               <Label onMouseClicked="#goToOrders" styleClass="nav-link" text="Mes Commandes" textFill="WHITE" />
+                               <Label onMouseClicked="#handleLogout" styleClass="nav-link, logout-link" text="Déconnexion" textFill="#e74c3c" />
+                            </children>
+                         </HBox>
+                      </children>
+                   </HBox>
+                  <Label text="Découvrez nos meilleurs produits" textFill="#bdc3c7">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </VBox>
+         </top>
+         <center>
+            <ScrollPane fitToWidth="true" styleClass="content-scroll" BorderPane.alignment="CENTER">
+               <content>
+                  <FlowPane fx:id="productsFlowPane" hgap="20.0" styleClass="products-grid" vgap="20.0">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                  </FlowPane>
+               </content>
+            </ScrollPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

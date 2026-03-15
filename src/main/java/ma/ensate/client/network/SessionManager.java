@@ -28,7 +28,9 @@ public class SessionManager {
     // =============================================
     public void setUtilisateur(Utilisateur u) {
         this.utilisateurConnecte = u;
-        logger.info("✅ Session ouverte pour : " + u.getEmail());
+        if (u != null) {
+            logger.info("✅ Session ouverte pour : " + u.getEmail());
+        }
     }
 
     // =============================================

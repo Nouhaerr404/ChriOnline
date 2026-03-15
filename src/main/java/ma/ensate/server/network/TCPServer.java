@@ -10,7 +10,7 @@ import java.net.Socket;
 public class TCPServer {
 
     private static final Logger logger = LogManager.getLogger(TCPServer.class);
-    private static final int DEFAULT_PORT = 5000;
+    private static final int DEFAULT_PORT = 5001;
 
     private ServerSocket serverSocket;
     private boolean running = false;
@@ -48,7 +48,7 @@ public class TCPServer {
     }
 
     // =============================================
-    // DÉMARRER SUR LE PORT PAR DÉFAUT (5000)
+    // DÉMARRER SUR LE PORT PAR DÉFAUT (5001)
     // =============================================
     public void start() {
         start(DEFAULT_PORT);
