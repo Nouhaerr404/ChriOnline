@@ -372,3 +372,17 @@ The last packet sent successfully to the server was 0 milliseconds ago. The driv
 2026-03-15 15:20:00 [INFO]  Action reÃ§ue : LOGIN | Client : 127.0.0.1
 2026-03-15 15:20:00 [WARN] Compte bloquÃ© : nouha@gmail.com | Reste : 4 minutes
 2026-03-15 15:20:00 [INFO] ? R‚ponse re‡ue : Compte bloqu‚ suite … trop de tentatives. R‚essayez dans 5 minutes.
+2026-03-15 15:25:16 [INFO]  Action reÃ§ue : LOGIN | Client : 127.0.0.1
+2026-03-15 15:25:16 [INFO] Token sauvegardÃ© pour userId : 11
+2026-03-15 15:25:16 [INFO]  Login rÃ©ussi : nouhaer05@gmail.com
+2026-03-15 15:25:16 [INFO] ? R‚ponse re‡ue : Connexion r‚ussie !
+2026-03-15 15:25:16 [INFO] ? Session ouverte pour : nouhaer05@gmail.com
+2026-03-15 15:25:16 [INFO]  Login r‚ussi : nouhaer05@gmail.com
+2026-03-15 15:25:16 [INFO]  Action reÃ§ue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-15 15:25:16 [INFO] ? R‚ponse re‡ue : Cat‚gories r‚cup‚r‚es avec succŠs
+2026-03-15 15:25:16 [INFO]  Action reÃ§ue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 15:25:17 [INFO] ? R‚ponse re‡ue : Produits r‚cup‚r‚s avec succŠs
+2026-03-15 15:25:17 [INFO]  Action reÃ§ue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 15:25:17 [INFO] ? R‚ponse re‡ue : Produits r‚cup‚r‚s avec succŠs
+2026-03-15 15:35:08 [INFO]  ArrÃªt du TCPServer...
+2026-03-15 15:35:08 [INFO] TCPServer arrÃªtÃ© proprement.
