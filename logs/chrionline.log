@@ -480,3 +480,74 @@ The last packet sent successfully to the server was 0 milliseconds ago. The driv
 2026-03-14 23:38:19 [INFO] 🔌 Session fermée pour : admin@chrionline.ma
 2026-03-14 23:38:34 [INFO]  Arrêt du TCPServer...
 2026-03-14 23:38:34 [INFO] TCPServer arrêté proprement.
+2026-03-15 13:12:41 [INFO] ╔════════════════════════════════════════╗
+2026-03-15 13:12:41 [INFO] ║     SERVEUR CHRIONLINE DÉMARRÉ        ║
+2026-03-15 13:12:41 [INFO] ║     Port : 5000                         ║
+2026-03-15 13:12:41 [INFO] ║     En attente de connexions...       ║
+2026-03-15 13:12:41 [INFO] ╚════════════════════════════════════════╝
+2026-03-15 13:12:46 [INFO] 🔌 Nouveau client connecté : 127.0.0.1
+2026-03-15 13:12:46 [INFO]  Thread créé — clients actifs : 3
+2026-03-15 13:12:46 [INFO] Handler démarré pour : 127.0.0.1
+2026-03-15 13:12:46 [INFO] ✅ Connecté au serveur localhost:5000
+2026-03-15 13:12:46 [INFO] Connexion serveur établie
+2026-03-15 13:13:05 [INFO]  Action reçue : LOGIN | Client : 127.0.0.1
+2026-03-15 13:13:06 [INFO] Token sauvegardé pour userId : 11
+2026-03-15 13:13:06 [INFO] ✅ Login réussi : ismaillyamani4@gmail.com
+2026-03-15 13:13:06 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-15 13:13:06 [INFO] ✅ Session ouverte pour : ismaillyamani4@gmail.com
+2026-03-15 13:13:06 [INFO]  Login réussi : ismaillyamani4@gmail.com
+2026-03-15 13:13:06 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-15 13:13:06 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 13:13:06 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:13:06 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:13:06 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:13:06 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:13:12 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-15 13:13:12 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 13:13:12 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:13:12 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:13:12 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:13:12 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:13:15 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-15 13:13:15 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 13:13:15 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:13:15 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:13:15 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:13:15 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:13:18 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-15 13:13:18 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 13:13:18 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:13:18 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:13:18 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:13:18 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:13:29 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-15 13:13:29 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 13:13:29 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:13:29 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:13:29 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:13:29 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:13:38 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-15 13:13:38 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 13:13:38 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:13:38 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:13:38 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:13:38 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:13:46 [INFO]  Action reçue : GET_BY_CATEGORY | Client : 127.0.0.1
+2026-03-15 13:13:47 [INFO] 📨 Réponse reçue : Produits de la catégorie récupérés
+2026-03-15 13:13:49 [INFO]  Action reçue : GET_BY_CATEGORY | Client : 127.0.0.1
+2026-03-15 13:13:49 [INFO] 📨 Réponse reçue : Produits de la catégorie récupérés
+2026-03-15 13:13:51 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:13:51 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:14:01 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-15 13:14:01 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 13:14:01 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:14:01 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:14:01 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-15 13:14:01 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:14:06 [INFO]  Action reçue : LOGOUT | Client : 127.0.0.1
+2026-03-15 13:14:06 [INFO] Token supprimé pour userId : 11
+2026-03-15 13:14:06 [INFO] ✅ Déconnexion userId : 11
+2026-03-15 13:14:06 [INFO] 📨 Réponse reçue : Déconnexion réussie.
+2026-03-15 13:14:06 [INFO] 🔌 Session fermée pour : ismaillyamani4@gmail.com
+2026-03-15 13:14:13 [INFO]  Arrêt du TCPServer...
+2026-03-15 13:14:13 [INFO] TCPServer arrêté proprement.
