@@ -40,7 +40,7 @@ public class UserService {
             // 3. Inscrire
             boolean succes = dao.inscrire(client);
             if (succes) {
-                logger.info("✅ Inscription réussie : " + client.getEmail());
+                logger.info(" Inscription réussie : " + client.getEmail());
                 return new Response(true, "Inscription réussie !");
             } else {
                 return new Response(false, "Erreur lors de l'inscription.");
@@ -88,7 +88,7 @@ public class UserService {
             dao.reinitialiserTentatives(email);
             u.setSessionToken(token);
 
-            logger.info("✅ Login réussi : " + email);
+            logger.info(" Login réussi : " + email);
             return new Response(true, "Connexion réussie !", u);
 
         } catch (ClassCastException e) {
@@ -107,7 +107,7 @@ public class UserService {
         try {
             int userId = (int) data;
             dao.supprimerToken(userId);
-            logger.info("✅ Déconnexion userId : " + userId);
+            logger.info(" Déconnexion userId : " + userId);
             return new Response(true, "Déconnexion réussie.");
 
         } catch (ClassCastException e) {
@@ -127,12 +127,12 @@ public class UserService {
     public static boolean verifierToken(String token) {
         try {
             if (token == null || token.isEmpty()) {
-                logger.warn("⛔ Tentative d'accès sans token !");
+                logger.warn(" Tentative d'accès sans token !");
                 return false;
             }
             Utilisateur u = dao.trouverParToken(token);
             if (u == null) {
-                logger.warn("⛔ Token invalide : " + token);
+                logger.warn(" Token invalide : " + token);
                 return false;
             }
             return true;
