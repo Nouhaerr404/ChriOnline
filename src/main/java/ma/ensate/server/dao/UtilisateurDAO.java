@@ -81,7 +81,7 @@ public class UtilisateurDAO {
         if (nb >= MAX_TENTATIVES) {
             blocages.put(email, System.currentTimeMillis());
             tentatives.remove(email);
-            logger.warn("⛔ Compte bloqué 5 minutes : " + email);
+            logger.warn(" Compte bloqué 5 minutes : " + email);
         }
     }
 
@@ -89,6 +89,9 @@ public class UtilisateurDAO {
     // RÉINITIALISER LES TENTATIVES APRÈS SUCCÈS
     // =============================================
     public void reinitialiserTentatives(String email) {
+        if (estBloque(email)) {
+            return;
+        }
         tentatives.remove(email);
         blocages.remove(email);
     }

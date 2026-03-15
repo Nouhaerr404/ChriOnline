@@ -70,6 +70,31 @@ public class LoginView {
 
                     } else {
                         afficherErreur(response.getMessage());
+                        if (response.getMessage().contains("bloqué")) {
+                            emailField.setDisable(true);
+                            passwordField.setDisable(true);
+                            loginButton.setDisable(true);
+                            messageLabel.setText(
+                                    " Réessayez après 5 minutes.");
+                            messageLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+
+                            // Débloquer automatiquement après 5 minutes
+                            new Thread(() -> {
+                                try {
+                                    Thread.sleep(5 * 60 * 1000); // 5 minutes
+                                    Platform.runLater(() -> {
+                                        emailField.setDisable(false);
+                                        passwordField.setDisable(false);
+                                        loginButton.setDisable(false);
+                                        emailField.clear();
+                                        passwordField.clear();
+                                        messageLabel.setText(
+                                                "Vous pouvez réessayer maintenant.");
+                                        messageLabel.setStyle("-fx-text-fill: green;");
+                                    });
+                                } catch (InterruptedException ignored) {}
+                            }).start();
+                        }
                     }
                 });
 

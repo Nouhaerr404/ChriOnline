@@ -81,6 +81,12 @@ public class UserService {
                 return new Response(false,
                         "Email ou mot de passe incorrect.");
             }
+            if (dao.estBloque(email)) {
+                return new Response(false,
+                        "Compte bloqué suite à trop de tentatives. " +
+                                "Réessayez dans 5 minutes.");
+            }
+
 
             // 4. Succès → générer token UUID (TP5)
             String token = UUID.randomUUID().toString();
