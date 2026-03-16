@@ -291,6 +291,9 @@ public class ClientHandler implements Runnable {
                 return new Response(false, "Commande introuvable");
             boolean success = paymentService.effectuerPaiement(commande, methode, req.getCardLast4());
             if (success) {
+                if (commande.getClient() != null) {
+                    servicePanier.viderPanier(commande.getClient().getId());
+                }
                 Paiement paiement = paymentService.getPaiementByCommandeId(req.getCommandeId());
                 logger.info("Paiement effectué : " + req.getCommandeId());
                 return new Response(true, "Paiement effectué avec succès", paiement);
