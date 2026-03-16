@@ -55,8 +55,36 @@ public class ProduitDetailsView {
 
     @FXML
     private void handleAddToCart() {
-        // Personne 3 implements the cart logic
-        System.out.println("Demande d'ajout au panier : " + currentProduit.getNom());
-        // TODO: Appeler le service Panier de Personne 3
+        if (currentProduit == null) return;
+        
+        ma.ensate.models.Utilisateur u = ma.ensate.client.network.SessionManager.getInstance().getUtilisateur();
+        if (u == null) {
+            System.err.println("Utilisateur non connecté !");
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                String data = u.getId() + "," + currentProduit.getId() + ",1";
+                ma.ensate.protocol.Response r = ma.ensate.client.network.ClientTCP.getInstance()
+                        .envoyerRequete(new ma.ensate.protocol.Request("AJOUTER_AU_PANIER", data, u.getSessionToken()));
+                
+                javafx.application.Platform.runLater(() -> {
+                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                            r.isSuccess() ? javafx.scene.control.Alert.AlertType.INFORMATION : javafx.scene.control.Alert.AlertType.ERROR
+                    );
+                    alert.setTitle("Ajout au panier");
+                    alert.setHeaderText(null);
+                    alert.setContentText(r.isSuccess() ? "Produit ajouté au panier avec succès !" : "Erreur : " + r.getMessage());
+                    alert.showAndWait();
+                });
+            } catch (Exception ex) {
+                javafx.application.Platform.runLater(() -> {
+                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+                    alert.setContentText("Erreur réseau: " + ex.getMessage());
+                    alert.showAndWait();
+                });
+            }
+        }).start();
     }
 }

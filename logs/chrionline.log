@@ -650,3 +650,581 @@ The last packet sent successfully to the server was 0 milliseconds ago. The driv
 2026-03-15 13:51:11 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
 2026-03-15 13:51:11 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
 2026-03-15 13:51:11 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:57:55 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-15 13:57:55 [INFO] Connexion serveur établie
+2026-03-15 13:58:17 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-15 13:58:17 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-15 13:58:17 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-15 13:58:17 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 13:58:17 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 13:58:17 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 14:59:50 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-15 14:59:50 [INFO] Connexion serveur établie
+2026-03-15 15:00:11 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-15 15:00:11 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-15 15:00:11 [INFO]  Login réussi : Jihane@chriOnline.ma
+2026-03-15 15:00:11 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 15:00:11 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:00:11 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:00:14 [INFO] 📨 Réponse reçue : Historique récupéré
+2026-03-15 15:00:16 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 15:00:16 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:00:16 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:00:20 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 15:00:20 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:00:20 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:00:31 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-15 15:00:48 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 15:00:48 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:00:48 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:00:54 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 15:00:54 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:00:54 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:00:55 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-15 15:03:28 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 15:03:28 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:03:28 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:03:54 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 15:03:54 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:03:54 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:06:52 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:06:52 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:06:52 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:11:56 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-15 15:11:56 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:12:01 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:12:01 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:12:01 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:12:22 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:12:22 [INFO] 🔌 Session fermée pour : jihane@chriOnline.ma
+2026-03-15 15:12:36 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-15 15:12:36 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-15 15:12:36 [INFO]  Login réussi : Jihane@chriOnline.ma
+2026-03-15 15:12:36 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 15:12:36 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:12:36 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:13:16 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:13:20 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:13:20 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:13:20 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:13:22 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:13:25 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:13:25 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:13:25 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:13:26 [INFO] 🔌 Déconnecté du serveur.
+2026-03-15 15:13:26 [INFO] Application fermée.
+2026-03-15 15:13:28 [INFO] 🔌 Déconnecté du serveur.
+2026-03-15 15:13:28 [INFO] Application fermée.
+2026-03-15 15:16:26 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-15 15:16:27 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:16:41 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:22:13 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:25:42 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:25:51 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:25:59 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:26:01 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:30:26 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-15 15:30:26 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:30:26 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:30:26 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:30:35 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:41:39 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-15 15:41:39 [INFO] Connexion serveur établie
+2026-03-15 15:41:55 [INFO] 📨 Réponse reçue : Compte bloqué suite à trop de tentatives. Réessayez dans 5 minutes.
+2026-03-15 15:42:11 [INFO] 📨 Réponse reçue : Compte bloqué suite à trop de tentatives. Réessayez dans 5 minutes.
+2026-03-15 15:42:12 [INFO] 📨 Réponse reçue : Compte bloqué suite à trop de tentatives. Réessayez dans 5 minutes.
+2026-03-15 15:44:00 [INFO] 📨 Réponse reçue : Compte bloqué suite à trop de tentatives. Réessayez dans 5 minutes.
+2026-03-15 15:44:00 [INFO] 📨 Réponse reçue : Compte bloqué suite à trop de tentatives. Réessayez dans 5 minutes.
+2026-03-15 15:44:01 [INFO] 📨 Réponse reçue : Compte bloqué suite à trop de tentatives. Réessayez dans 5 minutes.
+2026-03-15 15:44:02 [INFO] 📨 Réponse reçue : Compte bloqué suite à trop de tentatives. Réessayez dans 5 minutes.
+2026-03-15 15:50:06 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-15 15:50:06 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-15 15:50:06 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-15 15:50:06 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 15:50:06 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:50:06 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:50:11 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-15 15:50:13 [INFO] 📨 Réponse reçue : Historique récupéré
+2026-03-15 15:50:20 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 15:50:20 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:50:20 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:50:21 [INFO] 📨 Réponse reçue : Historique récupéré
+2026-03-15 15:50:30 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 15:50:30 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:50:30 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 15:50:34 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-15 15:59:40 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-15 15:59:40 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:59:40 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 15:59:40 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 16:00:28 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-15 16:00:28 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 16:00:28 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 16:00:28 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 16:04:27 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 16:04:27 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 16:04:27 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 16:04:29 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-15 16:04:53 [INFO] 📨 Réponse reçue : Historique récupéré
+2026-03-15 16:05:01 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-15 16:05:01 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 16:05:01 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-15 16:11:32 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-15 16:11:32 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 16:11:32 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 16:11:32 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 16:16:12 [INFO] 🔌 Déconnecté du serveur.
+2026-03-15 16:16:12 [INFO] Application fermée.
+2026-03-15 16:16:43 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-15 16:16:43 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 16:16:43 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 16:16:43 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 16:17:14 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-15 16:17:14 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 16:17:14 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-15 16:17:15 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-16 10:31:46 [ERROR]  Serveur inaccessible : Connection refused
+2026-03-16 10:31:58 [ERROR] Erreur login : Connection refused
+2026-03-16 10:32:36 [INFO] ╔════════════════════════════════════════╗
+2026-03-16 10:32:36 [INFO] ║     SERVEUR CHRIONLINE DÉMARRÉ        ║
+2026-03-16 10:32:36 [INFO] ║     Port : 5001                         ║
+2026-03-16 10:32:36 [INFO] ║     En attente de connexions...       ║
+2026-03-16 10:32:36 [INFO] ╚════════════════════════════════════════╝
+2026-03-16 10:33:46 [INFO] 🔌 Nouveau client connecté : 127.0.0.1
+2026-03-16 10:33:46 [INFO]  Thread créé — clients actifs : 2
+2026-03-16 10:33:46 [INFO] Handler démarré pour : 127.0.0.1
+2026-03-16 10:33:46 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-16 10:33:46 [INFO]  Action reçue : LOGIN | Client : 127.0.0.1
+2026-03-16 10:33:46 [INFO] Token sauvegardé pour userId : 11
+2026-03-16 10:33:46 [INFO] ✅ Login réussi : jihane@chriOnline.ma
+2026-03-16 10:33:46 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-16 10:33:46 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-16 10:33:46 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-16 10:33:47 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:33:47 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:33:47 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:33:47 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:33:47 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:33:47 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:33:51 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 10:33:51 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 10:33:53 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:33:53 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:33:53 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:33:53 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:33:53 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:33:53 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:33:59 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:33:59 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:33:59 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:33:59 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:33:59 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:33:59 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:34:00 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 10:34:01 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 10:34:03 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:34:03 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:34:03 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:34:03 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:34:03 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:34:03 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:34:03 [INFO]  Action reçue : GET_HISTORIQUE | Client : 127.0.0.1
+2026-03-16 10:34:04 [INFO] 📨 Réponse reçue : Historique récupéré
+2026-03-16 10:34:08 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:34:08 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:34:08 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:34:08 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:34:08 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:34:08 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:38:57 [INFO] 🔌 Nouveau client connecté : 127.0.0.1
+2026-03-16 10:38:57 [INFO]  Thread créé — clients actifs : 4
+2026-03-16 10:38:57 [INFO] Handler démarré pour : 127.0.0.1
+2026-03-16 10:38:57 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-16 10:38:57 [INFO] Connexion serveur établie
+2026-03-16 10:39:08 [INFO]  Action reçue : LOGIN | Client : 127.0.0.1
+2026-03-16 10:39:08 [INFO] Token sauvegardé pour userId : 11
+2026-03-16 10:39:08 [INFO] ✅ Login réussi : jihane@chriOnline.ma
+2026-03-16 10:39:08 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-16 10:39:08 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-16 10:39:08 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-16 10:39:08 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:39:08 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:39:08 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:39:08 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:39:08 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:39:08 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:39:11 [INFO]  Action reçue : AJOUTER_AU_PANIER | Client : 127.0.0.1
+2026-03-16 10:39:11 [INFO] 📨 Réponse reçue : OK: 'iPhone 15 Pro' (x1) ajouté au panier.
+2026-03-16 10:39:14 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:39:14 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:39:14 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:39:14 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:39:14 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:39:14 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:39:15 [INFO]  Action reçue : AJOUTER_AU_PANIER | Client : 127.0.0.1
+2026-03-16 10:39:15 [INFO] 📨 Réponse reçue : OK: 'Samsung Galaxy S24 Ultra' (x1) ajouté au panier.
+2026-03-16 10:39:17 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:39:17 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:39:17 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:39:17 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:39:17 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:39:17 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:39:19 [INFO]  Action reçue : AJOUTER_AU_PANIER | Client : 127.0.0.1
+2026-03-16 10:39:19 [INFO] 📨 Réponse reçue : OK: 'Xiaomi 14 Pro' (x1) ajouté au panier.
+2026-03-16 10:39:21 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:39:21 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:39:21 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:39:21 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:39:21 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:39:21 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:39:22 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 10:39:22 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 10:40:17 [INFO]  Client déconnecté : 127.0.0.1
+2026-03-16 10:40:20 [INFO] 🔌 Nouveau client connecté : 127.0.0.1
+2026-03-16 10:40:20 [INFO] Handler démarré pour : 127.0.0.1
+2026-03-16 10:40:20 [INFO]  Thread créé — clients actifs : 4
+2026-03-16 10:40:20 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-16 10:40:20 [INFO] Connexion serveur établie
+2026-03-16 10:40:31 [INFO]  Action reçue : LOGIN | Client : 127.0.0.1
+2026-03-16 10:40:31 [INFO] Token sauvegardé pour userId : 11
+2026-03-16 10:40:31 [INFO] ✅ Login réussi : jihane@chriOnline.ma
+2026-03-16 10:40:31 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-16 10:40:31 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-16 10:40:31 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-16 10:40:31 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:40:31 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:40:31 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:40:31 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:40:31 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:40:31 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:40:33 [INFO]  Action reçue : AJOUTER_AU_PANIER | Client : 127.0.0.1
+2026-03-16 10:40:33 [INFO] 📨 Réponse reçue : OK: 'Samsung Galaxy S24 Ultra' (x1) ajouté au panier.
+2026-03-16 10:40:35 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:40:35 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:40:35 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:40:35 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:40:35 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:40:36 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:40:38 [INFO]  Action reçue : AJOUTER_AU_PANIER | Client : 127.0.0.1
+2026-03-16 10:40:38 [INFO] 📨 Réponse reçue : OK: 'Google Pixel 8 Pro' (x1) ajouté au panier.
+2026-03-16 10:40:41 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:40:41 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:40:41 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:40:41 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:40:41 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:40:41 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:40:42 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 10:40:42 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 10:45:41 [INFO]  Client déconnecté : 127.0.0.1
+2026-03-16 10:46:22 [INFO]  Client déconnecté : 127.0.0.1
+2026-03-16 10:46:25 [INFO] 🔌 Nouveau client connecté : 127.0.0.1
+2026-03-16 10:46:25 [INFO]  Thread créé — clients actifs : 3
+2026-03-16 10:46:25 [INFO] Handler démarré pour : 127.0.0.1
+2026-03-16 10:46:25 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-16 10:46:25 [INFO] Connexion serveur établie
+2026-03-16 10:46:37 [INFO]  Action reçue : LOGIN | Client : 127.0.0.1
+2026-03-16 10:46:37 [INFO] Token sauvegardé pour userId : 11
+2026-03-16 10:46:37 [INFO] ✅ Login réussi : jihane@chriOnline.ma
+2026-03-16 10:46:37 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-16 10:46:37 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-16 10:46:37 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-16 10:46:37 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:46:37 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:46:37 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:46:37 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:46:37 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:46:37 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:46:41 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:46:41 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:46:41 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:46:41 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:46:41 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:46:41 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:46:42 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 10:46:42 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 10:46:47 [INFO]  Action reçue : VIDER_PANIER | Client : 127.0.0.1
+2026-03-16 10:46:47 [INFO] 📨 Réponse reçue : OK: Panier vidé.
+2026-03-16 10:46:49 [INFO]  Action reçue : GET_HISTORIQUE | Client : 127.0.0.1
+2026-03-16 10:46:49 [INFO] 📨 Réponse reçue : Historique récupéré
+2026-03-16 10:46:51 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:46:51 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:46:51 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:46:51 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:46:51 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:46:51 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:46:53 [INFO]  Action reçue : AJOUTER_AU_PANIER | Client : 127.0.0.1
+2026-03-16 10:46:53 [INFO] 📨 Réponse reçue : OK: 'Google Pixel 8 Pro' (x1) ajouté au panier.
+2026-03-16 10:46:55 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:46:55 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:46:55 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:46:55 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:46:55 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:46:55 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:46:57 [INFO]  Action reçue : AJOUTER_AU_PANIER | Client : 127.0.0.1
+2026-03-16 10:46:57 [INFO] 📨 Réponse reçue : OK: 'MacBook Pro 16"' (x1) ajouté au panier.
+2026-03-16 10:46:59 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:46:59 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:46:59 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:46:59 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:46:59 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:46:59 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:47:00 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 10:47:00 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 10:52:16 [INFO] 🔌 Nouveau client connecté : 127.0.0.1
+2026-03-16 10:52:16 [INFO]  Thread créé — clients actifs : 4
+2026-03-16 10:52:16 [INFO] Handler démarré pour : 127.0.0.1
+2026-03-16 10:52:16 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-16 10:52:16 [INFO] Connexion serveur établie
+2026-03-16 10:53:05 [INFO]  Action reçue : LOGIN | Client : 127.0.0.1
+2026-03-16 10:53:05 [INFO] Token sauvegardé pour userId : 11
+2026-03-16 10:53:05 [INFO] ✅ Login réussi : jihane@chriOnline.ma
+2026-03-16 10:53:05 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-16 10:53:05 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-16 10:53:05 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-16 10:53:05 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:53:05 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:53:05 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:53:05 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:53:05 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:53:05 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:53:07 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 10:53:07 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 10:53:11 [INFO]  Action reçue : MODIFIER_QUANTITE_PANIER | Client : 127.0.0.1
+2026-03-16 10:53:11 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (2 x 'Google Pixel 8 Pro').
+2026-03-16 10:53:11 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 10:53:11 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 10:53:12 [INFO]  Action reçue : MODIFIER_QUANTITE_PANIER | Client : 127.0.0.1
+2026-03-16 10:53:12 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (1 x 'Google Pixel 8 Pro').
+2026-03-16 10:53:12 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 10:53:12 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 10:53:14 [INFO]  Action reçue : MODIFIER_QUANTITE_PANIER | Client : 127.0.0.1
+2026-03-16 10:53:14 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (2 x 'Google Pixel 8 Pro').
+2026-03-16 10:53:14 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 10:53:14 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 10:53:17 [INFO]  Action reçue : CREER_COMMANDE | Client : 127.0.0.1
+2026-03-16 10:53:17 [INFO]  Commande créée : 05b97946-4801-43f4-9794-02fc3cb73aad
+2026-03-16 10:53:17 [INFO] 📨 Réponse reçue : Commande créée avec succès
+2026-03-16 10:53:42 [INFO]  Action reçue : EFFECTUER_PAIEMENT | Client : 127.0.0.1
+2026-03-16 10:53:42 [INFO] Paiement effectué : 05b97946-4801-43f4-9794-02fc3cb73aad
+2026-03-16 10:53:42 [INFO] 📨 Réponse reçue : Paiement effectué avec succès
+2026-03-16 10:53:43 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 10:53:44 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 10:53:44 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:53:44 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:53:44 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 10:53:44 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 10:53:50 [INFO]  Action reçue : GET_HISTORIQUE | Client : 127.0.0.1
+2026-03-16 10:53:50 [INFO] 📨 Réponse reçue : Historique récupéré
+2026-03-16 11:02:07 [INFO]  Client déconnecté : 127.0.0.1
+2026-03-16 11:02:12 [INFO] 🔌 Nouveau client connecté : 127.0.0.1
+2026-03-16 11:02:12 [INFO]  Thread créé — clients actifs : 4
+2026-03-16 11:02:12 [INFO] Handler démarré pour : 127.0.0.1
+2026-03-16 11:02:12 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-16 11:02:12 [INFO] Connexion serveur établie
+2026-03-16 11:02:23 [INFO]  Action reçue : LOGIN | Client : 127.0.0.1
+2026-03-16 11:02:23 [INFO] Token sauvegardé pour userId : 11
+2026-03-16 11:02:23 [INFO] ✅ Login réussi : jihane@chriOnline.ma
+2026-03-16 11:02:23 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-16 11:02:23 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-16 11:02:23 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-16 11:02:23 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 11:02:23 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 11:02:23 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:02:23 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:02:24 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:02:24 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:02:26 [INFO]  Action reçue : GET_HISTORIQUE | Client : 127.0.0.1
+2026-03-16 11:02:26 [INFO] 📨 Réponse reçue : Historique récupéré
+2026-03-16 11:02:39 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 11:02:39 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 11:02:39 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:02:39 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:02:39 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:02:39 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:02:45 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:02:45 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:10:17 [INFO]  Client déconnecté : 127.0.0.1
+2026-03-16 11:10:21 [INFO] 🔌 Nouveau client connecté : 127.0.0.1
+2026-03-16 11:10:21 [INFO]  Thread créé — clients actifs : 4
+2026-03-16 11:10:21 [INFO] Handler démarré pour : 127.0.0.1
+2026-03-16 11:10:21 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-16 11:10:21 [INFO] Connexion serveur établie
+2026-03-16 11:10:35 [INFO]  Action reçue : LOGIN | Client : 127.0.0.1
+2026-03-16 11:10:35 [INFO] Token sauvegardé pour userId : 11
+2026-03-16 11:10:35 [INFO] ✅ Login réussi : jihane@chriOnline.ma
+2026-03-16 11:10:35 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-16 11:10:35 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-16 11:10:35 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-16 11:10:35 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 11:10:35 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 11:10:35 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:10:35 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:10:36 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:10:36 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:11:27 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:11:27 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:11:30 [INFO]  Action reçue : MODIFIER_QUANTITE_PANIER | Client : 127.0.0.1
+2026-03-16 11:11:30 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (2 x 'MacBook Pro 16"').
+2026-03-16 11:11:30 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:11:30 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:11:33 [INFO]  Action reçue : CREER_COMMANDE | Client : 127.0.0.1
+2026-03-16 11:11:33 [INFO]  Commande créée : 5058e9ce-85ff-413e-b08a-3477e0ddfc88
+2026-03-16 11:11:33 [INFO] 📨 Réponse reçue : Commande créée avec succès
+2026-03-16 11:11:53 [INFO]  Action reçue : EFFECTUER_PAIEMENT | Client : 127.0.0.1
+2026-03-16 11:11:53 [INFO] Paiement effectué : 5058e9ce-85ff-413e-b08a-3477e0ddfc88
+2026-03-16 11:11:53 [INFO] 📨 Réponse reçue : Paiement effectué avec succès
+2026-03-16 11:11:54 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 11:11:54 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 11:11:54 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:11:54 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:11:54 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:11:54 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:11:56 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:11:56 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:12:21 [INFO]  Client déconnecté : 127.0.0.1
+2026-03-16 11:12:25 [INFO] 🔌 Nouveau client connecté : 127.0.0.1
+2026-03-16 11:12:25 [INFO]  Thread créé — clients actifs : 4
+2026-03-16 11:12:25 [INFO] Handler démarré pour : 127.0.0.1
+2026-03-16 11:12:25 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-16 11:12:25 [INFO] Connexion serveur établie
+2026-03-16 11:12:37 [INFO]  Action reçue : LOGIN | Client : 127.0.0.1
+2026-03-16 11:12:37 [INFO] Token sauvegardé pour userId : 11
+2026-03-16 11:12:37 [INFO] ✅ Login réussi : jihane@chriOnline.ma
+2026-03-16 11:12:37 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-16 11:12:37 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-16 11:12:37 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-16 11:12:37 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 11:12:37 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 11:12:37 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:12:37 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:12:37 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:12:37 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:12:39 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:12:39 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:12:43 [INFO]  Action reçue : MODIFIER_QUANTITE_PANIER | Client : 127.0.0.1
+2026-03-16 11:12:43 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (1 x 'Google Pixel 8 Pro').
+2026-03-16 11:12:43 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:12:43 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:12:44 [INFO]  Action reçue : MODIFIER_QUANTITE_PANIER | Client : 127.0.0.1
+2026-03-16 11:12:44 [INFO] 📨 Réponse reçue : OK: Produit retiré du panier.
+2026-03-16 11:12:44 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:12:44 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:12:45 [INFO]  Action reçue : MODIFIER_QUANTITE_PANIER | Client : 127.0.0.1
+2026-03-16 11:12:45 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (1 x 'MacBook Pro 16"').
+2026-03-16 11:12:45 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:12:45 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:12:45 [INFO]  Action reçue : MODIFIER_QUANTITE_PANIER | Client : 127.0.0.1
+2026-03-16 11:12:45 [INFO] 📨 Réponse reçue : OK: Produit retiré du panier.
+2026-03-16 11:12:45 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:12:45 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:12:46 [INFO]  Action reçue : GET_HISTORIQUE | Client : 127.0.0.1
+2026-03-16 11:12:46 [INFO] 📨 Réponse reçue : Historique récupéré
+2026-03-16 11:12:49 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 11:12:49 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 11:12:49 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:12:49 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:12:49 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:12:49 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:12:51 [INFO]  Action reçue : AJOUTER_AU_PANIER | Client : 127.0.0.1
+2026-03-16 11:12:51 [INFO] 📨 Réponse reçue : OK: 'MacBook Pro 16"' (x1) ajouté au panier.
+2026-03-16 11:12:54 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 11:12:54 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 11:12:54 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:12:54 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:12:54 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:12:54 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:12:57 [INFO]  Action reçue : AJOUTER_AU_PANIER | Client : 127.0.0.1
+2026-03-16 11:12:57 [INFO] 📨 Réponse reçue : OK: 'Lenovo ThinkPad X1 Carbon' (x1) ajouté au panier.
+2026-03-16 11:12:59 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 11:12:59 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 11:12:59 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:12:59 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:12:59 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:12:59 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:13:01 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:13:01 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:13:08 [INFO]  Action reçue : CREER_COMMANDE | Client : 127.0.0.1
+2026-03-16 11:13:08 [INFO]  Commande créée : 9bcdff32-a2b6-4706-8f1b-8777293f201a
+2026-03-16 11:13:08 [INFO] 📨 Réponse reçue : Commande créée avec succès
+2026-03-16 11:13:27 [INFO]  Action reçue : EFFECTUER_PAIEMENT | Client : 127.0.0.1
+2026-03-16 11:13:27 [INFO] Paiement effectué : 9bcdff32-a2b6-4706-8f1b-8777293f201a
+2026-03-16 11:13:27 [INFO] 📨 Réponse reçue : Paiement effectué avec succès
+2026-03-16 11:13:29 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 11:13:29 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 11:13:29 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:13:29 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:13:29 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:13:29 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:13:30 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:13:30 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:18:48 [INFO]  Client déconnecté : 127.0.0.1
+2026-03-16 11:18:51 [INFO] 🔌 Nouveau client connecté : 127.0.0.1
+2026-03-16 11:18:51 [INFO]  Thread créé — clients actifs : 4
+2026-03-16 11:18:51 [INFO] Handler démarré pour : 127.0.0.1
+2026-03-16 11:18:51 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-16 11:18:51 [INFO] Connexion serveur établie
+2026-03-16 11:19:15 [INFO]  Action reçue : LOGIN | Client : 127.0.0.1
+2026-03-16 11:19:15 [INFO] Token sauvegardé pour userId : 11
+2026-03-16 11:19:15 [INFO] ✅ Login réussi : jihane@chriOnline.ma
+2026-03-16 11:19:15 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-16 11:19:15 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-16 11:19:15 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-16 11:19:15 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 11:19:15 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 11:19:15 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:19:15 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:19:15 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:19:15 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:20:05 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:20:05 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:20:15 [INFO]  Action reçue : SUPPRIMER_DU_PANIER | Client : 127.0.0.1
+2026-03-16 11:20:15 [INFO] 📨 Réponse reçue : OK: Produit retiré du panier.
+2026-03-16 11:20:15 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:20:15 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:20:18 [INFO]  Action reçue : MODIFIER_QUANTITE_PANIER | Client : 127.0.0.1
+2026-03-16 11:20:18 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (2 x 'MacBook Pro 16"').
+2026-03-16 11:20:18 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:20:18 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:20:18 [INFO]  Action reçue : MODIFIER_QUANTITE_PANIER | Client : 127.0.0.1
+2026-03-16 11:20:18 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (3 x 'MacBook Pro 16"').
+2026-03-16 11:20:18 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:20:18 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:20:19 [INFO]  Action reçue : MODIFIER_QUANTITE_PANIER | Client : 127.0.0.1
+2026-03-16 11:20:19 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (4 x 'MacBook Pro 16"').
+2026-03-16 11:20:19 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:20:19 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:20:21 [INFO]  Action reçue : CREER_COMMANDE | Client : 127.0.0.1
+2026-03-16 11:20:21 [INFO]  Commande créée : 6d0292c5-c225-461e-b46c-61edf4b2c082
+2026-03-16 11:20:21 [INFO] 📨 Réponse reçue : Commande créée avec succès
+2026-03-16 11:20:23 [INFO]  Action reçue : EFFECTUER_PAIEMENT | Client : 127.0.0.1
+2026-03-16 11:20:23 [INFO] Paiement effectué : 6d0292c5-c225-461e-b46c-61edf4b2c082
+2026-03-16 11:20:23 [INFO] 📨 Réponse reçue : Paiement effectué avec succès
+2026-03-16 11:20:23 [INFO]  Action reçue : VIDER_PANIER | Client : 127.0.0.1
+2026-03-16 11:20:23 [INFO] 📨 Réponse reçue : OK: Panier vidé.
+2026-03-16 11:20:24 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 11:20:24 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 11:20:24 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:20:24 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:20:24 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:20:24 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:20:25 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:20:25 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:33:33 [INFO]  Action reçue : GET_HISTORIQUE | Client : 127.0.0.1
+2026-03-16 11:33:33 [INFO] 📨 Réponse reçue : Historique récupéré
+2026-03-16 11:33:39 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-16 11:33:39 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 11:33:39 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:33:39 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:33:39 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-16 11:33:39 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 11:33:59 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-16 11:33:59 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 11:38:35 [INFO]  Action reçue : GET_HISTORIQUE | Client : 127.0.0.1
+2026-03-16 11:38:35 [WARN] ⛔ Token invalide : bbf4691e-b443-4abc-9452-0b27b2e48ff2
+2026-03-16 11:38:35 [WARN]  Accès refusé — token invalide | Action : GET_HISTORIQUE | Client : 127.0.0.1
+2026-03-16 11:38:35 [INFO] 📨 Réponse reçue : Non autorisé. Veuillez vous connecter.
+2026-03-16 11:38:38 [INFO] 🔌 Déconnecté du serveur.
+2026-03-16 11:38:38 [INFO]  Client déconnecté : 127.0.0.1
+2026-03-16 11:38:38 [INFO] Application fermée.
+2026-03-16 11:38:41 [INFO]  Action reçue : GET_HISTORIQUE | Client : 127.0.0.1
+2026-03-16 11:38:41 [INFO] 📨 Réponse reçue : Historique récupéré

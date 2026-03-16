@@ -36,14 +36,16 @@ public class ProduitsView {
 
     @FXML
     private void goToCart() {
-        // Personne 3 implements this
-        System.out.println("Navigation vers le Panier...");
+        Stage stage = (Stage) productsFlowPane.getScene().getWindow();
+        Utilisateur u = SessionManager.getInstance().getUtilisateur();
+        new PanierView(stage, ClientTCP.getInstance(), u.getId(), u.getSessionToken()).afficher();
     }
 
     @FXML
     private void goToOrders() {
-        // Personne 4 implements this
-        System.out.println("Navigation vers les Commandes...");
+        Stage stage = (Stage) productsFlowPane.getScene().getWindow();
+        Utilisateur u = SessionManager.getInstance().getUtilisateur();
+        new HistoriqueView(stage, ClientTCP.getInstance(), u.getId(), u.getSessionToken()).afficher();
     }
 
     @FXML
