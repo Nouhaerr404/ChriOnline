@@ -48,7 +48,7 @@ public class SessionManager {
 
     public void clear() {
         if (utilisateurConnecte != null) {
-            logger.info("🔌 Session fermée pour : "
+            logger.info(" Session fermee pour : "
                     + utilisateurConnecte.getEmail());
         }
         this.utilisateurConnecte = null;

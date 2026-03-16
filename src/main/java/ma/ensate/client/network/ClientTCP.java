@@ -37,7 +37,7 @@ public class ClientTCP {
         socket = new Socket(HOST, PORT);
         out    = new ObjectOutputStream(socket.getOutputStream());
         in     = new ObjectInputStream(socket.getInputStream());
-        logger.info("Connecté au serveur " + HOST + ":" + PORT);
+        logger.info("Connecte au serveur " + HOST + ":" + PORT);
     }
 
     // =============================================
@@ -54,7 +54,7 @@ public class ClientTCP {
         out.flush();
 
         Response response = (Response) in.readObject();
-        logger.info("📨 Réponse reçue : " + response.getMessage());
+        logger.info(" Reponse recue : " + response.getMessage());
         return response;
     }
 
@@ -71,10 +71,10 @@ public class ClientTCP {
         try {
             if (socket != null && !socket.isClosed()) {
                 socket.close();
-                logger.info("🔌 Déconnecté du serveur.");
+                logger.info(" Deconnecte du serveur.");
             }
         } catch (IOException e) {
-            logger.error("Erreur déconnexion : " + e.getMessage());
+            logger.error("Erreur deconnexion : " + e.getMessage());
         }
     }
 

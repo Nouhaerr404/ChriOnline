@@ -49,7 +49,7 @@ public class UtilisateurDAO {
         if (maintenant - tempsBlocage < DUREE_BLOCAGE_MS) {
             long resteMs      = DUREE_BLOCAGE_MS - (maintenant - tempsBlocage);
             long resteMinutes = resteMs / 60000;
-            logger.warn("Compte bloqué : " + email +
+            logger.warn("Compte bloque : " + email +
                     " | Reste : " + resteMinutes + " minutes");
             return true;
         } else {
@@ -65,13 +65,13 @@ public class UtilisateurDAO {
         int nb = tentatives.getOrDefault(email, 0) + 1;
         tentatives.put(email, nb);
 
-        logger.warn("Échec login pour : " + email +
+        logger.warn("Echec login pour : " + email +
                 " | Tentative " + nb + "/" + MAX_TENTATIVES);
 
         if (nb >= MAX_TENTATIVES) {
             blocages.put(email, System.currentTimeMillis());
             tentatives.remove(email);
-            logger.warn(" Compte bloqué 5 minutes : " + email);
+            logger.warn(" Compte bloque 5 minutes : " + email);
         }
     }
 

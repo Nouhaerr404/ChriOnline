@@ -52,7 +52,7 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         String clientIP = socket.getInetAddress().getHostAddress();
-        logger.info("Handler démarré pour : " + clientIP);
+        logger.info("Handler démarre pour : " + clientIP);
 
         try (
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
@@ -66,11 +66,11 @@ public class ClientHandler implements Runnable {
                 if (!ACTIONS_PUBLIQUES.contains(request.getAction())) {
                     String token = request.getToken();
                     if (!UserService.verifierToken(token)) {
-                        logger.warn(" Accès refusé — token invalide"
+                        logger.warn(" Accès refuse — token invalide"
                                 + " | Action : " + request.getAction()
                                 + " | Client : " + clientIP);
                         out.writeObject(new Response(false,
-                                "Non autorisé. Veuillez vous connecter."));
+                                "Non autorise. Veuillez vous connecter."));
                         out.flush();
                         continue;
                     }
@@ -82,7 +82,7 @@ public class ClientHandler implements Runnable {
             }
 
         } catch (EOFException e) {
-            logger.info(" Client déconnecté : " + clientIP);
+            logger.info(" Client deconnecte : " + clientIP);
         } catch (Exception e) {
             logger.error(" Erreur handler " + clientIP + " : " + e.getMessage());
         }
@@ -184,7 +184,7 @@ public class ClientHandler implements Runnable {
         try {
             CreerCommandeRequest req = (CreerCommandeRequest) request.getData();
             if (req == null || req.getLignes() == null || req.getLignes().isEmpty())
-                return new Response(false, "La requête doit contenir des lignes de commande");
+                return new Response(false, "La requete doit contenir des lignes de commande");
             if (req.getClientId() <= 0)
                 return new Response(false, "ID client invalide");
             Client client = clientDAO.findById(req.getClientId());
@@ -194,12 +194,12 @@ public class ClientHandler implements Runnable {
             if (lignes.isEmpty())
                 return new Response(false, "Aucune ligne de commande valide");
             Commande commande = commandeService.creerCommande(client, lignes);
-            logger.info(" Commande créée : " + commande.getId());
-            return new Response(true, "Commande créée avec succès", commande);
+            logger.info(" Commande creee : " + commande.getId());
+            return new Response(true, "Commande creee avec succes", commande);
         } catch (IllegalArgumentException e) {
             return new Response(false, e.getMessage());
         } catch (SQLException e) {
-            return new Response(false, "Erreur base de données : " + e.getMessage());
+            return new Response(false, "Erreur base de donnees : " + e.getMessage());
         }
     }
 
@@ -210,8 +210,8 @@ public class ClientHandler implements Runnable {
                 return new Response(false, "ID de commande requis");
             boolean success = commandeService.validerCommande(commandeId);
             return success
-                    ? new Response(true,  "Commande validée avec succès")
-                    : new Response(false, "Échec de la validation");
+                    ? new Response(true,  "Commande validee avec succès")
+                    : new Response(false, "Echec de la validation");
         } catch (IllegalArgumentException | IllegalStateException e) {
             return new Response(false, e.getMessage());
         } catch (SQLException e) {
@@ -223,7 +223,7 @@ public class ClientHandler implements Runnable {
         try {
             ChangerStatutRequest req = (ChangerStatutRequest) request.getData();
             if (req == null || req.getCommandeId() == null || req.getNouveauStatut() == null)
-                return new Response(false, "Requête invalide");
+                return new Response(false, "Requete invalide");
             StatutCommande nouveauStatut;
             try {
                 nouveauStatut = StatutCommande.valueOf(req.getNouveauStatut());
@@ -233,7 +233,7 @@ public class ClientHandler implements Runnable {
             boolean success = commandeService.changerStatutCommande(req.getCommandeId(), nouveauStatut);
             return success
                     ? new Response(true,  "Statut mis à jour avec succès")
-                    : new Response(false, "Échec de la mise à jour du statut");
+                    : new Response(false, "Echec de la mise à jour du statut");
         } catch (IllegalArgumentException | IllegalStateException e) {
             return new Response(false, e.getMessage());
         } catch (SQLException e) {

@@ -44,7 +44,7 @@ public class RegisterView {
         }
 
         if (password.length() < 6) {
-            afficherErreur("Le mot de passe doit contenir au moins 6 caractères !");
+            afficherErreur("Le mot de passe doit contenir au moins 6 caracteres !");
             return;
         }
 
@@ -69,8 +69,8 @@ public class RegisterView {
                     registerButton.setDisable(false);
 
                     if (response.isSuccess()) {
-                        afficherSucces(" Inscription réussie ! Redirection...");
-                        logger.info(" Inscription réussie : " + email);
+                        afficherSucces(" Inscription reussie ! Redirection...");
+                        logger.info(" Inscription reussie : " + email);
 
                         // Attendre 1 seconde puis aller au login
                         new Thread(() -> {

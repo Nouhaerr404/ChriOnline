@@ -32,7 +32,7 @@ public class TCPServer {
 
             while (running) {
                 Socket clientSocket = serverSocket.accept();
-                logger.info("🔌 Nouveau client connecté : "
+                logger.info(" Nouveau client connecté : "
                         + clientSocket.getInetAddress().getHostAddress());
 
                 Thread t = new Thread(new ClientHandler(clientSocket));

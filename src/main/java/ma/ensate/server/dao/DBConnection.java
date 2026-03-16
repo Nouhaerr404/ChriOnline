@@ -7,9 +7,9 @@ import ma.ensate.util.ConfigLoader;
 
 public class DBConnection {
 
-    private static final String URL      = ConfigLoader.get("DB_URL", "jdbc:mysql://localhost:8889/chrionline");
+    private static final String URL      = ConfigLoader.get("DB_URL", "jdbc:mysql://localhost:3306/chrionline");
     private static final String USER     = ConfigLoader.get("DB_USER", "root");
-    private static final String PASSWORD = ConfigLoader.get("DB_PASSWORD", "root");
+    private static final String PASSWORD = ConfigLoader.get("DB_PASSWORD", "");
 
     private static Connection instance = null;
 
@@ -19,7 +19,7 @@ public class DBConnection {
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 instance = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("Connexion MySQL réussie !");
+                System.out.println("Connexion MySQL reussie !");
             } catch (ClassNotFoundException e) {
                 System.out.println("Driver MySQL introuvable !");
                 throw new SQLException(e);
@@ -33,7 +33,7 @@ public class DBConnection {
         try {
             Connection conn = getConnection();
             if (conn != null) {
-                System.out.println("Base de données connectée !");
+                System.out.println("Base de données connectee !");
             }
         } catch (SQLException e) {
             System.out.println(" Erreur : " + e.getMessage());
