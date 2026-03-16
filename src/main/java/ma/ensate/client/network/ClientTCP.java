@@ -33,14 +33,11 @@ public class ClientTCP {
         return instance;
     }
 
-    // =============================================
-    // CONNEXION AU SERVEUR
-    // =============================================
     public void connecter() throws IOException {
         socket = new Socket(HOST, PORT);
         out    = new ObjectOutputStream(socket.getOutputStream());
         in     = new ObjectInputStream(socket.getInputStream());
-        logger.info("✅ Connecté au serveur " + HOST + ":" + PORT);
+        logger.info("Connecté au serveur " + HOST + ":" + PORT);
     }
 
     // =============================================
@@ -61,10 +58,6 @@ public class ClientTCP {
         return response;
     }
 
-    // =============================================
-    // ENVOYER UNE REQUÊTE — AVEC TOKEN
-    // (toutes les actions protégées)
-    // =============================================
     public Response envoyerRequeteSecurisee(String action,
                                             Object data) throws Exception {
         // Récupérer le token depuis SessionManager
@@ -74,9 +67,6 @@ public class ClientTCP {
         return envoyerRequete(request);
     }
 
-    // =============================================
-    // DÉCONNEXION
-    // =============================================
     public void deconnecter() {
         try {
             if (socket != null && !socket.isClosed()) {

@@ -16,9 +16,6 @@ public class UserService {
     private static final Logger logger = LogManager.getLogger(UserService.class);
     private static final UtilisateurDAO dao = new UtilisateurDAO();
 
-    // =============================================
-    // REGISTER
-    // =============================================
     public static Response register(Object data) {
         try {
             Client client = (Client) data;
@@ -30,14 +27,14 @@ public class UserService {
                 return new Response(false, erreur);
             }
 
-            // 2. Vérifier si email déjà utilisé
+
             if (dao.emailExiste(client.getEmail())) {
                 logger.warn("Inscription échouée - email déjà utilisé : "
                         + client.getEmail());
                 return new Response(false, "Cet email est déjà utilisé !");
             }
 
-            // 3. Inscrire
+
             boolean succes = dao.inscrire(client);
             if (succes) {
                 logger.info(" Inscription réussie : " + client.getEmail());
@@ -55,26 +52,21 @@ public class UserService {
         }
     }
 
-    // =============================================
-    // LOGIN
-    // =============================================
     public static Response login(Object data) {
         try {
             String[] credentials = (String[]) data;
             String email    = credentials[0].trim();
             String password = credentials[1];
 
-            // 1. Vérifier si compte bloqué (TP1)
             if (dao.estBloque(email)) {
                 return new Response(false,
                         "Compte bloqué suite à trop de tentatives. " +
                                 "Réessayez dans 5 minutes.");
             }
 
-            // 2. Chercher dans la BD
             Utilisateur u = dao.trouverParEmailPassword(email, password);
 
-            // 3. Échec login
+
             if (u == null) {
                 dao.enregistrerEchec(email);
                 int restantes = 3 - 1; // approximation
@@ -88,7 +80,6 @@ public class UserService {
             }
 
 
-            // 4. Succès → générer token UUID (TP5)
             String token = UUID.randomUUID().toString();
             dao.sauvegarderToken(u.getId(), token);
             dao.reinitialiserTentatives(email);
@@ -106,9 +97,6 @@ public class UserService {
         }
     }
 
-    // =============================================
-    // LOGOUT
-    // =============================================
     public static Response logout(Object data) {
         try {
             int userId = (int) data;
@@ -125,11 +113,6 @@ public class UserService {
         }
     }
 
-    // =============================================
-    // VÉRIFIER TOKEN (TP5)
-    // utilisé par ClientHandler pour protéger
-    // TOUTES les autres requêtes
-    // =============================================
     public static boolean verifierToken(String token) {
         try {
             if (token == null || token.isEmpty()) {
@@ -148,9 +131,6 @@ public class UserService {
         }
     }
 
-    // =============================================
-    // VALIDATION DES DONNÉES (TP7)
-    // =============================================
     private static String validerDonnees(Client client) {
 
         // Nom
@@ -176,6 +156,6 @@ public class UserService {
             }
         }
 
-        return null; // tout est valide
+        return null;
     }
 }

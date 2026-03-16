@@ -16,9 +16,6 @@ public class UtilisateurDAO {
     // Logger Log4j
     private static final Logger logger = LogManager.getLogger(UtilisateurDAO.class);
 
-    // =============================================
-    // PROTECTION BRUTE FORCE (TP1)
-    // =============================================
     // email → nombre de tentatives échouées
     private static final Map<String, Integer> tentatives = new HashMap<>();
     // email → timestamp du blocage
@@ -27,9 +24,7 @@ public class UtilisateurDAO {
     private static final int MAX_TENTATIVES  = 3;
     private static final int DUREE_BLOCAGE_MS = 5 * 60 * 1000; // 5 minutes
 
-    // =============================================
-    // HASHAGE SHA-256
-    // =============================================
+
     public static String hasherMotDePasse(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -45,9 +40,6 @@ public class UtilisateurDAO {
         }
     }
 
-    // =============================================
-    // VÉRIFIER SI COMPTE BLOQUÉ
-    // =============================================
     public boolean estBloque(String email) {
         if (!blocages.containsKey(email)) return false;
 
@@ -68,9 +60,7 @@ public class UtilisateurDAO {
         }
     }
 
-    // =============================================
-    // ENREGISTRER UNE TENTATIVE ÉCHOUÉE
-    // =============================================
+
     public void enregistrerEchec(String email) {
         int nb = tentatives.getOrDefault(email, 0) + 1;
         tentatives.put(email, nb);
@@ -85,9 +75,7 @@ public class UtilisateurDAO {
         }
     }
 
-    // =============================================
-    // RÉINITIALISER LES TENTATIVES APRÈS SUCCÈS
-    // =============================================
+
     public void reinitialiserTentatives(String email) {
         if (estBloque(email)) {
             return;
@@ -96,9 +84,6 @@ public class UtilisateurDAO {
         blocages.remove(email);
     }
 
-    // =============================================
-    // REGISTER — Inscrire un nouvel utilisateur
-    // =============================================
     public boolean emailExiste(String email) throws SQLException {
         // PreparedStatement → protection SQL Injection (TP7)
         String sql = "SELECT COUNT(*) FROM utilisateur WHERE email = ?";
@@ -125,7 +110,7 @@ public class UtilisateurDAO {
             ps.setString(3, hasherMotDePasse(client.getPassword()));
             ps.executeUpdate();
 
-            // Récupérer l'id généré
+
             ResultSet keys = ps.getGeneratedKeys();
             if (keys.next()) {
                 int idGenere = keys.getInt(1);
@@ -140,16 +125,13 @@ public class UtilisateurDAO {
                     ps2.executeUpdate();
                 }
 
-                logger.info("✅ Nouvel utilisateur inscrit : " + client.getEmail());
+                logger.info(" Nouvel utilisateur inscrit : " + client.getEmail());
                 return true;
             }
         }
         return false;
     }
 
-    // =============================================
-    // LOGIN — Trouver par email + password
-    // =============================================
     public Utilisateur trouverParEmailPassword(String email, String password)
             throws SQLException {
 
@@ -167,7 +149,7 @@ public class UtilisateurDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                // Construire l'objet selon le type
+
                 String type = rs.getString("type_compte");
                 Utilisateur u;
 
@@ -190,9 +172,6 @@ public class UtilisateurDAO {
         return null; // pas trouvé
     }
 
-    // =============================================
-    // SESSION — Sauvegarder le token (TP5)
-    // =============================================
     public void sauvegarderToken(int userId, String token) throws SQLException {
         String sql = "UPDATE utilisateur SET session_token = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -204,9 +183,7 @@ public class UtilisateurDAO {
         }
     }
 
-    // =============================================
-    // SESSION — Supprimer le token (logout)
-    // =============================================
+
     public void supprimerToken(int userId) throws SQLException {
         String sql = "UPDATE utilisateur SET session_token = NULL WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -217,9 +194,7 @@ public class UtilisateurDAO {
         }
     }
 
-    // =============================================
-    // SESSION — Trouver par token (vérification)
-    // =============================================
+
     public Utilisateur trouverParToken(String token) throws SQLException {
         String sql = "SELECT * FROM utilisateur WHERE session_token = ?";
         try (Connection conn = DBConnection.getConnection();
