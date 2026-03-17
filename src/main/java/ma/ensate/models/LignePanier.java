@@ -1,20 +1,13 @@
 package ma.ensate.models;
 
-import java.io.Serializable;
-
-
-/**
- * Modèle LignePanier — correspond à la table `ligne_panier`.
- * Représente un produit et sa quantité dans un panier.
- */
 public class LignePanier {
 
     private int    id;
     private int    panierId;
     private int    produitId;
-    private String produitNom;     // cache du nom pour l'affichage
-    private double prixUnitaire;   // cache du prix unitaire
-    private int    quantite;
+    private String produitNom;
+    private double prixUnitaire;
+    private int    quantite; //dima >0
     private double subtotal;       // prixUnitaire × quantite
 
     // -------------------------------------------------------------------------
@@ -23,9 +16,6 @@ public class LignePanier {
 
     public LignePanier() {}
 
-    /**
-     * Constructeur principal utilisé lors de l'ajout au panier.
-     */
     public LignePanier(int panierId, int produitId, String produitNom,
                        double prixUnitaire, int quantite) {
         this.panierId      = panierId;
@@ -35,10 +25,7 @@ public class LignePanier {
         this.quantite      = quantite;
         this.subtotal      = prixUnitaire * quantite;
     }
-
-    /**
-     * Constructeur complet (utilisé lors du chargement depuis la BDD).
-     */
+    //pour le rechargement apres que la ligne soit deja stocke dan sla bdd
     public LignePanier(int id, int panierId, int produitId, String produitNom,
                        double prixUnitaire, int quantite, double subtotal) {
         this(panierId, produitId, produitNom, prixUnitaire, quantite);
@@ -46,17 +33,10 @@ public class LignePanier {
         this.subtotal = subtotal;
     }
 
-    // -------------------------------------------------------------------------
-    // Méthodes métier
-    // -------------------------------------------------------------------------
-
     public void recalculerSubtotal() {
+
         this.subtotal = this.prixUnitaire * this.quantite;
     }
-
-    // -------------------------------------------------------------------------
-    // Getters / Setters
-    // -------------------------------------------------------------------------
 
     public int getId()                       { return id; }
     public void setId(int id)                { this.id = id; }

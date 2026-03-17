@@ -10,30 +10,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-/**
- * PanierDAO — toutes les opérations SQL sur les tables `panier` et `ligne_panier`.
- *
- * Conventions :
- *  - Chaque méthode ouvre/ferme sa propre connexion (via DBConnection).
- *  - Retourne null ou une liste vide en cas d'erreur (erreur loggée).
- *  - Les transactions (ex : vider le panier) utilisent setAutoCommit(false).
- */
 public class PanierDAO {
 
     private static final Logger LOGGER = Logger.getLogger(PanierDAO.class.getName());
 
-    // =========================================================================
-    // PANIER — opérations principales
-    // =========================================================================
-
-    /**
-     * Récupère le panier d'un client (sans les lignes).
-     * Si le client n'a pas encore de panier, en crée un automatiquement.
-     *
-     * @param clientId  l'id du client (table utilisateur)
-     * @return Panier existant ou nouvellement créé, null si erreur SQL
-     */
     public Panier obtenirOuCreerPanier(int clientId) {
         String selectSql = "SELECT id, client_id, total FROM panier WHERE client_id = ?";
 
@@ -46,7 +26,6 @@ public class PanierDAO {
             if (rs.next()) {
                 return mapRowToPanier(rs);
             }
-            // Pas de panier trouvé → on en crée un
             return creerPanier(clientId);
 
         } catch (SQLException e) {
@@ -55,9 +34,6 @@ public class PanierDAO {
         }
     }
 
-    /**
-     * Crée un nouveau panier vide pour le client donné.
-     */
     private Panier creerPanier(int clientId) {
         String sql = "INSERT INTO panier (client_id, total) VALUES (?, 0.00)";
 
@@ -77,9 +53,6 @@ public class PanierDAO {
         return null;
     }
 
-    /**
-     * Met à jour le total du panier en base.
-     */
     public boolean mettreAJourTotal(int panierId, double total) {
         String sql = "UPDATE panier SET total = ? WHERE id = ?";
 
@@ -96,13 +69,6 @@ public class PanierDAO {
         }
     }
 
-    // =========================================================================
-    // LIGNES DU PANIER
-    // =========================================================================
-
-    /**
-     * Récupère toutes les lignes d'un panier, avec le nom et le prix du produit.
-     */
     public List<LignePanier> obtenirLignesDuPanier(int panierId) {
         String sql = """
                 SELECT lp.id, lp.panier_id, lp.produit_id,
@@ -131,19 +97,9 @@ public class PanierDAO {
         return lignes;
     }
 
-    /**
-     * Ajoute un produit au panier ou incrémente la quantité s'il est déjà présent.
-     * Met aussi à jour le subtotal de la ligne et le total du panier.
-     *
-     * @param panierId   id du panier
-     * @param produitId  id du produit
-     * @param quantite   quantité à ajouter (> 0)
-     * @param prix       prix unitaire actuel du produit
-     * @return true si l'opération a réussi
-     */
     public boolean ajouterOuMettreAJourLigne(int panierId, int produitId,
                                              int quantite, double prix) {
-        String checkSql = "SELECT id, quantite FROM ligne_panier WHERE panier_id=? AND produit_id=?";
+        String checkSql = "SELECT id, quantite FROM ligne_panier WHERE panier_id=? AND produit_id=?";//check si ca existe dj
         String insertSql = """
                 INSERT INTO ligne_panier (panier_id, produit_id, quantite, subtotal)
                 VALUES (?, ?, ?, ?)
@@ -151,19 +107,17 @@ public class PanierDAO {
         String updateSql = """
                 UPDATE ligne_panier SET quantite=?, subtotal=?
                 WHERE panier_id=? AND produit_id=?
-                """;
+                """;//modifier ligne existante!
 
         try (Connection conn = DBConnection.getConnection()) {
             conn.setAutoCommit(false);
             try {
-                // Vérifie si la ligne existe
                 try (PreparedStatement ps = conn.prepareStatement(checkSql)) {
                     ps.setInt(1, panierId);
                     ps.setInt(2, produitId);
                     ResultSet rs = ps.executeQuery();
 
                     if (rs.next()) {
-                        // Ligne existante → mise à jour quantité
                         int nouvelleQte = rs.getInt("quantite") + quantite;
                         double subtotal  = prix * nouvelleQte;
 
@@ -175,7 +129,6 @@ public class PanierDAO {
                             psUpd.executeUpdate();
                         }
                     } else {
-                        // Nouvelle ligne
                         try (PreparedStatement psIns = conn.prepareStatement(insertSql)) {
                             psIns.setInt(1, panierId);
                             psIns.setInt(2, produitId);
@@ -186,7 +139,6 @@ public class PanierDAO {
                     }
                 }
 
-                // Recalcule et met à jour le total du panier
                 double total = calculerTotalDepuisBase(conn, panierId);
                 try (PreparedStatement psTotal = conn.prepareStatement(
                         "UPDATE panier SET total=? WHERE id=?")) {
@@ -209,16 +161,6 @@ public class PanierDAO {
         }
     }
 
-    /**
-     * Modifie la quantité d'une ligne existante.
-     * Si quantite <= 0, la ligne est supprimée.
-     *
-     * @param panierId  id du panier
-     * @param produitId id du produit
-     * @param quantite  nouvelle quantité (0 = suppression)
-     * @param prix      prix unitaire actuel
-     * @return true si OK
-     */
     public boolean modifierQuantite(int panierId, int produitId, int quantite, double prix) {
         if (quantite <= 0) {
             return supprimerLigne(panierId, produitId);
@@ -261,13 +203,6 @@ public class PanierDAO {
         }
     }
 
-    /**
-     * Supprime une ligne du panier et recalcule le total.
-     *
-     * @param panierId  id du panier
-     * @param produitId id du produit à retirer
-     * @return true si au moins une ligne supprimée
-     */
     public boolean supprimerLigne(int panierId, int produitId) {
         String sql = "DELETE FROM ligne_panier WHERE panier_id=? AND produit_id=?";
 
@@ -303,10 +238,6 @@ public class PanierDAO {
         }
     }
 
-    /**
-     * Vide entièrement le panier (toutes les lignes) et remet total à 0.
-     * Utilisé après validation d'une commande (appelé par Personne 4).
-     */
     public boolean viderPanier(int panierId) {
         String deleteSql = "DELETE FROM ligne_panier WHERE panier_id=?";
         String resetSql  = "UPDATE panier SET total=0 WHERE id=?";
@@ -333,10 +264,6 @@ public class PanierDAO {
             return false;
         }
     }
-
-    // =========================================================================
-    // Helpers privés
-    // =========================================================================
 
     private double calculerTotalDepuisBase(Connection conn, int panierId) throws SQLException {
         String sql = "SELECT COALESCE(SUM(subtotal), 0) AS total FROM ligne_panier WHERE panier_id=?";

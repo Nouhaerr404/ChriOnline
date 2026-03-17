@@ -60,10 +60,6 @@ public class ClientTCP {
         return response;
     }
 
-    // =============================================
-    // ENVOYER UNE REQUÊTE — AVEC TOKEN
-    // (toutes les actions protégées)
-    // =============================================
     public Response envoyerRequeteSecurisee(String action,
                                             Object data) throws Exception {
         // Récupérer le token depuis SessionManager
@@ -73,9 +69,6 @@ public class ClientTCP {
         return envoyerRequete(request);
     }
 
-    // =============================================
-    // DÉCONNEXION
-    // =============================================
     public void deconnecter() {
         try {
             if (socket != null && !socket.isClosed()) {

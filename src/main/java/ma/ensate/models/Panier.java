@@ -3,20 +3,15 @@ package ma.ensate.models;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Modèle Panier — correspond à la table `panier` en base.
- * Un Client possède exactement un Panier (relation 1-1).
- */
+
+//  Un Client possède exactement un Panier (relation 1-1).
+
 public class Panier {
 
     private int id;
     private int clientId;
     private double total;
     private List<LignePanier> lignes;
-
-    // -------------------------------------------------------------------------
-    // Constructeurs
-    // -------------------------------------------------------------------------
 
     public Panier() {
         this.lignes = new ArrayList<>();
@@ -35,27 +30,17 @@ public class Panier {
         this.total    = total;
     }
 
-    // -------------------------------------------------------------------------
-    // Méthodes métier
-    // -------------------------------------------------------------------------
-
-    /**
-     * Recalcule le total à partir des lignes chargées en mémoire.
-     * Doit être appelé après toute modification des lignes.
-     */
     public void recalculerTotal() {
-        this.total = lignes.stream()
-                .mapToDouble(LignePanier::getSubtotal)
-                .sum();
+        double somme = 0.0;
+        for (LignePanier ligne : lignes) {
+            somme = somme + ligne.getSubtotal();
+        }
+        this.total = somme;
     }
 
-    /**
-     * Ajoute ou met à jour une ligne dans la liste locale.
-     * N'interagit PAS avec la base de données.
-     */
     public void ajouterOuMettreAJourLigne(LignePanier nouvelleLigne) {
-        for (LignePanier l : lignes) {
-            if (l.getProduitId() == nouvelleLigne.getProduitId()) {
+        for (LignePanier l : lignes) { //on parcourt toutes les lignes deja dans le panier
+            if (l.getProduitId() == nouvelleLigne.getProduitId()) { // if we find une ligne avec the same product , it means its alrady dans le panier
                 l.setQuantite(l.getQuantite() + nouvelleLigne.getQuantite());
                 l.recalculerSubtotal();
                 recalculerTotal();
@@ -66,21 +51,26 @@ public class Panier {
         recalculerTotal();
     }
 
-    /**
-     * Supprime une ligne par produitId dans la liste locale.
-     */
     public void supprimerLigne(int produitId) {
-        lignes.removeIf(l -> l.getProduitId() == produitId);
+        LignePanier aSupprimer = null;
+
+        for (LignePanier l : lignes) {
+            if (l.getProduitId() == produitId) {
+                aSupprimer = l;
+                break;
+            }
+        }
+
+        if (aSupprimer != null) {
+            lignes.remove(aSupprimer);
+        }
+
         recalculerTotal();
     }
 
     public boolean estVide() {
         return lignes == null || lignes.isEmpty();
-    }
-
-    // -------------------------------------------------------------------------
-    // Getters / Setters
-    // -------------------------------------------------------------------------
+    } // true if au mois le panier contient un article
 
     public int getId()                    { return id; }
     public void setId(int id)             { this.id = id; }

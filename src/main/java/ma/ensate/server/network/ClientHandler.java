@@ -115,8 +115,7 @@ public class ClientHandler implements Runnable {
 
                 case "GET_ALL_CATEGORIES":
                     return productService.getAllCategories();
-
-                // ── Personne 3 — Panier ────────────────────────────────────
+                //panier
                 case "AFFICHER_PANIER":
                     return servicePanier.obtenirPanierResponse(
                             Integer.parseInt(request.getData().toString()));

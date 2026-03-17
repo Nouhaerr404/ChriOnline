@@ -15,9 +15,6 @@ public class TCPServer {
     private ServerSocket serverSocket;
     private boolean running = false;
 
-    // =============================================
-    // DÉMARRER LE SERVEUR (avec port flexible)
-    // =============================================
     public void start(int port) {
         try {
             serverSocket = new ServerSocket(port);
@@ -47,16 +44,10 @@ public class TCPServer {
         }
     }
 
-    // =============================================
-    // DÉMARRER SUR LE PORT PAR DÉFAUT (5000)
-    // =============================================
     public void start() {
         start(DEFAULT_PORT);
     }
 
-    // =============================================
-    // ARRÊTER LE SERVEUR PROPREMENT
-    // =============================================
     public void stop() {
         running = false;
         try {
