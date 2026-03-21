@@ -6,6 +6,7 @@ import ma.ensate.protocol.Response;
 import ma.ensate.protocol.dto.*;
 import ma.ensate.server.dao.ClientDAO;
 import ma.ensate.server.dao.ProduitDAO;
+import ma.ensate.server.dao.UtilisateurDAO;
 import ma.ensate.server.services.CommandeService;
 import ma.ensate.server.services.PaymentService;
 import ma.ensate.server.services.ProductService;
@@ -34,6 +35,7 @@ public class ClientHandler implements Runnable {
     private final ServicePanier   servicePanier;
     private final ClientDAO       clientDAO;
     private final ProduitDAO      produitDAO;
+    private final UtilisateurDAO  utilisateurDAO;
     private final ProductService  productService;
 
     private static final Set<String> ACTIONS_PUBLIQUES =
@@ -46,6 +48,7 @@ public class ClientHandler implements Runnable {
         this.servicePanier   = new ServicePanier();
         this.clientDAO       = new ClientDAO();
         this.produitDAO      = new ProduitDAO();
+        this.utilisateurDAO  = new UtilisateurDAO();
         this.productService  = new ProductService();
     }
 
@@ -114,6 +117,24 @@ public class ClientHandler implements Runnable {
 
                 case "GET_ALL_CATEGORIES":
                     return productService.getAllCategories();
+
+                case "CREATE_PRODUCT":
+                    if (!isAdmin(request.getToken())) {
+                        return new Response(false, "Action reservee aux administrateurs");
+                    }
+                    return productService.createProduct(request.getData());
+
+                case "UPDATE_PRODUCT":
+                    if (!isAdmin(request.getToken())) {
+                        return new Response(false, "Action reservee aux administrateurs");
+                    }
+                    return productService.updateProduct(request.getData());
+
+                case "DELETE_PRODUCT":
+                    if (!isAdmin(request.getToken())) {
+                        return new Response(false, "Action reservee aux administrateurs");
+                    }
+                    return productService.deleteProduct(request.getData());
 
                 case "AFFICHER_PANIER":
                     return servicePanier.obtenirPanierResponse(
@@ -333,6 +354,16 @@ public class ClientHandler implements Runnable {
         try {
         } catch (Exception e) {
             logger.error("Erreur sendError : " + e.getMessage());
+        }
+    }
+
+    private boolean isAdmin(String token) {
+        try {
+            Utilisateur utilisateur = utilisateurDAO.trouverParToken(token);
+            return utilisateur != null && "ADMINISTRATEUR".equals(utilisateur.getTypeCompte());
+        } catch (SQLException e) {
+            logger.error("Erreur verification role admin : " + e.getMessage());
+            return false;
         }
     }
 }
