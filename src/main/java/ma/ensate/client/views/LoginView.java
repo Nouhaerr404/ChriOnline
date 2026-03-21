@@ -131,8 +131,11 @@ public class LoginView {
     // =============================================
     private void ouvrirPagePrincipale() {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/ma/ensate/fxml/produits.fxml"));
+            String target = SessionManager.getInstance().estAdmin()
+                ? "/ma/ensate/fxml/admin_produits.fxml"
+                : "/ma/ensate/fxml/produits.fxml";
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(target));
             Parent root  = loader.load();
             Stage  stage = (Stage) emailField.getScene().getWindow();
             stage.setScene(new Scene(root, 900, 600));
