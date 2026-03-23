@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import ma.ensate.client.network.SessionManager;
 import ma.ensate.models.Produit;
 
 public class ProduitDetailsView {
@@ -44,7 +45,11 @@ public class ProduitDetailsView {
     @FXML
     private void retourner() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/produits.fxml"));
+            String target = SessionManager.getInstance().estAdmin()
+                ? "/ma/ensate/fxml/admin_produits.fxml"
+                : "/ma/ensate/fxml/produits.fxml";
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(target));
             Parent root = loader.load();
             Stage stage = (Stage) nomLabel.getScene().getWindow();
             stage.getScene().setRoot(root);
