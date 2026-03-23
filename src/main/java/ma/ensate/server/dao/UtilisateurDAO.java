@@ -13,14 +13,12 @@ import java.util.Map;
 
 public class UtilisateurDAO {
 
-    // Logger Log4j
     private static final Logger logger = LogManager.getLogger(UtilisateurDAO.class);
 
-    // email → nombre de tentatives échouées
     private static final Map<String, Integer> tentatives = new HashMap<>();
-    // email → timestamp du blocage
+
     private static final Map<String, Long> blocages = new HashMap<>();
-    // Constantes
+
     private static final int MAX_TENTATIVES  = 3;
     private static final int DUREE_BLOCAGE_MS = 5 * 60 * 1000; // 5 minutes
 
@@ -85,7 +83,7 @@ public class UtilisateurDAO {
     }
 
     public boolean emailExiste(String email) throws SQLException {
-        // PreparedStatement → protection SQL Injection (TP7)
+
         String sql = "SELECT COUNT(*) FROM utilisateur WHERE email = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -97,7 +95,7 @@ public class UtilisateurDAO {
     }
 
     public boolean inscrire(Client client) throws SQLException {
-        // 1. Insérer dans la table utilisateur
+
         String sqlUser = "INSERT INTO utilisateur (nom, email, password, type_compte) " +
                 "VALUES (?, ?, ?, 'CLIENT')";
 
@@ -116,7 +114,6 @@ public class UtilisateurDAO {
                 int idGenere = keys.getInt(1);
                 client.setId(idGenere);
 
-                // 2. Insérer dans la table client
                 String sqlClient = "INSERT INTO client (id, adresse, tel) VALUES (?, ?, ?)";
                 try (PreparedStatement ps2 = conn.prepareStatement(sqlClient)) {
                     ps2.setInt(1, idGenere);
@@ -169,7 +166,7 @@ public class UtilisateurDAO {
                 return u;
             }
         }
-        return null; // pas trouvé
+        return null;
     }
 
     public void sauvegarderToken(int userId, String token) throws SQLException {

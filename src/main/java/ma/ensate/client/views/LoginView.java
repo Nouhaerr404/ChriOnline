@@ -24,49 +24,38 @@ public class LoginView {
     @FXML private Label         messageLabel;
     @FXML private Button        loginButton;
 
-    // =============================================
-    // HANDLE LOGIN
-    // =============================================
     @FXML
     private void handleLogin() {
         String email    = emailField.getText().trim();
         String password = passwordField.getText();
 
-        // Validation côté client
         if (email.isEmpty() || password.isEmpty()) {
             afficherErreur("Veuillez remplir tous les champs !");
             return;
         }
 
-        // Désactiver le bouton pendant la requête
         loginButton.setDisable(true);
         messageLabel.setText("Connexion en cours...");
         messageLabel.setStyle("-fx-text-fill: #1a73e8;");
 
-        // Envoyer dans un thread séparé
-        // pour ne pas bloquer l'interface JavaFX
         new Thread(() -> {
             try {
-                // Créer la requête
+
                 String[] credentials = {email, password};
                 Request request = new Request("LOGIN", credentials);
 
-                // Envoyer +
-                // au serveur
                 Response response = ClientTCP.getInstance()
                         .envoyerRequete(request);
 
-                // Retourner sur le thread JavaFX
                 Platform.runLater(() -> {
                     loginButton.setDisable(false);
 
                     if (response.isSuccess()) {
-                        // Sauvegarder la session
+
                         Utilisateur u = (Utilisateur) response.getData();
                         SessionManager.getInstance().setUtilisateur(u);
                         logger.info(" Login réussi : " + email);
 
-                        // Ouvrir la page principale
                         ouvrirPagePrincipale();
 
                     } else {
@@ -109,9 +98,6 @@ public class LoginView {
         }).start();
     }
 
-    // =============================================
-    // ALLER À L'INSCRIPTION
-    // =============================================
     @FXML
     private void allerInscription() {
         try {
@@ -127,9 +113,6 @@ public class LoginView {
         }
     }
 
-    // =============================================
-    // OUVRIR LA PAGE PRINCIPALE
-    // =============================================
     private void ouvrirPagePrincipale() {
         try {
             String target = SessionManager.getInstance().estAdmin()
@@ -142,16 +125,13 @@ public class LoginView {
             stage.setScene(new Scene(root, 900, 600));
             stage.setTitle("ChriOnline — " + SessionManager.getInstance().getNomUtilisateur());
         } catch (Exception e) {
-            // produits.fxml pas encore disponible (P2 n'a pas pushé)
-            // navigation temporaire vers PanierView pour les tests
             logger.info("produits.fxml indisponible — ouverture PanierView (temp)");
             Utilisateur u = SessionManager.getInstance().getUtilisateur();
             Stage stage   = (Stage) emailField.getScene().getWindow();
             new PanierView(stage, ClientTCP.getInstance(), u.getId(), u.getSessionToken()).afficher();
         }
     }
-    // UTILITAIRES
-    // =============================================
+
     private void afficherErreur(String msg) {
         messageLabel.setText(msg);
         messageLabel.setStyle("-fx-text-fill: red;");

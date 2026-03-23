@@ -20,7 +20,6 @@ public class UserService {
         try {
             Client client = (Client) data;
 
-            // 1. Validation des données
             String erreur = validerDonnees(client);
             if (erreur != null) {
                 logger.warn("Inscription échouée - données invalides : " + erreur);
@@ -133,23 +132,19 @@ public class UserService {
 
     private static String validerDonnees(Client client) {
 
-        // Nom
         if (client.getNom() == null || client.getNom().trim().isEmpty()) {
             return "Le nom est obligatoire.";
         }
 
-        // Email
         if (client.getEmail() == null || !client.getEmail()
                 .matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
             return "Email invalide.";
         }
 
-        // Password — min 6 caractères
         if (client.getPassword() == null || client.getPassword().length() < 6) {
             return "Le mot de passe doit contenir au moins 6 caractères.";
         }
 
-        // Téléphone — optionnel mais si présent doit être valide
         if (client.getTel() != null && !client.getTel().isEmpty()) {
             if (!client.getTel().matches("^[0-9+]{8,15}$")) {
                 return "Numéro de téléphone invalide.";

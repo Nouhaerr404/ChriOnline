@@ -13,7 +13,6 @@ public class DBConnection {
 
     private static Connection instance = null;
 
-    // Singleton — une seule connexion partagée
     public static Connection getConnection() throws SQLException {
         if (instance == null || instance.isClosed()) {
             try {
@@ -28,7 +27,6 @@ public class DBConnection {
         return instance;
     }
 
-    // Tester la connexion
     public static void main(String[] args) {
         try {
             Connection conn = getConnection();

@@ -16,14 +16,12 @@ public class ClientTCP {
     private static final String HOST = ConfigLoader.get("SERVER_HOST", "localhost");
     private static final int    PORT = ConfigLoader.getInt("SERVER_PORT", 5001);
 
-    // Singleton — une seule connexion pour toute l'app
     private static ClientTCP instance;
 
     private Socket             socket;
     private ObjectOutputStream out;
     private ObjectInputStream  in;
 
-    // Constructeur privé → Singleton
     private ClientTCP() {}
 
     public static ClientTCP getInstance() {
@@ -56,7 +54,7 @@ public class ClientTCP {
 
     public Response envoyerRequeteSecurisee(String action,
                                             Object data) throws Exception {
-        // Récupérer le token depuis SessionManager
+
         String token = SessionManager.getInstance().getToken();
 
         Request request = new Request(action, data, token);
