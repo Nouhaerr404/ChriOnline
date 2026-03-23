@@ -51,7 +51,8 @@ public class LoginView {
                 String[] credentials = {email, password};
                 Request request = new Request("LOGIN", credentials);
 
-                // Envoyer au serveur
+                // Envoyer +
+                // au serveur
                 Response response = ClientTCP.getInstance()
                         .envoyerRequete(request);
 

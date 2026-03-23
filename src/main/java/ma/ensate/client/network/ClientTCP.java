@@ -40,10 +40,6 @@ public class ClientTCP {
         logger.info("Connecte au serveur " + HOST + ":" + PORT);
     }
 
-    // =============================================
-    // ENVOYER UNE REQUÊTE — SANS TOKEN
-    // (LOGIN et REGISTER uniquement)
-    // =============================================
     public synchronized Response envoyerRequete(Request request) throws Exception {
         // Reconnexion automatique si besoin
         if (socket == null || socket.isClosed()) {
