@@ -148,7 +148,6 @@ public class ClientHandler implements Runnable {
                     return servicePanier.viderPanierResponse(
                             Integer.parseInt(request.getData().toString()));
 
-                // ── Personne 4 — Commandes ─────────────────────────────────
                 case "CREER_COMMANDE":
                     return creerCommande(request);
 
@@ -166,7 +165,6 @@ public class ClientHandler implements Runnable {
                 case "GET_ORDER_HISTORY":
                     return getHistorique(request);
 
-                // ── Personne 4 — Paiement ──────────────────────────────────
                 case "EFFECTUER_PAIEMENT":
                 case "PROCESS_PAYMENT":
                     return effectuerPaiement(request);

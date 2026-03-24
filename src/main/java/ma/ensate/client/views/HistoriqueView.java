@@ -1,8 +1,11 @@
 package ma.ensate.client.views;
 
 import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
@@ -13,8 +16,6 @@ import ma.ensate.client.network.ClientTCP;
 import ma.ensate.models.Commande;
 import ma.ensate.protocol.Request;
 import ma.ensate.protocol.Response;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 
 import java.util.List;
 
@@ -22,13 +23,15 @@ public class HistoriqueView {
 
     private static final String NAVY       = "#0F172A";
     private static final String ACCENT     = "#3B82F6"; 
-    private static final String BG_LIGHT   = "#F1F5F9";
     private static final String TEXT_SUB   = "#64748B";
 
     private final Stage stage;
     private final ClientTCP clientTCP;
     private final int clientId;
     private final String token;
+
+    @FXML private StackPane rootPane;
+    @FXML private VBox container;
 
     public HistoriqueView(Stage stage, ClientTCP clientTCP, int clientId, String token) {
         this.stage = stage;
@@ -37,45 +40,20 @@ public class HistoriqueView {
         this.token = token;
     }
 
-    private StackPane rootPane;
-
     public void afficher() {
-        rootPane = new StackPane();
-        BorderPane layout = new BorderPane();
-        layout.setStyle("-fx-background-color: " + BG_LIGHT + ";");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/historique.fxml"));
+            loader.setController(this);
+            Parent root = loader.load();
 
-        // Header Dashboard
-        VBox header = new VBox(10);
-        header.setPadding(new Insets(30, 50, 30, 50));
-        header.setStyle("-fx-background-color: " + NAVY + ";");
-        
-        Button btnBack = new Button("← BOUTIQUE");
-        btnBack.setStyle("-fx-background-color: transparent; -fx-text-fill: " + ACCENT + "; -fx-font-weight: bold; -fx-cursor: hand;");
-        btnBack.setOnAction(e -> retourBoutique());
+            Scene scene = new Scene(root, 1000, 750);
+            stage.setScene(scene);
+            stage.show();
 
-        Label title = new Label("Tableau de bord des commandes");
-        title.setStyle("-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: white;");
-        
-        header.getChildren().addAll(btnBack, title);
-        layout.setTop(header);
-
-        // Content
-        VBox container = new VBox(20);
-        container.setPadding(new Insets(40, 50, 40, 50));
-        container.setAlignment(Pos.TOP_CENTER);
-        
-        ScrollPane scroll = new ScrollPane(container);
-        scroll.setFitToWidth(true);
-        scroll.setStyle("-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0;");
-        
-        layout.setCenter(scroll);
-        rootPane.getChildren().add(layout);
-
-        Scene scene = new Scene(rootPane, 1000, 750);
-        stage.setScene(scene);
-        stage.show();
-
-        chargerHistorique(container);
+            chargerHistorique(container);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void chargerHistorique(VBox container) {
@@ -220,6 +198,7 @@ public class HistoriqueView {
         rootPane.getChildren().add(overlay);
     }
 
+    @FXML
     private void retourBoutique() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/produits.fxml"));

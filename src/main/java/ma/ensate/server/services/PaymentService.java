@@ -117,8 +117,7 @@ public class PaymentService {
         // Mettre à jour le stock des produits (décrémenter les quantités achetées)
         for (LigneCommande ligne : commandeComplete.getLignes()) {
             if (!produitDAO.mettreAJourStock(ligne.getProduit().getId(), ligne.getQuantite())) {
-                // Si la mise à jour du stock échoue, on pourrait faire un rollback
-                // Pour l'instant, on lance une exception
+                // On lance une exception
                 throw new SQLException(
                     "Erreur lors de la mise à jour du stock pour le produit: " + ligne.getProduit().getNom()
                 );

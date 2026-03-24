@@ -696,3 +696,202 @@ The last packet sent successfully to the server was 0 milliseconds ago. The driv
 2026-03-15 14:35:55 [INFO] ╚════════════════════════════════════════╝
 2026-03-15 14:36:11 [INFO]  Arrêt du TCPServer...
 2026-03-15 14:36:11 [INFO] TCPServer arrêté proprement.
+2026-03-16 12:06:41 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-16 12:06:41 [INFO] Connexion serveur établie
+2026-03-16 12:06:51 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-16 12:06:51 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-16 12:06:51 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-16 12:06:51 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 12:06:51 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 12:06:51 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 12:06:53 [INFO] 📨 Réponse reçue : Historique récupéré
+2026-03-16 12:06:55 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 12:06:55 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 12:06:55 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 12:06:58 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 12:06:58 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 12:06:58 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 12:07:00 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 12:07:00 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 12:07:00 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 12:07:05 [INFO] 📨 Réponse reçue : OK: 'Xiaomi 14 Pro' (x1) ajouté au panier.
+2026-03-16 12:07:09 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 12:07:09 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 12:07:09 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 12:07:10 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 12:07:19 [INFO] 📨 Réponse reçue : Commande créée avec succès
+2026-03-16 12:07:22 [INFO] 📨 Réponse reçue : Paiement effectué avec succès
+2026-03-16 12:07:22 [INFO] 📨 Réponse reçue : OK: Panier vidé.
+2026-03-16 12:07:23 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 12:07:23 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 12:07:23 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:55:46 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-16 22:55:46 [INFO] Connexion serveur établie
+2026-03-16 22:55:58 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-16 22:55:58 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-16 22:55:58 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-16 22:55:58 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 22:55:58 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:55:58 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:56:01 [INFO] 📨 Réponse reçue : OK: 'Samsung Galaxy S24 Ultra' (x1) ajouté au panier.
+2026-03-16 22:56:04 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 22:56:04 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:56:04 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:56:05 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 22:56:09 [INFO] 📨 Réponse reçue : Commande créée avec succès
+2026-03-16 22:56:12 [INFO] 🔌 Déconnecté du serveur.
+2026-03-16 22:56:12 [INFO] Application fermée.
+2026-03-16 22:56:28 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-16 22:56:28 [INFO] Connexion serveur établie
+2026-03-16 22:56:49 [INFO] 📨 Réponse reçue : Email ou mot de passe incorrect.
+2026-03-16 22:56:53 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-16 22:56:53 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-16 22:56:53 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-16 22:56:53 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 22:56:53 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:56:53 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:56:58 [INFO] 📨 Réponse reçue : OK: 'iPhone 15 Pro' (x1) ajouté au panier.
+2026-03-16 22:57:04 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 22:57:04 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:57:04 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:57:05 [INFO] 📨 Réponse reçue : OK: 'MacBook Pro 16"' (x1) ajouté au panier.
+2026-03-16 22:57:07 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 22:57:07 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:57:07 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:57:09 [INFO] 📨 Réponse reçue : OK: 'Lenovo ThinkPad X1 Carbon' (x1) ajouté au panier.
+2026-03-16 22:57:11 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 22:57:11 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:57:11 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:57:12 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 22:57:14 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (2 x 'MacBook Pro 16"').
+2026-03-16 22:57:14 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 22:57:14 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (3 x 'MacBook Pro 16"').
+2026-03-16 22:57:14 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 22:57:15 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (4 x 'MacBook Pro 16"').
+2026-03-16 22:57:15 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 22:57:15 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (3 x 'MacBook Pro 16"').
+2026-03-16 22:57:15 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 22:57:16 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (2 x 'MacBook Pro 16"').
+2026-03-16 22:57:16 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 22:57:17 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (1 x 'MacBook Pro 16"').
+2026-03-16 22:57:17 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 22:57:20 [INFO] 📨 Réponse reçue : OK: Produit retiré du panier.
+2026-03-16 22:57:20 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 22:57:20 [INFO] 📨 Réponse reçue : OK: Produit retiré du panier.
+2026-03-16 22:57:20 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 22:57:20 [INFO] 📨 Réponse reçue : OK: Produit retiré du panier.
+2026-03-16 22:57:20 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 22:57:21 [INFO] 📨 Réponse reçue : OK: Produit retiré du panier.
+2026-03-16 22:57:21 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 22:57:22 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 22:57:22 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:57:23 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:57:24 [INFO] 📨 Réponse reçue : OK: 'Samsung Galaxy S24 Ultra' (x1) ajouté au panier.
+2026-03-16 22:57:27 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:57:27 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 22:57:27 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:57:28 [INFO] 📨 Réponse reçue : OK: 'Google Pixel 8 Pro' (x1) ajouté au panier.
+2026-03-16 22:57:31 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 22:57:31 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:57:31 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:57:36 [INFO] 📨 Réponse reçue : OK: 'MacBook Pro 16"' (x1) ajouté au panier.
+2026-03-16 22:57:39 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 22:57:39 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:57:39 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:57:41 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 22:57:49 [INFO] 📨 Réponse reçue : Commande créée avec succès
+2026-03-16 22:58:10 [INFO] 📨 Réponse reçue : Paiement effectué avec succès
+2026-03-16 22:58:10 [INFO] 📨 Réponse reçue : OK: Panier vidé.
+2026-03-16 22:58:11 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 22:58:11 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:58:11 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:58:13 [INFO] 📨 Réponse reçue : Historique récupéré
+2026-03-16 22:58:22 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 22:58:22 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 22:58:22 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 23:01:07 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-16 23:01:11 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-16 23:01:11 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 23:01:11 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-16 23:01:31 [INFO] 📨 Réponse reçue : Déconnexion réussie.
+2026-03-16 23:01:31 [INFO] 🔌 Session fermée pour : jihane@chriOnline.ma
+2026-03-17 08:25:24 [ERROR]  Serveur inaccessible : Connection refused
+2026-03-17 08:25:35 [ERROR] Erreur login : Connection refused
+2026-03-17 08:25:44 [ERROR] Erreur login : Connection refused
+2026-03-17 08:25:45 [ERROR] Erreur login : Connection refused
+2026-03-17 08:25:52 [ERROR] Erreur login : Connection refused
+2026-03-17 08:26:12 [INFO] ╔════════════════════════════════════════╗
+2026-03-17 08:26:12 [INFO] ║     SERVEUR CHRIONLINE DÉMARRÉ        ║
+2026-03-17 08:26:12 [INFO] ║     Port : 5001                         ║
+2026-03-17 08:26:12 [INFO] ║     En attente de connexions...       ║
+2026-03-17 08:26:12 [INFO] ╚════════════════════════════════════════╝
+2026-03-17 08:26:16 [INFO] 🔌 Nouveau client connecté : 127.0.0.1
+2026-03-17 08:26:16 [INFO]  Thread créé — clients actifs : 2
+2026-03-17 08:26:16 [INFO] Handler démarré pour : 127.0.0.1
+2026-03-17 08:26:16 [INFO] ✅ Connecté au serveur localhost:5001
+2026-03-17 08:26:16 [INFO]  Action reçue : LOGIN | Client : 127.0.0.1
+2026-03-17 08:26:16 [INFO] Token sauvegardé pour userId : 11
+2026-03-17 08:26:16 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-17 08:26:16 [INFO] 📨 Réponse reçue : Connexion réussie !
+2026-03-17 08:26:16 [INFO] ✅ Session ouverte pour : jihane@chriOnline.ma
+2026-03-17 08:26:16 [INFO]  Login réussi : jihane@chriOnline.ma
+2026-03-17 08:26:16 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-17 08:26:16 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-17 08:26:16 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-17 08:26:16 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-17 08:26:16 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-17 08:26:16 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-17 08:26:20 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-17 08:26:20 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-17 08:26:22 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-17 08:26:22 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-17 08:26:22 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-17 08:26:22 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-17 08:26:22 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-17 08:26:22 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-17 08:26:23 [INFO]  Action reçue : AJOUTER_AU_PANIER | Client : 127.0.0.1
+2026-03-17 08:26:24 [INFO] 📨 Réponse reçue : OK: 'OnePlus 12' (x1) ajouté au panier.
+2026-03-17 08:26:27 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-17 08:26:27 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-17 08:26:27 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-17 08:26:27 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-17 08:26:27 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-17 08:26:27 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-17 08:26:28 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-17 08:26:28 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-17 08:26:29 [INFO]  Action reçue : MODIFIER_QUANTITE_PANIER | Client : 127.0.0.1
+2026-03-17 08:26:29 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (2 x 'OnePlus 12').
+2026-03-17 08:26:29 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-17 08:26:29 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-17 08:26:29 [INFO]  Action reçue : MODIFIER_QUANTITE_PANIER | Client : 127.0.0.1
+2026-03-17 08:26:29 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (3 x 'OnePlus 12').
+2026-03-17 08:26:29 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-17 08:26:30 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-17 08:26:30 [INFO]  Action reçue : MODIFIER_QUANTITE_PANIER | Client : 127.0.0.1
+2026-03-17 08:26:30 [INFO] 📨 Réponse reçue : OK: Quantité mise à jour (4 x 'OnePlus 12').
+2026-03-17 08:26:30 [INFO]  Action reçue : AFFICHER_PANIER | Client : 127.0.0.1
+2026-03-17 08:26:30 [INFO] 📨 Réponse reçue : Panier chargé.
+2026-03-17 08:26:33 [INFO]  Action reçue : CREER_COMMANDE | Client : 127.0.0.1
+2026-03-17 08:26:33 [INFO]  Commande créée : 3c38785d-4eec-4e6c-97d0-c9805e085d17
+2026-03-17 08:26:33 [INFO] 📨 Réponse reçue : Commande créée avec succès
+2026-03-17 08:26:35 [INFO]  Action reçue : EFFECTUER_PAIEMENT | Client : 127.0.0.1
+2026-03-17 08:26:36 [INFO] Paiement effectué : 3c38785d-4eec-4e6c-97d0-c9805e085d17
+2026-03-17 08:26:36 [INFO] 📨 Réponse reçue : Paiement effectué avec succès
+2026-03-17 08:26:36 [INFO]  Action reçue : VIDER_PANIER | Client : 127.0.0.1
+2026-03-17 08:26:36 [INFO] 📨 Réponse reçue : OK: Panier vidé.
+2026-03-17 08:26:37 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-17 08:26:37 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-17 08:26:37 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-17 08:26:37 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-17 08:26:37 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-17 08:26:37 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-17 08:26:39 [INFO]  Action reçue : GET_HISTORIQUE | Client : 127.0.0.1
+2026-03-17 08:26:39 [INFO] 📨 Réponse reçue : Historique récupéré
+2026-03-17 08:26:45 [INFO]  Action reçue : GET_ALL_CATEGORIES | Client : 127.0.0.1
+2026-03-17 08:26:45 [INFO] 📨 Réponse reçue : Catégories récupérées avec succès
+2026-03-17 08:26:45 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-17 08:26:45 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-17 08:26:45 [INFO]  Action reçue : GET_ALL_PRODUCTS | Client : 127.0.0.1
+2026-03-17 08:26:45 [INFO] 📨 Réponse reçue : Produits récupérés avec succès
+2026-03-18 22:21:01 [INFO]  Arrêt du TCPServer...
+2026-03-18 22:21:01 [INFO] TCPServer arrêté proprement.

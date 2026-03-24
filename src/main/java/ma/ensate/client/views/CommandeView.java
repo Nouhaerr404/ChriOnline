@@ -1,8 +1,11 @@
 package ma.ensate.client.views;
 
 import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
@@ -24,7 +27,6 @@ public class CommandeView {
     // --- Design System IT ---
     private static final String NAVY       = "#0F172A"; // Navy sombre
     private static final String ACCENT     = "#3B82F6"; // Bleu IT
-    private static final String BG_LIGHT   = "#F8FAFC";
     private static final String TEXT_MAIN  = "#1E293B";
     private static final String TEXT_SUB   = "#64748B";
 
@@ -34,8 +36,11 @@ public class CommandeView {
     private final String token;          // Token d'authentification
     private final double total;           // Montant total de la commande
     private final List<PanierView.LigneTableau> articles;  // Liste des articles du panier
-    //Le constructeur reçoit toutes ces données depuis la vue du panier (PanierView).
-    private StackPane rootPane;
+    
+    @FXML private StackPane rootPane;
+    @FXML private VBox itemBox;
+    @FXML private Label lblTotalPrix;
+    @FXML private Button btnConfirmer;
 
     public CommandeView(Stage stage, ClientTCP clientTCP, int clientId, String token, double total, List<PanierView.LigneTableau> articles) {
         this.stage = stage;
@@ -47,112 +52,63 @@ public class CommandeView {
     }
 
     public void afficher() {
-        // Crée l'interface utilisateur
-        rootPane = new StackPane();
-        BorderPane layout = new BorderPane();
-        layout.setStyle("-fx-background-color: " + BG_LIGHT + ";");
-
-        // Header IT
-        layout.setTop(creerHeader());
-
-        // Content
-        VBox content = new VBox(30);
-        content.setPadding(new Insets(40));
-        content.setAlignment(Pos.TOP_CENTER);
-
-        Label titleLabel = new Label("Finalisation de votre commande");
-        titleLabel.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: " + NAVY + ";");
-        
-        VBox card = new VBox(20);
-        card.setMaxWidth(700);
-        card.setStyle("-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 35;");
-        card.setEffect(new DropShadow(15, Color.rgb(0,0,0,0.08)));
-
-        // Liste des articles
-        VBox itemBox = new VBox(12);
-        for (PanierView.LigneTableau art : articles) {
-            HBox row = new HBox(15);
-            row.setAlignment(Pos.CENTER_LEFT);
-            row.setPadding(new Insets(5, 0, 5, 0));
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/commande.fxml"));
+            loader.setController(this);
+            Parent root = loader.load(); //maintenant toute la hiérarchie de l'interface
             
-            VBox nameBox = new VBox(2);
-            Label name = new Label(art.getNomProduit());
-            name.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: " + TEXT_MAIN + ";");
-            Label qty = new Label("Quantité : " + art.getQuantite());
-            qty.setStyle("-fx-text-fill: " + TEXT_SUB + "; -fx-font-size: 13px;");
-            nameBox.getChildren().addAll(name, qty);
+            // On parcourt la liste des articles présents dans le panier pour créer une ligne graphique pour chacun.
+            for (PanierView.LigneTableau art : articles) {
+                HBox row = new HBox(15);
+                row.setAlignment(Pos.CENTER_LEFT);
+                row.setPadding(new Insets(5, 0, 5, 0));
+                
+                VBox nameBox = new VBox(2);
+                Label name = new Label(art.getNomProduit());
+                name.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: " + TEXT_MAIN + ";");
+                Label qty = new Label("Quantité : " + art.getQuantite());
+                qty.setStyle("-fx-text-fill: " + TEXT_SUB + "; -fx-font-size: 13px;");
+                nameBox.getChildren().addAll(name, qty);
 
-            Region s = new Region(); HBox.setHgrow(s, Priority.ALWAYS);
-            Label price = new Label(String.format("%.2f MAD", art.getSubtotal()));
-            price.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: " + NAVY + ";");
+                Region s = new Region(); HBox.setHgrow(s, Priority.ALWAYS);
+                Label price = new Label(String.format("%.2f MAD", art.getSubtotal()));
+                price.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: " + NAVY + ";");
 
-            row.getChildren().addAll(nameBox, s, price);
-            itemBox.getChildren().add(row);
+                row.getChildren().addAll(nameBox, s, price);
+                itemBox.getChildren().add(row);
+            }
+
+            lblTotalPrix.setText(String.format("%.2f MAD", total));
+
+            Scene scene = new Scene(root, 1000, 700);
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
 
-        Separator sep = new Separator();
-        sep.setPadding(new Insets(10, 0, 10, 0));
+    @FXML
+    private void retourPanier() {
+        new PanierView(stage, clientTCP, clientId, token).afficher();
+    }
 
-        // Total
-        HBox totalRow = new HBox();
-        Label totL = new Label("Total de la commande");
-        totL.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: " + TEXT_MAIN + ";");
-        // Crée une région (espace vide) qui va jouer le rôle de "ressort" pour pousser les éléments
-        Region s2 = new Region(); HBox.setHgrow(s2, Priority.ALWAYS);
-        Label totV = new Label(String.format("%.2f MAD", total));
-        totV.setStyle("-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: " + ACCENT + ";");
-        totalRow.getChildren().addAll(totL, s2, totV);
+    @FXML
+    private void ouvrirHistorique() {
+        new HistoriqueView(stage, clientTCP, clientId, token).afficher();
+    }
 
-        // Bouton 
-        Button btnConfirmer = new Button("PROCÉDER AU PAIEMENT SÉCURISÉ");
-        btnConfirmer.setPrefHeight(55);
-        btnConfirmer.setMaxWidth(Double.MAX_VALUE);
+    @FXML
+    private void btnHover() {
+        btnConfirmer.setStyle("-fx-background-color: " + ACCENT + "; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;");
+    }
+
+    @FXML
+    private void btnExit() {
         btnConfirmer.setStyle("-fx-background-color: " + NAVY + "; -fx-text-fill: white; -fx-font-weight: bold; -fx-letter-spacing: 1px; -fx-background-radius: 10; -fx-cursor: hand;");
-        btnConfirmer.setOnMouseEntered(e -> btnConfirmer.setStyle("-fx-background-color: " + ACCENT + "; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;"));
-        btnConfirmer.setOnMouseExited(e -> btnConfirmer.setStyle("-fx-background-color: " + NAVY + "; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;"));
-        btnConfirmer.setOnAction(e -> envoyerCommande());
-
-        card.getChildren().addAll(itemBox, sep, totalRow, btnConfirmer);
-        content.getChildren().addAll(titleLabel, card);
-
-        layout.setCenter(new ScrollPane(content) {{ 
-            setFitToWidth(true); 
-            setStyle("-fx-background-color: transparent; -fx-background: transparent;"); 
-        }});
-
-        rootPane.getChildren().add(layout);
-        Scene scene = new Scene(rootPane, 1000, 700);
-        stage.setScene(scene);
-        stage.show();
     }
 
-    private HBox creerHeader() {
-        HBox header = new HBox(20);
-        header.setAlignment(Pos.CENTER_LEFT);
-        header.setPadding(new Insets(20, 50, 20, 50));
-        header.setStyle("-fx-background-color: " + NAVY + ";");
-
-        Label logo = new Label("ChriOnline");
-        logo.setStyle("-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;");
-        
-        Label tag = new Label("ELECTRONICS HUB");
-        tag.setStyle("-fx-text-fill: " + ACCENT + "; -fx-font-size: 11px; -fx-font-weight: bold;");
-        VBox logoBox = new VBox(-3, logo, tag);
-
-        Region s = new Region(); HBox.setHgrow(s, Priority.ALWAYS);
-
-        Button btnRetourPanier = new Button("← Retour au panier");
-        btnRetourPanier.setStyle("-fx-background-color: transparent; -fx-text-fill: #CBD5E1; -fx-cursor: hand; -fx-font-weight: bold;");
-        btnRetourPanier.setOnAction(e -> new PanierView(stage, clientTCP, clientId, token).afficher());
-
-        Button btnHistorique = new Button("Mes Commandes");
-        btnHistorique.setStyle("-fx-background-color: transparent; -fx-text-fill: #CBD5E1; -fx-cursor: hand;");
-        btnHistorique.setOnAction(e -> new HistoriqueView(stage, clientTCP, clientId, token).afficher());
-
-        header.getChildren().addAll(logoBox, s, btnRetourPanier, btnHistorique);
-        return header;
-    }
-
+    @FXML
     private void envoyerCommande() {
         if ("mock-token".equals(token)) {
             Commande mockCmd = new Commande();
@@ -191,7 +147,6 @@ public class CommandeView {
         }).start();
     }
 
-    // --- MODERNE UI UTILS ---
 
     public void showModernPopup(String title, String message, boolean isError) {
         VBox overlay = new VBox();
@@ -221,6 +176,8 @@ public class CommandeView {
         rootPane.getChildren().add(overlay);
     }
 
+    
+    //Cette méthode construit visuellement l'indicateur de patience 
     private void showLoadingOverlay() {
         VBox loading = new VBox(15, new ProgressIndicator(), new Label("Traitement de votre commande..."));
         loading.setId("loader");
@@ -228,8 +185,9 @@ public class CommandeView {
         loading.setAlignment(Pos.CENTER);
         rootPane.getChildren().add(loading);
     }
-
+    //nettoie l'interface une fois le traitement terminé
     private void hideLoadingOverlay() {
         rootPane.getChildren().removeIf(node -> "loader".equals(node.getId()));
     }
 }
+
