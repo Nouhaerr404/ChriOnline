@@ -72,6 +72,11 @@ public class UserService {
                 return new Response(false,
                         "Email ou mot de passe incorrect.");
             }
+
+            if ("SUSPENDU".equals(u.getStatut())) {
+                return new Response(false, "Compte suspendu. Contactez l'administrateur.");
+            }
+
             if (dao.estBloque(email)) {
                 return new Response(false,
                         "Compte bloqué suite à trop de tentatives. " +

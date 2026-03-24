@@ -163,6 +163,7 @@ public class UtilisateurDAO {
                 u.setNom(rs.getString("nom"));
                 u.setEmail(rs.getString("email"));
                 u.setTypeCompte(type);
+                u.setStatut(rs.getString("statut"));
                 return u;
             }
         }
