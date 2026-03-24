@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 public class UserService {
@@ -157,5 +158,47 @@ public class UserService {
         }
 
         return null;
+    }
+    public static Response listerUtilisateurs() {
+        try {
+            List<Utilisateur> liste = dao.findAll();
+            logger.info("Liste utilisateurs récupérée : " + liste.size() + " entrées");
+            return new Response(true, "Utilisateurs récupérés.", liste);
+        } catch (SQLException e) {
+            logger.error("Erreur BD listerUtilisateurs : " + e.getMessage());
+            return new Response(false, "Erreur serveur.");
+        }
+    }
+    public static Response suspendreCompte(Object data) {
+        try {
+            int userId = Integer.parseInt(data.toString());
+            boolean ok = dao.suspendreCompte(userId);
+            if (ok) {
+                logger.info("Compte suspendu par admin : userId=" + userId);
+                return new Response(true, "Compte suspendu avec succès.");
+            }
+            return new Response(false, "Utilisateur introuvable.");
+        } catch (NumberFormatException e) {
+            return new Response(false, "ID invalide.");
+        } catch (SQLException e) {
+            logger.error("Erreur BD suspendreCompte : " + e.getMessage());
+            return new Response(false, "Erreur serveur.");
+        }
+    }
+    public static Response reactiverCompte(Object data) {
+        try {
+            int userId = Integer.parseInt(data.toString());
+            boolean ok = dao.reactiverCompte(userId);
+            if (ok) {
+                logger.info("Compte réactivé par admin : userId=" + userId);
+                return new Response(true, "Compte réactivé avec succès.");
+            }
+            return new Response(false, "Utilisateur introuvable.");
+        } catch (NumberFormatException e) {
+            return new Response(false, "ID invalide.");
+        } catch (SQLException e) {
+            logger.error("Erreur BD reactiverCompte : " + e.getMessage());
+            return new Response(false, "Erreur serveur.");
+        }
     }
 }
