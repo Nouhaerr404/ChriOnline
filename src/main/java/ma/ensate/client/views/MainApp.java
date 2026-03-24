@@ -19,7 +19,7 @@ public class MainApp extends Application {
         // Connexion au serveur TCP
         try {
             ClientTCP.getInstance().connecter();
-            logger.info("Connexion serveur établie");
+            logger.info("Connexion serveur etablie");
         } catch (Exception e) {
             logger.error(" Serveur inaccessible : " + e.getMessage());
             // L'app démarre quand même

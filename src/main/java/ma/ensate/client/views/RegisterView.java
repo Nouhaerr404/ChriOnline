@@ -26,9 +26,6 @@ public class RegisterView {
     @FXML private Label         messageLabel;
     @FXML private Button        registerButton;
 
-    // =============================================
-    // HANDLE REGISTER
-    // =============================================
     @FXML
     private void handleRegister() {
         String nom      = nomField.getText().trim();
@@ -37,31 +34,25 @@ public class RegisterView {
         String adresse  = adresseField.getText().trim();
         String tel      = telField.getText().trim();
 
-        // Validation côté client
         if (nom.isEmpty() || email.isEmpty() || password.isEmpty()) {
             afficherErreur("Nom, email et mot de passe sont obligatoires !");
             return;
         }
 
         if (password.length() < 6) {
-            afficherErreur("Le mot de passe doit contenir au moins 6 caractères !");
+            afficherErreur("Le mot de passe doit contenir au moins 6 caracteres !");
             return;
         }
 
-        // Désactiver le bouton
         registerButton.setDisable(true);
         afficherInfo("Inscription en cours...");
 
-        // Envoyer dans un thread séparé
         new Thread(() -> {
             try {
-                // Créer l'objet Client
                 Client client = new Client(nom, email, password, adresse, tel);
 
-                // Créer la requête
                 Request request = new Request("REGISTER", client);
 
-                // Envoyer au serveur
                 Response response = ClientTCP.getInstance()
                         .envoyerRequete(request);
 
@@ -69,10 +60,9 @@ public class RegisterView {
                     registerButton.setDisable(false);
 
                     if (response.isSuccess()) {
-                        afficherSucces(" Inscription réussie ! Redirection...");
-                        logger.info(" Inscription réussie : " + email);
+                        afficherSucces(" Inscription reussie ! Redirection...");
+                        logger.info(" Inscription reussie : " + email);
 
-                        // Attendre 1 seconde puis aller au login
                         new Thread(() -> {
                             try {
                                 Thread.sleep(1000);
@@ -95,9 +85,6 @@ public class RegisterView {
         }).start();
     }
 
-    // =============================================
-    // RETOUR AU LOGIN
-    // =============================================
     @FXML
     private void allerLogin() {
         try {
@@ -112,9 +99,6 @@ public class RegisterView {
         }
     }
 
-    // =============================================
-    // UTILITAIRES
-    // =============================================
     private void afficherErreur(String msg) {
         messageLabel.setText(msg);
         messageLabel.setStyle("-fx-text-fill: red; -fx-font-size: 12px;");

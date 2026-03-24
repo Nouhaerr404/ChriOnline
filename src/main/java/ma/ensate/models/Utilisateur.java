@@ -11,6 +11,7 @@ public class Utilisateur implements Serializable {
     private String password;
     private String typeCompte;
     private String sessionToken;
+    private String statut;
 
     public Utilisateur() {}
 
@@ -43,5 +44,12 @@ public class Utilisateur implements Serializable {
     @Override
     public String toString() {
         return "Utilisateur{id=" + id + ", nom=" + nom + ", email=" + email + "}";
+    }
+
+    public String getStatut() {
+        return statut;
+    }
+
+    public void setStatut(String statut) {
     }
 }

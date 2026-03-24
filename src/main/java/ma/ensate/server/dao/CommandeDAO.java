@@ -240,4 +240,51 @@ public class CommandeDAO {
         }
         return commandes;
     }
+
+    /**
+     * Récupère TOUTES les commandes de la base de données (pour l'administrateur)
+     */
+    public List<Commande> findAll() throws SQLException {
+        String sql = "SELECT c.*, " +
+                "u.id as user_id, u.nom, u.email, u.type_compte, " +
+                "cl.adresse, cl.tel " +
+                "FROM commande c " +
+                "JOIN client cl ON c.client_id = cl.id " +
+                "JOIN utilisateur u ON cl.id = u.id " +
+                "ORDER BY c.commande_date DESC";
+
+        List<Commande> commandes = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Commande commande = new Commande();
+                    commande.setId(rs.getString("id"));
+
+                    Client client = new Client();
+                    client.setId(rs.getInt("client_id"));
+                    client.setNom(rs.getString("nom"));
+                    client.setEmail(rs.getString("email"));
+                    client.setAdresse(rs.getString("adresse"));
+                    client.setTel(rs.getString("tel"));
+                    commande.setClient(client);
+
+                    java.sql.Timestamp timestamp = rs.getTimestamp("commande_date");
+                    if (timestamp != null) {
+                        commande.setCommandeDate(timestamp.toLocalDateTime());
+                    }
+
+                    commande.setStatut(StatutCommande.valueOf(rs.getString("statut")));
+                    commande.setPrixAPayer(rs.getDouble("prix_a_payer"));
+
+                    commande.setLignes(chargerLignesCommande(conn, commande.getId()));
+
+                    commandes.add(commande);
+                }
+            }
+        }
+        return commandes;
+    }
 }

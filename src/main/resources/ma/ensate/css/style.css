@@ -123,3 +123,59 @@
     -fx-scale-x: 1.05;
     -fx-scale-y: 1.05;
 }
+
+.primary-btn {
+    -fx-background-color: #1f7a8c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 8 14;
+}
+
+.primary-btn:hover {
+    -fx-background-color: #176271;
+}
+
+.secondary-btn {
+    -fx-background-color: #eef3f7;
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 8 14;
+}
+
+.secondary-btn:hover {
+    -fx-background-color: #dfe8ef;
+}
+
+.danger-btn {
+    -fx-background-color: #d9534f;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 8 14;
+}
+
+.danger-btn:hover {
+    -fx-background-color: #c14440;
+}
+
+.admin-table {
+    -fx-background-color: white;
+    -fx-border-color: #dbe4eb;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.form-box {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #dbe4eb;
+    -fx-border-radius: 12;
+}
+
+.product-card-selected {
+    -fx-border-color: #1f7a8c;
+    -fx-border-width: 2;
+    -fx-border-radius: 15;
+}

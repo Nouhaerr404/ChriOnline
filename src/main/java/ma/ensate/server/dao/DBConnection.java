@@ -13,13 +13,12 @@ public class DBConnection {
 
     private static Connection instance = null;
 
-    // Singleton — une seule connexion partagée
     public static Connection getConnection() throws SQLException {
         if (instance == null || instance.isClosed()) {
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 instance = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("Connexion MySQL réussie !");
+                System.out.println("Connexion MySQL reussie !");
             } catch (ClassNotFoundException e) {
                 System.out.println("Driver MySQL introuvable !");
                 throw new SQLException(e);
@@ -28,12 +27,11 @@ public class DBConnection {
         return instance;
     }
 
-    // Tester la connexion
     public static void main(String[] args) {
         try {
             Connection conn = getConnection();
             if (conn != null) {
-                System.out.println("Base de données connectée !");
+                System.out.println("Base de données connectee !");
             }
         } catch (SQLException e) {
             System.out.println(" Erreur : " + e.getMessage());

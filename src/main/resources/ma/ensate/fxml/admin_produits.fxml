@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="620.0" prefWidth="980.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.AdminProduitsView">
+   <children>
+      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <VBox spacing="14.0" styleClass="header-section" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="14.0">
+                     <children>
+                        <Label text="Dashboard Administrateur - Produits" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <AnchorPane HBox.hgrow="ALWAYS" />
+                        <Button onAction="#handleCommandesPlaceholder" styleClass="secondary-btn" text="Commandes" />
+                        <Button onAction="#handleHistoriquePlaceholder" styleClass="secondary-btn" text="Historique" />
+                        <Button onAction="#handleLogout" styleClass="secondary-btn" text="Deconnexion" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" spacing="10.0">
+                     <children>
+                        <Button onAction="#handleDeleteProduct" styleClass="danger-btn" text="Supprimer" />
+                        <ComboBox fx:id="categoryComboBox" onAction="#handleCategoryFilter" prefWidth="220.0" promptText="Filtrer par categorie" styleClass="filter-combo" />
+                        <AnchorPane HBox.hgrow="ALWAYS" />
+                        <Button onAction="#switchToTableView" styleClass="secondary-btn" text="Vue Tableau" />
+                        <Button onAction="#switchToCardView" styleClass="secondary-btn" text="Vue Cartes" />
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="16.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </VBox>
+         </top>
+         <center>
+            <VBox spacing="10.0" BorderPane.alignment="CENTER">
+               <children>
+                  <StackPane VBox.vgrow="ALWAYS">
+                     <children>
+                        <TableView fx:id="productsTable" styleClass="admin-table">
+                           <columns>
+                              <TableColumn fx:id="idColumn" prefWidth="90.0" text="ID" />
+                              <TableColumn fx:id="nameColumn" prefWidth="290.0" text="Nom" />
+                              <TableColumn fx:id="categoryColumn" prefWidth="170.0" text="Categorie" />
+                              <TableColumn fx:id="priceColumn" prefWidth="170.0" text="Prix (MAD)" />
+                              <TableColumn fx:id="stockColumn" prefWidth="140.0" text="Stock" />
+                           </columns>
+                        </TableView>
+                        <ScrollPane fx:id="cardsScrollPane" fitToWidth="true" styleClass="content-scroll">
+                           <content>
+                              <FlowPane fx:id="productsCardsPane" hgap="16.0" styleClass="products-grid" vgap="16.0">
+                                 <padding>
+                                    <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                                 </padding>
+                              </FlowPane>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </StackPane>
+                  <Label fx:id="statusLabel" text="Pret" textFill="#34495e" />
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </VBox>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>
