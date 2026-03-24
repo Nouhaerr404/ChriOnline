@@ -29,6 +29,7 @@
                            </font>
                         </Label>
                         <AnchorPane HBox.hgrow="ALWAYS" />
+                        <Button onAction="#handleUtilisateurs" styleClass="secondary-btn" text="Gérer Utilisateurs" />
                         <Button onAction="#handleCommandesPlaceholder" styleClass="secondary-btn" text="Commandes" />
                         <Button onAction="#handleHistoriquePlaceholder" styleClass="secondary-btn" text="Historique" />
                         <Button onAction="#handleLogout" styleClass="secondary-btn" text="Deconnexion" />

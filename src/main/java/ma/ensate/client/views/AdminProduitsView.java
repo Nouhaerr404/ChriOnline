@@ -110,6 +110,20 @@ public class AdminProduitsView {
         setStatus("La vue historique admin sera integree par l'autre membre.");
     }
 
+    // Nouveau bouton pour rediriger vers la gestion des utilisateurs
+    @FXML
+    private void handleUtilisateurs() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/admin_utilisateurs.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) productsTable.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setTitle("ChriOnline - Gestion des Utilisateurs");
+        } catch (Exception e) {
+            setStatus("Erreur navigation utilisateurs: " + e.getMessage());
+        }
+    }
+
     private void openDetails(Produit selected) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/admin_produit_details.fxml"));
