@@ -41,15 +41,25 @@ public class Utilisateur implements Serializable {
     public String getSessionToken() { return sessionToken; }
     public void setSessionToken(String sessionToken) { this.sessionToken = sessionToken; }
 
-    @Override
-    public String toString() {
-        return "Utilisateur{id=" + id + ", nom=" + nom + ", email=" + email + "}";
-    }
-
     public String getStatut() {
         return statut;
     }
 
     public void setStatut(String statut) {
+        this.statut = statut;
     }
+
+    @Override
+    public String toString() {
+        return "Utilisateur{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", typeCompte='" + typeCompte + '\'' +
+                ", sessionToken='" + sessionToken + '\'' +
+                ", statut='" + statut + '\'' +
+                '}';
+    }
+
 }

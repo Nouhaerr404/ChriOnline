@@ -135,7 +135,14 @@ public class ClientHandler implements Runnable {
                         return new Response(false, "Action reservee aux administrateurs");
                     }
                     return productService.deleteProduct(request.getData());
+                case "LISTER_UTILISATEURS":
+                    return UserService.listerUtilisateurs();
 
+                case "SUSPENDRE_COMPTE":
+                    return UserService.suspendreCompte(request.getData());
+
+                case "REACTIVER_COMPTE":
+                    return UserService.reactiverCompte(request.getData());
                 case "AFFICHER_PANIER":
                     return servicePanier.obtenirPanierResponse(
                             Integer.parseInt(request.getData().toString()));
