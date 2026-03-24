@@ -7,22 +7,21 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.net.Socket;
+import ma.ensate.util.ConfigLoader;
 
 public class ClientTCP {
 
     private static final Logger logger = LogManager.getLogger(ClientTCP.class);
 
-    private static final String HOST = "localhost";
-    private static final int    PORT = 5000;
+    private static final String HOST = ConfigLoader.get("SERVER_HOST", "localhost");
+    private static final int    PORT = ConfigLoader.getInt("SERVER_PORT", 5001);
 
-    // Singleton — une seule connexion pour toute l'app
     private static ClientTCP instance;
 
     private Socket             socket;
     private ObjectOutputStream out;
     private ObjectInputStream  in;
 
-    // Constructeur privé → Singleton
     private ClientTCP() {}
 
     public static ClientTCP getInstance() {
@@ -32,20 +31,13 @@ public class ClientTCP {
         return instance;
     }
 
-    // =============================================
-    // CONNEXION AU SERVEUR
-    // =============================================
     public void connecter() throws IOException {
         socket = new Socket(HOST, PORT);
         out    = new ObjectOutputStream(socket.getOutputStream());
         in     = new ObjectInputStream(socket.getInputStream());
-        logger.info("✅ Connecté au serveur " + HOST + ":" + PORT);
+        logger.info("Connecte au serveur " + HOST + ":" + PORT);
     }
 
-    // =============================================
-    // ENVOYER UNE REQUÊTE — SANS TOKEN
-    // (LOGIN et REGISTER uniquement)
-    // =============================================
     public synchronized Response envoyerRequete(Request request) throws Exception {
         // Reconnexion automatique si besoin
         if (socket == null || socket.isClosed()) {
@@ -56,13 +48,13 @@ public class ClientTCP {
         out.flush();
 
         Response response = (Response) in.readObject();
-        logger.info("📨 Réponse reçue : " + response.getMessage());
+        logger.info(" Reponse recue : " + response.getMessage());
         return response;
     }
 
     public Response envoyerRequeteSecurisee(String action,
                                             Object data) throws Exception {
-        // Récupérer le token depuis SessionManager
+
         String token = SessionManager.getInstance().getToken();
 
         Request request = new Request(action, data, token);
@@ -73,10 +65,10 @@ public class ClientTCP {
         try {
             if (socket != null && !socket.isClosed()) {
                 socket.close();
-                logger.info("🔌 Déconnecté du serveur.");
+                logger.info(" Deconnecte du serveur.");
             }
         } catch (IOException e) {
-            logger.error("Erreur déconnexion : " + e.getMessage());
+            logger.error("Erreur deconnexion : " + e.getMessage());
         }
     }
 

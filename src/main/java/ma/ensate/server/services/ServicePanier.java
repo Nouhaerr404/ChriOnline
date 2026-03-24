@@ -132,7 +132,7 @@ public class ServicePanier {
               .append(lp.getQuantite()).append("|")
               .append(lp.getSubtotal()).append("\n");
         }
-        sb.append("TOTAL:").append(String.format("%.2f", panier.getTotal()));
+        sb.append("TOTAL:").append(panier.getTotal());
 
         return new Response(true, "Panier chargé.", sb.toString());
     }

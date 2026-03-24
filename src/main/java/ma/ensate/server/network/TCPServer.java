@@ -6,29 +6,33 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import ma.ensate.util.ConfigLoader;
 
 public class TCPServer {
 
     private static final Logger logger = LogManager.getLogger(TCPServer.class);
-    private static final int DEFAULT_PORT = 5000;
+    private static final int DEFAULT_PORT = ConfigLoader.getInt("SERVER_PORT", 5001);
 
     private ServerSocket serverSocket;
     private boolean running = false;
 
+    // =============================================
+    // DÉMARRER LE SERVEUR (avec port flexible)
+    // =============================================
     public void start(int port) {
         try {
             serverSocket = new ServerSocket(port);
             running = true;
 
-            logger.info("╔════════════════════════════════════════╗");
-            logger.info("║     SERVEUR CHRIONLINE DÉMARRÉ        ║");
-            logger.info("║     Port : " + port + "                         ║");
-            logger.info("║     En attente de connexions...       ║");
-            logger.info("╚════════════════════════════════════════╝");
+            logger.info(" ");
+            logger.info("    SERVEUR CHRIONLINE DÉMARRÉ        ");
+            logger.info("    Port : " + port + "  ");
+            logger.info("    En attente de connexions...       ");
+            logger.info(" ");
 
             while (running) {
                 Socket clientSocket = serverSocket.accept();
-                logger.info("🔌 Nouveau client connecté : "
+                logger.info(" Nouveau client connecté : "
                         + clientSocket.getInetAddress().getHostAddress());
 
                 Thread t = new Thread(new ClientHandler(clientSocket));
@@ -43,6 +47,8 @@ public class TCPServer {
             }
         }
     }
+
+    // DÉMARRER SUR LE PORT PAR DÉFAUT (5001)
 
     public void start() {
         start(DEFAULT_PORT);
@@ -61,9 +67,6 @@ public class TCPServer {
         }
     }
 
-    // =============================================
-    // POINT D'ENTRÉE PRINCIPAL
-    // =============================================
     public static void main(String[] args) {
         TCPServer server = new TCPServer();
 

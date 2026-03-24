@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.ProduitDetailsView">
+   <children>
+      <VBox spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <!-- Header section like in products page -->
+            <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="header-section">
+               <children>
+                  <Button onAction="#retourner" styleClass="nav-link" text="← Retour" textFill="WHITE" />
+                  <Label text="Détails du Produit" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </HBox>
+
+            <HBox spacing="40.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <!-- Product Image / Placeholder -->
+                  <VBox alignment="TOP_CENTER" prefWidth="300.0" spacing="10.0">
+                     <children>
+                        <AnchorPane prefHeight="300.0" prefWidth="300.0" styleClass="product-image-container">
+                           <children>
+                              <Label text="IMAGE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" alignment="CENTER" textFill="#95a5a6">
+                                 <font>
+                                    <Font name="System Bold" size="24.0" />
+                                 </font>
+                              </Label>
+                              <ImageView fx:id="produitImageView" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </VBox>
+
+                  <!-- Product Info -->
+                  <VBox spacing="15.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label fx:id="nomLabel" text="Nom du Produit" textFill="#2c3e50">
+                           <font>
+                              <Font name="System Bold" size="32.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="categorieLabel" text="Catégorie" textFill="#7f8c8d">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        
+                        <Label fx:id="prixLabel" text="0.00 MAD" textFill="#27ae60">
+                           <font>
+                              <Font name="System Bold" size="28.0" />
+                           </font>
+                        </Label>
+
+                        <VBox spacing="5.0">
+                           <children>
+                              <Label text="Description :" textFill="#34495e">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="descriptionLabel" text="Description détaillée du produit..." textFill="#2c3e50" wrapText="true">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                           <children>
+                              <Label text="Stock disponible :" textFill="#34495e">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="stockLabel" text="0" textFill="#e67e22">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+
+                        <AnchorPane VBox.vgrow="ALWAYS" />
+
+                        <HBox spacing="20.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#handleAddToCart" prefHeight="50.0" prefWidth="250.0" styleClass="add-to-cart-btn" text="Ajouter au Panier" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="40.0" left="40.0" right="40.0" top="20.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

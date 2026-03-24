@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="620.0" prefWidth="780.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.ProduitFormView">
+   <children>
+      <VBox spacing="18.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="header-section">
+               <children>
+                  <Button onAction="#handleBackTop" styleClass="secondary-btn" text="Retour" />
+                  <Label fx:id="titleLabel" text="Ajouter un produit" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="16.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </HBox>
+
+            <VBox spacing="10.0" styleClass="form-box">
+               <children>
+                  <Label text="Nom" />
+                  <TextField fx:id="nomField" promptText="Nom du produit" />
+
+                  <Label text="Description" />
+                  <TextArea fx:id="descriptionArea" prefHeight="130.0" promptText="Description du produit" wrapText="true" />
+
+                  <HBox spacing="10.0">
+                     <children>
+                        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="Prix (MAD)" />
+                              <TextField fx:id="prixField" promptText="0.00" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="Stock" />
+                              <TextField fx:id="stockField" promptText="0" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+
+                  <Label text="Categorie" />
+                  <ComboBox fx:id="categorieComboBox" prefWidth="300.0" promptText="Selectionner une categorie" />
+
+                  <HBox alignment="CENTER_LEFT" spacing="10.0">
+                     <children>
+                        <Button onAction="#handleChooseImage" styleClass="secondary-btn" text="Choisir image" />
+                        <Label fx:id="imageNameLabel" text="Aucune image selectionnee" textFill="#6c7a89" />
+                     </children>
+                  </HBox>
+
+                  <HBox spacing="10.0">
+                     <children>
+                        <Button onAction="#handleSave" styleClass="primary-btn" text="Enregistrer" />
+                        <Button onAction="#handleCancel" styleClass="secondary-btn" text="Annuler" />
+                     </children>
+                  </HBox>
+
+                  <Label fx:id="statusLabel" text="Remplissez le formulaire" textFill="#2c3e50" />
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

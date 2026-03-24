@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,6 +106,71 @@ public class ProduitDAO {
             }
         }
         return null;
+    }
+
+    /**
+     * Ajoute un produit en base.
+     */
+    public Produit ajouter(Produit produit) throws SQLException {
+        String sql = "INSERT INTO produit(nom, description, prix, stock, image_url, categorie_id) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setString(1, produit.getNom());
+            stmt.setString(2, produit.getDescription());
+            stmt.setDouble(3, produit.getPrix());
+            stmt.setInt(4, produit.getStock());
+            stmt.setString(5, produit.getImageUrl());
+            stmt.setInt(6, produit.getCategorie().getId());
+
+            int rows = stmt.executeUpdate();
+            if (rows == 0) {
+                return null;
+            }
+
+            try (ResultSet keys = stmt.getGeneratedKeys()) {
+                if (keys.next()) {
+                    produit.setId(keys.getInt(1));
+                }
+            }
+            return produit;
+        }
+    }
+
+    /**
+     * Modifie un produit existant en base.
+     */
+    public boolean modifier(Produit produit) throws SQLException {
+        String sql = "UPDATE produit SET nom = ?, description = ?, prix = ?, stock = ?, image_url = ?, categorie_id = ? WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, produit.getNom());
+            stmt.setString(2, produit.getDescription());
+            stmt.setDouble(3, produit.getPrix());
+            stmt.setInt(4, produit.getStock());
+            stmt.setString(5, produit.getImageUrl());
+            stmt.setInt(6, produit.getCategorie().getId());
+            stmt.setInt(7, produit.getId());
+
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+    /**
+     * Supprime un produit par identifiant.
+     */
+    public boolean supprimer(int id) throws SQLException {
+        String sql = "DELETE FROM produit WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+        }
     }
 
     /**

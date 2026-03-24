@@ -38,3 +38,9 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Project Logs ###
+logs/
+*.log
+
+.env

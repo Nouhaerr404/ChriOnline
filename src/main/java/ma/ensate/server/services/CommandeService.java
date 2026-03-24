@@ -34,7 +34,7 @@ public class CommandeService {
             throw new IllegalArgumentException("ID client invalide");
         }
         
-        // Validation des lignes de commande
+        // Validation des lignes de commande si non vide 
         if (lignes == null || lignes.isEmpty()) {
             throw new IllegalArgumentException("Une commande doit contenir au moins une ligne");
         }

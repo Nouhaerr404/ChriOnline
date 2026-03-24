@@ -3,11 +3,14 @@ package ma.ensate.client.views;
 import ma.ensate.client.network.ClientTCP;
 import ma.ensate.protocol.Request;
 import ma.ensate.protocol.Response;
+import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -135,6 +138,16 @@ public class PanierView {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
+        // Bouton Historique
+        Button btnHistorique = new Button("Mes Commandes");
+        btnHistorique.setStyle(btnGhost());
+        btnHistorique.setOnMouseEntered(e -> btnHistorique.setStyle(btnGhostHover()));
+        btnHistorique.setOnMouseExited(e -> btnHistorique.setStyle(btnGhost()));
+        btnHistorique.setOnAction(e -> {
+            new HistoriqueView(stage, clientTCP, clientId, token).afficher();
+        });
+        HBox.setMargin(btnHistorique, new Insets(0, 10, 0, 0));
+
         // Bouton retour
         Button btnRetour = new Button("← Continuer mes achats");
         btnRetour.setStyle(btnGhost());
@@ -142,7 +155,7 @@ public class PanierView {
         btnRetour.setOnMouseExited(e -> btnRetour.setStyle(btnGhost()));
         btnRetour.setOnAction(e -> retourProduits());
 
-        nav.getChildren().addAll(brand, div, titrePage, labelCount, labelMessage, spacer, btnRetour);
+        nav.getChildren().addAll(brand, div, titrePage, labelCount, labelMessage, spacer, btnHistorique, btnRetour);
         return nav;
     }
 
@@ -479,12 +492,21 @@ public class PanierView {
     private void validerCommande() {
         if (lignes.isEmpty()) { afficherMessage("Votre panier est vide.", true); return; }
         afficherMessage("Redirection vers la commande...", false);
-        // new CommandeView(stage, clientTCP, clientId, token).afficher();
+        new CommandeView(stage, clientTCP, clientId, token, 
+            Double.parseDouble(labelTotal.getText().replace(" MAD", "").replace(",", ".")), 
+            new ArrayList<>(lignes)).afficher();
     }
 
     private void retourProduits() {
-        afficherMessage("Retour aux produits...", false);
-        // new ProduitsView(stage, clientTCP, clientId, token).afficher();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/produits.fxml"));
+            Parent root = loader.load();
+            stage.getScene().setRoot(root);
+            stage.setTitle("ChriOnline — Boutique");
+        } catch (Exception e) {
+            e.printStackTrace();
+            afficherMessage("Erreur lors du retour : " + e.getMessage(), true);
+        }
     }
 
     // ── Parsing ───────────────────────────────────────────────────────────────
@@ -492,22 +514,27 @@ public class PanierView {
         lignes.clear();
         if (data == null || data.isBlank()) { mettreAJourTotal(0.0); return; }
         double total = 0.0;
+        double calculatedTotal = 0.0;
         for (String row : data.split("\n")) {
             if (row.startsWith("TOTAL:")) {
-                try { total = Double.parseDouble(row.substring(6).trim()); }
+                try { total = Double.parseDouble(row.substring(6).trim().replace(",", ".")); }
                 catch (NumberFormatException ignored) {}
                 continue;
             }
             String[] p = row.split("\\|");
             if (p.length < 5) continue;
             try {
-                lignes.add(new LigneTableau(
+                LigneTableau lt = new LigneTableau(
                         Integer.parseInt(p[0].trim()), p[1].trim(),
-                        Double.parseDouble(p[2].trim()),
+                        Double.parseDouble(p[2].trim().replace(",", ".")),
                         Integer.parseInt(p[3].trim()),
-                        Double.parseDouble(p[4].trim())));
+                        Double.parseDouble(p[4].trim().replace(",", ".")));
+                lignes.add(lt);
+                calculatedTotal += lt.getSubtotal();
             } catch (NumberFormatException ignored) {}
         }
+        
+        if (total == 0.0) total = calculatedTotal;
         mettreAJourTotal(total);
         int n = lignes.size();
         labelCount.setText(String.valueOf(n));

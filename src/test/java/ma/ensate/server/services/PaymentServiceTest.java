@@ -40,7 +40,7 @@ public class PaymentServiceTest {
         // Créer une commande
         Client client = clientDAO.findById(2);
         if (client == null) {
-            System.out.println("  ⚠️  Client ID 1 non trouvé, test ignoré");
+            System.out.println("  ⚠️  Client ID 2 non trouvé, test ignoré");
             return;
         }
         
