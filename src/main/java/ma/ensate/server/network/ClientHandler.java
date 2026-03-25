@@ -103,6 +103,15 @@ public class ClientHandler implements Runnable {
                 case "REGISTER":
                     return UserService.register(request.getData());
 
+                case "REGISTER_UDP_PORT":
+                    Object[] portData = (Object[]) request.getData();
+                    int userId = (int) portData[0];
+                    int udpPort = (int) portData[1];
+                    ClientIPRegistry.registerPort(userId, udpPort);
+                    logger.info("Port UDP enregistré : userId="
+                            + userId + " port=" + udpPort);
+                    return new Response(true, "Port UDP enregistré");
+
                 case "LOGOUT":
                     try {
                         Utilisateur u = utilisateurDAO.trouverParToken(request.getToken());
@@ -293,9 +302,12 @@ public class ClientHandler implements Runnable {
 
                 if (destinataireIP != null
                         && nouveauStatut == StatutCommande.VALIDE) {
+                    int port = ClientIPRegistry.getPort(
+                            commande.getClient().getId()); // ← port unique
                     UDPNotificationServer.notifierCommandeValidee(
-                            destinataireIP, req.getCommandeId());
-                } else {
+                            destinataireIP, port, req.getCommandeId());
+                }
+                else {
                     logger.warn("Client non connecté, notification ignorée");
                 }
 
@@ -373,8 +385,10 @@ public class ClientHandler implements Runnable {
                     String destinataireIP = ClientIPRegistry.getIP(
                             commande.getClient().getId());
                     if (destinataireIP != null) {
+                        int port = ClientIPRegistry.getPort(
+                                commande.getClient().getId()); // ← port unique
                         UDPNotificationServer.notifierCommandeValidee(
-                                destinataireIP, req.getCommandeId());
+                                destinataireIP, port, req.getCommandeId());
                     } else {
                         logger.warn("Client non connecté, notification ignorée");
                     }

@@ -5,18 +5,34 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientIPRegistry {
 
-    private static final Map<Integer, String> registry =
+
+    private static final Map<Integer, String> registryIP =
+            new ConcurrentHashMap<>();
+
+
+    private static final Map<Integer, Integer> registryPort =
             new ConcurrentHashMap<>();
 
     public static void register(int clientId, String ip) {
-        registry.put(clientId, ip);
+        registryIP.put(clientId, ip);
+    }
+
+
+    public static void registerPort(int clientId, int port) {
+        registryPort.put(clientId, port);
     }
 
     public static void unregister(int clientId) {
-        registry.remove(clientId);
+        registryIP.remove(clientId);
+        registryPort.remove(clientId);
     }
 
     public static String getIP(int clientId) {
-        return registry.get(clientId);
+        return registryIP.get(clientId);
+    }
+
+
+    public static int getPort(int clientId) {
+        return registryPort.getOrDefault(clientId, 5001);
     }
 }

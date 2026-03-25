@@ -11,41 +11,29 @@ import java.net.DatagramSocket;
 public class UDPNotificationClient implements Runnable {
 
     private static final Logger logger = LogManager.getLogger(UDPNotificationClient.class);
-    private static final int UDP_PORT = 5001;
+    private int udpPort = 5001;
     private static final int BUFFER_SIZE = 1024;
 
     private boolean running = true;
 
     @Override
     public void run() {
-        try (DatagramSocket socket = new DatagramSocket(UDP_PORT)) {
-            logger.info(" UDPNotificationClient en écoute sur port "
-                    + UDP_PORT);
-
+        try (DatagramSocket socket = new DatagramSocket(udpPort)) {
+            logger.info("UDP en écoute sur port " + udpPort);
             while (running) {
                 byte[] buffer = new byte[BUFFER_SIZE];
-                DatagramPacket packet = new DatagramPacket(
-                        buffer, buffer.length);
-
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                 socket.receive(packet);
-
-                String message = new String(
-                        packet.getData(), 0,
+                String message = new String(packet.getData(), 0,
                         packet.getLength(), "UTF-8");
-
-                logger.info("Notification reçue : " + message);
-
                 traiterNotification(message);
             }
-
         } catch (Exception e) {
-            if (running) {
-                logger.error(" Erreur UDPNotificationClient : "
-                        + e.getMessage());
-            }
+            if (running) logger.error("Erreur UDP : " + e.getMessage());
         }
     }
 
+    public int getUdpPort() { return udpPort; }
     private void traiterNotification(String message) {
         String titre = "";
         String contenu = "";
@@ -92,10 +80,22 @@ public class UDPNotificationClient implements Runnable {
 
     public static UDPNotificationClient demarrer() {
         UDPNotificationClient client = new UDPNotificationClient();
+
+        int port = 5001;
+        while (port <= 5020) {
+            try {
+                new DatagramSocket(port).close();
+                break; // port libre !
+            } catch (Exception e) {
+                port++;
+            }
+        }
+
+        client.udpPort = port;
         Thread thread = new Thread(client);
         thread.setDaemon(true);
         thread.start();
-        logger.info("UDPNotificationClient démarré !");
+        logger.info("UDP démarré sur port " + port);
         return client;
     }
 }

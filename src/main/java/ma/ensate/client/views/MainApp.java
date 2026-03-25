@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import ma.ensate.client.network.ClientTCP;
+import ma.ensate.client.network.SessionManager;
 import ma.ensate.client.network.UDPNotificationClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +26,8 @@ public class MainApp extends Application {
 
         }
 
-        UDPNotificationClient.demarrer();
+        UDPNotificationClient udpClient = UDPNotificationClient.demarrer();
+        SessionManager.getInstance().setUdpPort(udpClient.getUdpPort());
         logger.info("Système de notifications UDP démarré");
 
         FXMLLoader loader = new FXMLLoader(
