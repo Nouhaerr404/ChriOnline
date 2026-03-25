@@ -31,6 +31,13 @@
                                <Label onMouseClicked="#goToCart" styleClass="nav-link" text="Panier" textFill="WHITE" />
                                <Label onMouseClicked="#goToOrders" styleClass="nav-link" text="Mes Commandes" textFill="WHITE" />
                                <Label onMouseClicked="#handleLogout" styleClass="nav-link, logout-link" text="Déconnexion" textFill="#e74c3c" />
+                               <Label fx:id="nomUtilisateurLabel"
+                                      onMouseClicked="#goToProfil"
+                                      styleClass="nav-link"
+                                      textFill="#f0f0f0"
+                                      style="-fx-cursor: hand;"/>
+                               <Label text="👤" onMouseClicked="#goToProfil"
+                                      style="-fx-font-size: 18px; -fx-cursor: hand;"/>
                             </children>
                          </HBox>
                       </children>

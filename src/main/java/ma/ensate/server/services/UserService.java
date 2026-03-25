@@ -201,4 +201,75 @@ public class UserService {
             return new Response(false, "Erreur serveur.");
         }
     }
+
+    public static Response getProfil(Object data) {
+        try {
+            int userId = (int) data;
+            Utilisateur u = dao.trouverParId(userId);
+            if (u == null)
+                return new Response(false, "Utilisateur introuvable.");
+            logger.info("Profil récupéré pour userId : " + userId);
+            return new Response(true, "Profil récupéré.", u);
+        } catch (SQLException e) {
+            logger.error("Erreur getProfil : " + e.getMessage());
+            return new Response(false, "Erreur serveur.");
+        }
+    }
+
+
+    public static Response updateProfil(Object data) {
+        try {
+            Object[] params = (Object[]) data;
+            int    userId  = (int)    params[0];
+            String nom     = (String) params[1];
+            String adresse = (String) params[2];
+            String tel     = (String) params[3];
+
+            // Validation
+            if (nom == null || nom.trim().isEmpty())
+                return new Response(false, "Le nom est obligatoire.");
+
+            if (tel != null && !tel.isEmpty()) {
+                if (!tel.matches("^[0-9+]{8,15}$"))
+                    return new Response(false, "Numéro de téléphone invalide.");
+            }
+
+            boolean success = dao.mettreAJourProfil(userId, nom, adresse, tel);
+            if (success) {
+                logger.info("Profil mis à jour : userId " + userId);
+                return new Response(true, "Profil mis à jour avec succès !");
+            }
+            return new Response(false, "Échec de la mise à jour.");
+
+        } catch (SQLException e) {
+            logger.error("Erreur updateProfil : " + e.getMessage());
+            return new Response(false, "Erreur serveur.");
+        }
+    }
+
+
+    public static Response changerMotDePasse(Object data) {
+        try {
+            Object[] params       = (Object[]) data;
+            int    userId         = (int)    params[0];
+            String ancienPassword = (String) params[1];
+            String nouveauPassword = (String) params[2];
+
+            if (nouveauPassword == null || nouveauPassword.length() < 6)
+                return new Response(false,
+                        "Le nouveau mot de passe doit contenir au moins 6 caractères.");
+
+            boolean success = dao.changerMotDePasse(
+                    userId, ancienPassword, nouveauPassword);
+            if (success) {
+                logger.info("Mot de passe changé : userId " + userId);
+                return new Response(true, "Mot de passe changé avec succès !");
+            }
+            return new Response(false, "Ancien mot de passe incorrect.");
+
+        } catch (SQLException e) {
+            logger.error("Erreur changerMotDePasse : " + e.getMessage());
+            return new Response(false, "Erreur serveur.");
+        }
+    }
 }

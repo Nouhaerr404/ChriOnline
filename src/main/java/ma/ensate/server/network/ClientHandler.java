@@ -106,7 +106,14 @@ public class ClientHandler implements Runnable {
                 case "LOGOUT":
                     return UserService.logout(request.getData());
 
+                case "GET_PROFIL":
+                    return UserService.getProfil(request.getData());
 
+                case "UPDATE_PROFIL":
+                    return UserService.updateProfil(request.getData());
+
+                case "CHANGER_PASSWORD":
+                    return UserService.changerMotDePasse(request.getData());
                 case "GET_ALL_PRODUCTS":
                     return productService.getAllProducts();
 
@@ -268,7 +275,6 @@ public class ClientHandler implements Runnable {
             boolean success = commandeService.changerStatutCommande(req.getCommandeId(), nouveauStatut);
 
             if (success) {
-                // Envoyer notification UDP selon le statut
                 if (nouveauStatut == StatutCommande.VALIDE) {
                     UDPNotificationServer.notifierCommandeValidee(
                             clientIP, req.getCommandeId());

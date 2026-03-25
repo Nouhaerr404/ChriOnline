@@ -28,10 +28,28 @@ public class ProduitsView {
     @FXML
     private FlowPane productsFlowPane;
 
+    @FXML private Label nomUtilisateurLabel;
+
     @FXML
     public void initialize() {
         loadCategories();
         loadAllProducts();
+        nomUtilisateurLabel.setText(SessionManager.getInstance().getNomUtilisateur());
+
+    }
+
+    @FXML
+    private void goToProfil() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ma/ensate/fxml/profil.fxml"));
+            Parent root  = loader.load();
+            Stage  stage = (Stage) nomUtilisateurLabel.getScene().getWindow();
+            stage.setScene(new Scene(root, 600, 700));
+            stage.setTitle("ChriOnline — Mon Profil");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
