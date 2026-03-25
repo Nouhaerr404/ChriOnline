@@ -29,6 +29,7 @@ public class ClientHandler implements Runnable {
     private static final Logger logger = LogManager.getLogger(ClientHandler.class);
 
     private final Socket socket;
+    private String clientIP;
 
     private final CommandeService commandeService;
     private final PaymentService  paymentService;
@@ -54,7 +55,7 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
-        String clientIP = socket.getInetAddress().getHostAddress();
+        clientIP = socket.getInetAddress().getHostAddress();
         logger.info("Handler démarre pour : " + clientIP);
 
         try (
@@ -174,7 +175,7 @@ public class ClientHandler implements Runnable {
                     return validerCommande(request);
 
                 case "CHANGER_STATUT_COMMANDE":
-                    return changerStatutCommande(request);
+                    return changerStatutCommande(request, clientIP);
 
                 case "GET_COMMANDE":
                 case "GET_ORDER_BY_ID":
@@ -240,7 +241,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private Response changerStatutCommande(Request request) {
+    private Response changerStatutCommande(Request request, String clientIP) {
         try {
             ChangerStatutRequest req = (ChangerStatutRequest) request.getData();
             if (req == null || req.getCommandeId() == null || req.getNouveauStatut() == null)
@@ -252,9 +253,26 @@ public class ClientHandler implements Runnable {
                 return new Response(false, "Statut invalide : " + req.getNouveauStatut());
             }
             boolean success = commandeService.changerStatutCommande(req.getCommandeId(), nouveauStatut);
-            return success
-                    ? new Response(true,  "Statut mis à jour avec succès")
-                    : new Response(false, "Echec de la mise à jour du statut");
+
+            if (success) {
+                // Envoyer notification UDP selon le statut
+                if (nouveauStatut == StatutCommande.VALIDE) {
+                    UDPNotificationServer.notifierCommandeValidee(
+                            clientIP, req.getCommandeId());
+
+                } else if (nouveauStatut == StatutCommande.EXPEDIE) {
+                    UDPNotificationServer.notifierCommandeExpediee(
+                            clientIP, req.getCommandeId());
+
+                } else if (nouveauStatut == StatutCommande.LIVRE) {
+                    UDPNotificationServer.notifierCommandeLivree(
+                            clientIP, req.getCommandeId());
+                }
+
+                return new Response(true, "Statut mis à jour avec succès");
+            } else {
+                return new Response(false, "Echec de la mise à jour du statut");
+            }
         } catch (IllegalArgumentException | IllegalStateException e) {
             return new Response(false, e.getMessage());
         } catch (SQLException e) {
@@ -311,6 +329,8 @@ public class ClientHandler implements Runnable {
                 if (commande.getClient() != null) {
                     servicePanier.viderPanier(commande.getClient().getId());
                 }
+                UDPNotificationServer.notifierCommandeValidee(
+                        clientIP, req.getCommandeId());
                 Paiement paiement = paymentService.getPaiementByCommandeId(req.getCommandeId());
                 logger.info("Paiement effectué : " + req.getCommandeId());
                 return new Response(true, "Paiement effectué avec succès", paiement);
