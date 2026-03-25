@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -8,6 +9,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -17,32 +19,35 @@
          <top>
             <VBox spacing="15.0" styleClass="header-section" BorderPane.alignment="CENTER">
                <children>
-                   <HBox alignment="CENTER_LEFT" spacing="20.0">
-                      <children>
-                         <Label text="ChriOnline — Boutique" textFill="WHITE">
-                            <font>
-                               <Font name="System Bold" size="24.0" />
-                            </font>
-                         </Label>
-                         <AnchorPane HBox.hgrow="ALWAYS" />
-                         <ComboBox fx:id="categoryComboBox" onAction="#handleCategoryFilter" prefWidth="200.0" promptText="Filtrer par catégorie" styleClass="filter-combo" />
-                         <HBox spacing="10.0" alignment="CENTER_RIGHT">
-                            <children>
-                               <Label onMouseClicked="#goToCart" styleClass="nav-link" text="Panier" textFill="WHITE" />
-                               <Label onMouseClicked="#goToOrders" styleClass="nav-link" text="Mes Commandes" textFill="WHITE" />
-                               <Label onMouseClicked="#handleLogout" styleClass="nav-link, logout-link" text="Déconnexion" textFill="#e74c3c" />
-                               <Label fx:id="nomUtilisateurLabel"
-                                      onMouseClicked="#goToProfil"
-                                      styleClass="nav-link"
-                                      textFill="#f0f0f0"
-                                      style="-fx-cursor: hand;"/>
-                               <Label text="👤" onMouseClicked="#goToProfil"
-                                      style="-fx-font-size: 18px; -fx-cursor: hand;"/>
-                            </children>
-                         </HBox>
-                      </children>
-                   </HBox>
-                  <Label text="Découvrez nos meilleurs produits" textFill="#bdc3c7">
+                  <HBox alignment="CENTER_LEFT" spacing="20.0">
+                     <children>
+                        <Label text="ChriOnline - Boutique" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <AnchorPane HBox.hgrow="ALWAYS" />
+                        <ComboBox fx:id="categoryComboBox" onAction="#handleCategoryFilter" prefWidth="200.0" promptText="Filtrer par categorie" styleClass="filter-combo" />
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                           <children>
+                              <Label onMouseClicked="#goToCart" styleClass="nav-link" text="Panier" textFill="WHITE" />
+                              <Label onMouseClicked="#goToOrders" styleClass="nav-link" text="Mes Commandes" textFill="WHITE" />
+                              <Button mnemonicParsing="false" onAction="#handleLogout" styleClass="logout-btn" text="Se deconnecter" />
+                              <HBox fx:id="profileEntry" alignment="CENTER_LEFT" onMouseClicked="#goToProfil" onMouseEntered="#showProfileText" onMouseExited="#hideProfileText" spacing="8.0" styleClass="profile-entry">
+                                 <children>
+                                    <StackPane styleClass="profile-avatar">
+                                       <children>
+                                          <Label fx:id="profileInitialLabel" styleClass="profile-initial" text="N" />
+                                       </children>
+                                    </StackPane>
+                                    <Label fx:id="profileHoverLabel" managed="false" styleClass="profile-hover-label" text="Mon profile" visible="false" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  <Label text="Decouvrez nos meilleurs produits" textFill="#dce8ff">
                      <font>
                         <Font size="14.0" />
                      </font>
