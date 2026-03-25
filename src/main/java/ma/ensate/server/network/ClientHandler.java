@@ -136,7 +136,14 @@ public class ClientHandler implements Runnable {
                         return new Response(false, "Action reservee aux administrateurs");
                     }
                     return productService.deleteProduct(request.getData());
+                case "LISTER_UTILISATEURS":
+                    return UserService.listerUtilisateurs();
 
+                case "SUSPENDRE_COMPTE":
+                    return UserService.suspendreCompte(request.getData());
+
+                case "REACTIVER_COMPTE":
+                    return UserService.reactiverCompte(request.getData());
                 case "AFFICHER_PANIER":
                     return servicePanier.obtenirPanierResponse(
                             Integer.parseInt(request.getData().toString()));
@@ -176,6 +183,12 @@ public class ClientHandler implements Runnable {
 
                 case "CHANGER_STATUT_COMMANDE":
                     return changerStatutCommande(request, clientIP);
+
+                case "GET_ALL_COMMANDES":
+                    if (!isAdmin(request.getToken())) {
+                        return new Response(false, "Action reservee aux administrateurs");
+                    }
+                    return getAllCommandes(request);
 
                 case "GET_COMMANDE":
                 case "GET_ORDER_BY_ID":
@@ -275,6 +288,15 @@ public class ClientHandler implements Runnable {
             }
         } catch (IllegalArgumentException | IllegalStateException e) {
             return new Response(false, e.getMessage());
+        } catch (SQLException e) {
+            return new Response(false, "Erreur base de données : " + e.getMessage());
+        }
+    }
+
+    private Response getAllCommandes(Request request) {
+        try {
+            List<Commande> commandes = commandeService.getAllCommandes();
+            return new Response(true, "Commandes récupérées", (Serializable) commandes);
         } catch (SQLException e) {
             return new Response(false, "Erreur base de données : " + e.getMessage());
         }

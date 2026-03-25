@@ -16,19 +16,15 @@ public class TCPServer {
     private ServerSocket serverSocket;
     private boolean running = false;
 
-    // =============================================
     // DÉMARRER LE SERVEUR (avec port flexible)
-    // =============================================
     public void start(int port) {
         try {
             serverSocket = new ServerSocket(port);
             running = true;
 
-            logger.info(" ");
-            logger.info("    SERVEUR CHRIONLINE DÉMARRÉ        ");
-            logger.info("    Port : " + port + "  ");
-            logger.info("    En attente de connexions...       ");
-            logger.info(" ");
+            logger.info("     SERVEUR CHRIONLINE DÉMARRÉ        ");
+            logger.info("     Port : " + port + "                         ");
+            logger.info("     En attente de connexions...       ");
 
             while (running) {
                 Socket clientSocket = serverSocket.accept();
@@ -49,11 +45,11 @@ public class TCPServer {
     }
 
     // DÉMARRER SUR LE PORT PAR DÉFAUT (5001)
-
     public void start() {
         start(DEFAULT_PORT);
     }
 
+    // ARRÊTER LE SERVEUR PROPREMENT
     public void stop() {
         running = false;
         try {
@@ -67,6 +63,7 @@ public class TCPServer {
         }
     }
 
+    // POINT D'ENTRÉE PRINCIPAL
     public static void main(String[] args) {
         TCPServer server = new TCPServer();
 

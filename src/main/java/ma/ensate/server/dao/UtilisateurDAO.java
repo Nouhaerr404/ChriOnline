@@ -8,7 +8,9 @@ import org.apache.logging.log4j.Logger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UtilisateurDAO {
@@ -210,5 +212,93 @@ public class UtilisateurDAO {
             }
         }
         return null;
+    }
+    public List<Utilisateur> findAll() throws SQLException {
+        String sql = """
+                   Select u.id, u.nom, u.email, u.type_compte, u.statut, c.adresse, c.tel
+                   FROM utilisateur u
+                   LEFT JOIN client c ON c.id = u.id 
+                   ORDER BY u.id
+                   """;
+        List<Utilisateur> liste = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
+    while (rs.next()) {
+        String type = rs.getString("type_compte");
+        Utilisateur u ;
+        if ("CLIENT".equals(type)) {
+            Client c = new Client();
+            c.setAdresse(rs.getString("adresse"));
+            c.setTel(rs.getString("tel"));
+            u = c;
+        } else {
+            u = new Utilisateur();
+        }
+        u.setId(rs.getInt("id"));
+        u.setNom(rs.getString("nom"));
+        u.setEmail(rs.getString("email"));
+        u.setTypeCompte(type);
+        u.setStatut(rs.getString("statut"));
+        liste.add(u);
+
+    }
+        }
+        return liste;
+    }
+    public Utilisateur findById(int id) throws SQLException {
+        String sql = """
+                SELECT u.id, u.nom, u.email, u.type_compte, u.statut, c.adresse, c.tel
+                FROM utilisateur u
+                LEFT JOIN client c ON c.id = u.id
+                WHERE u.id = ?"
+                """;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String type = rs.getString("type_compte");
+                Utilisateur u ;
+                if ("CLIENT".equals(type)) {
+                    Client c = new Client();
+                    c.setAdresse(rs.getString("adresse"));
+                    c.setTel(rs.getString("tel"));
+                    u = c;
+                } else {
+                    u = new Utilisateur();
+                }
+                u.setId(rs.getInt("id"));
+                u.setNom(rs.getString("nom"));
+                u.setEmail(rs.getString("email"));
+                u.setTypeCompte(type);
+                u.setStatut(rs.getString("statut"));
+                return u;
+            }
+        }
+        return null;
+    }
+    public boolean suspendreCompte(int userId) throws SQLException {
+        String sql = "Update utilisateur SET statut='SUSPENDU' WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            int rows = ps.executeUpdate();
+            logger.info("Compte suspendu : userId : " + userId);
+            return rows > 0;
+        }
+    }
+    public boolean reactiverCompte(int userId) throws SQLException {
+        String sql = "UPDATE utilisateur SET statut = 'ACTIF' WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            int rows = ps.executeUpdate();
+            logger.info("Compte réactivé : userId=" + userId);
+            return rows > 0;
+        }
     }
 }

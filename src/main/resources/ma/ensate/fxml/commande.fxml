@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.paint.Color?>
+
+<StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+    <BorderPane style="-fx-background-color: #F8FAFC;">
+        <top>
+            <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #0F172A;">
+                <padding><Insets top="20" right="50" bottom="20" left="50"/></padding>
+                <VBox spacing="-3">
+                    <Label text="ChriOnline" style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                    <Label text="ELECTRONICS HUB" style="-fx-text-fill: #3B82F6; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="← Retour au panier" style="-fx-background-color: transparent; -fx-text-fill: #CBD5E1; -fx-cursor: hand; -fx-font-weight: bold;" onAction="#retourPanier"/>
+                <Button text="Mes Commandes" style="-fx-background-color: transparent; -fx-text-fill: #CBD5E1; -fx-cursor: hand;" onAction="#ouvrirHistorique"/>
+            </HBox>
+        </top>
+        <center>
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+                <VBox spacing="30" alignment="TOP_CENTER">
+                    <padding><Insets top="40" right="40" bottom="40" left="40"/></padding>
+                    <Label text="Finalisation de votre commande" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #0F172A;"/>
+                    <VBox spacing="20" maxWidth="700" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 35;">
+                        <effect><DropShadow radius="15"><color><Color red="0.0" green="0.0" blue="0.0" opacity="0.08"/></color></DropShadow></effect>
+                        
+                        <VBox fx:id="itemBox" spacing="12"/>
+                        
+                        <Separator>
+                            <padding><Insets top="10" bottom="10"/></padding>
+                        </Separator>
+                        
+                        <HBox>
+                            <Label text="Total de la commande" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1E293B;"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="lblTotalPrix" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: #3B82F6;"/>
+                        </HBox>
+                        
+                        <Button fx:id="btnConfirmer" text="PROCÉDER AU PAIEMENT SÉCURISÉ" prefHeight="55" maxWidth="Infinity" style="-fx-background-color: #0F172A; -fx-text-fill: white; -fx-font-weight: bold; -fx-letter-spacing: 1px; -fx-background-radius: 10; -fx-cursor: hand;" onMouseEntered="#btnHover" onMouseExited="#btnExit" onAction="#envoyerCommande"/>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+        </center>
+    </BorderPane>
+</StackPane>

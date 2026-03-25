@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.paint.Color?>
+
+<StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox spacing="30" style="-fx-background-color: #F8FAFC; -fx-padding: 0;" alignment="TOP_CENTER">
+        <HBox style="-fx-background-color: #0F172A;">
+            <padding><Insets top="20" right="50" bottom="20" left="50"/></padding>
+            <VBox spacing="-3">
+                <Label text="ChriOnline" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <Label text="CHECKOUT" style="-fx-text-fill: #3B82F6; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+            </VBox>
+        </HBox>
+        <VBox spacing="25" maxWidth="500" style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 40;" alignment="CENTER">
+            <effect><DropShadow radius="20"><color><Color red="0.0" green="0.0" blue="0.0" opacity="0.1"/></color></DropShadow></effect>
+            
+            <Label text="Paiement Sécurisé" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #0F172A;"/>
+            <Label fx:id="lblSub" style="-fx-text-fill: #64748B; -fx-font-size: 14px;"/>
+            
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Montant :"/>
+                <Label fx:id="valT" style="-fx-font-size: 22px; -fx-font-weight: 900; -fx-text-fill: #3B82F6;"/>
+            </HBox>
+            
+            <Separator/>
+            
+            <VBox spacing="15">
+                <padding><Insets top="10" bottom="10"/></padding>
+                
+                <RadioButton fx:id="rbCard" text="Carte Bancaire (VISA/Mastercard)" selected="true" style="-fx-font-weight: bold; -fx-text-fill: #0F172A;">
+                    <toggleGroup><ToggleGroup fx:id="group"/></toggleGroup>
+                </RadioButton>
+                
+                <VBox fx:id="cardForm" spacing="15">
+                    <padding><Insets top="10" left="25"/></padding>
+                    <VBox spacing="5">
+                        <Label text="Numéro de carte:" style="-fx-font-size: 13px; -fx-text-fill: #64748B;"/>
+                        <TextField fx:id="txtNum" promptText="xxxx xxxx xxxx xxxx" prefHeight="45" style="-fx-background-radius: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 8; -fx-font-family: 'Monospaced';"/>
+                    </VBox>
+                    <HBox spacing="15">
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="Date d'expiration:" style="-fx-font-size: 13px; -fx-text-fill: #64748B;"/>
+                            <TextField fx:id="txtExp" promptText="MM / AA" prefHeight="45" style="-fx-background-radius: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 8;"/>
+                        </VBox>
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="CVV:" style="-fx-font-size: 13px; -fx-text-fill: #64748B;"/>
+                            <TextField fx:id="txtCvv" promptText="123" prefHeight="45" style="-fx-background-radius: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 8;"/>
+                        </VBox>
+                    </HBox>
+                    <VBox spacing="5">
+                        <Label text="Titulaire de la carte:" style="-fx-font-size: 13px; -fx-text-fill: #64748B;"/>
+                        <TextField fx:id="txtHold" promptText="PRÉNOM NOM" prefHeight="45" style="-fx-background-radius: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 8;"/>
+                    </VBox>
+                </VBox>
+                
+                <RadioButton fx:id="rbCash" text="Paiement à la Livraison" toggleGroup="$group" style="-fx-font-weight: bold; -fx-text-fill: #0F172A;"/>
+            </VBox>
+            
+            <Button fx:id="btnPay" text="CONFIRMER LE RÈGLEMENT" maxWidth="Infinity" prefHeight="50" style="-fx-background-color: #10B981; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;" onMouseEntered="#btnPayHover" onMouseExited="#btnPayExit" onAction="#handlePayment"/>
+        </VBox>
+    </VBox>
+</StackPane>
