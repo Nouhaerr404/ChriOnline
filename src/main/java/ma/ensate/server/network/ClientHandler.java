@@ -98,14 +98,22 @@ public class ClientHandler implements Runnable {
             switch (action) {
 
                 case "LOGIN":
-                    return UserService.login(request.getData());
+                    return UserService.login(request.getData(), clientIP);
 
                 case "REGISTER":
                     return UserService.register(request.getData());
 
                 case "LOGOUT":
+                    try {
+                        Utilisateur u = utilisateurDAO.trouverParToken(request.getToken());
+                        if (u != null) {
+                            ClientIPRegistry.unregister(u.getId());
+                            logger.info("IP supprimée du registry : userId=" + u.getId());
+                        }
+                    } catch (SQLException e) {
+                        logger.warn("Erreur nettoyage registry : " + e.getMessage());
+                    }
                     return UserService.logout(request.getData());
-
                 case "GET_PROFIL":
                     return UserService.getProfil(request.getData());
 
@@ -275,21 +283,25 @@ public class ClientHandler implements Runnable {
             boolean success = commandeService.changerStatutCommande(req.getCommandeId(), nouveauStatut);
 
             if (success) {
-                if (nouveauStatut == StatutCommande.VALIDE) {
+                Commande commande = commandeService.getCommandeById(req.getCommandeId());
+                String destinataireIP = null;
+
+                if (commande != null && commande.getClient() != null) {
+                    destinataireIP = ClientIPRegistry.getIP(
+                            commande.getClient().getId());
+                }
+
+                if (destinataireIP != null
+                        && nouveauStatut == StatutCommande.VALIDE) {
                     UDPNotificationServer.notifierCommandeValidee(
-                            clientIP, req.getCommandeId());
-
-                } else if (nouveauStatut == StatutCommande.EXPEDIE) {
-                    UDPNotificationServer.notifierCommandeExpediee(
-                            clientIP, req.getCommandeId());
-
-                } else if (nouveauStatut == StatutCommande.LIVRE) {
-                    UDPNotificationServer.notifierCommandeLivree(
-                            clientIP, req.getCommandeId());
+                            destinataireIP, req.getCommandeId());
+                } else {
+                    logger.warn("Client non connecté, notification ignorée");
                 }
 
                 return new Response(true, "Statut mis à jour avec succès");
-            } else {
+            }
+            else {
                 return new Response(false, "Echec de la mise à jour du statut");
             }
         } catch (IllegalArgumentException | IllegalStateException e) {
@@ -357,8 +369,16 @@ public class ClientHandler implements Runnable {
                 if (commande.getClient() != null) {
                     servicePanier.viderPanier(commande.getClient().getId());
                 }
-                UDPNotificationServer.notifierCommandeValidee(
-                        clientIP, req.getCommandeId());
+                if (commande.getClient() != null) {
+                    String destinataireIP = ClientIPRegistry.getIP(
+                            commande.getClient().getId());
+                    if (destinataireIP != null) {
+                        UDPNotificationServer.notifierCommandeValidee(
+                                destinataireIP, req.getCommandeId());
+                    } else {
+                        logger.warn("Client non connecté, notification ignorée");
+                    }
+                }
                 Paiement paiement = paymentService.getPaiementByCommandeId(req.getCommandeId());
                 logger.info("Paiement effectué : " + req.getCommandeId());
                 return new Response(true, "Paiement effectué avec succès", paiement);

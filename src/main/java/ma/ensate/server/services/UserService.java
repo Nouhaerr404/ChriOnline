@@ -5,6 +5,7 @@ import ma.ensate.models.Utilisateur;
 import ma.ensate.protocol.Request;
 import ma.ensate.protocol.Response;
 import ma.ensate.server.dao.UtilisateurDAO;
+import ma.ensate.server.network.ClientIPRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,7 +53,7 @@ public class UserService {
         }
     }
 
-    public static Response login(Object data) {
+    public static Response login(Object data, String clientIP) {
         try {
             String[] credentials = (String[]) data;
             String email    = credentials[0].trim();
@@ -89,6 +90,9 @@ public class UserService {
             dao.sauvegarderToken(u.getId(), token);
             dao.reinitialiserTentatives(email);
             u.setSessionToken(token);
+            ClientIPRegistry.register(u.getId(), clientIP);
+            logger.info("IP enregistrée pour userId=" + u.getId()
+                    + " : " + clientIP);
 
             logger.info(" Login réussi : " + email);
             return new Response(true, "Connexion réussie !", u);
