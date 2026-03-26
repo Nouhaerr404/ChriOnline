@@ -338,7 +338,6 @@ public class UtilisateurDAO {
             ps.executeUpdate();
         }
 
-        // Mettre à jour la table client
         String sqlClient = "UPDATE client SET adresse = ?, tel = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sqlClient)) {
@@ -368,7 +367,6 @@ public class UtilisateurDAO {
             }
         }
 
-        // Mettre à jour avec le nouveau mot de passe hashé
         String sqlUpdate = "UPDATE utilisateur SET password = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {

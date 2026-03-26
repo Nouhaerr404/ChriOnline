@@ -16,7 +16,6 @@ public class TCPServer {
     private ServerSocket serverSocket;
     private boolean running = false;
 
-    // DÉMARRER LE SERVEUR (avec port flexible)
     public void start(int port) {
         try {
             serverSocket = new ServerSocket(port);
@@ -44,12 +43,11 @@ public class TCPServer {
         }
     }
 
-    // DÉMARRER SUR LE PORT PAR DÉFAUT (5001)
     public void start() {
         start(DEFAULT_PORT);
     }
 
-    // ARRÊTER LE SERVEUR PROPREMENT
+
     public void stop() {
         running = false;
         try {
@@ -63,11 +61,10 @@ public class TCPServer {
         }
     }
 
-    // POINT D'ENTRÉE PRINCIPAL
+
     public static void main(String[] args) {
         TCPServer server = new TCPServer();
 
-        // ShutdownHook — arrêt propre quand on ferme le programme
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info(" Arrêt du TCPServer...");
             server.stop();

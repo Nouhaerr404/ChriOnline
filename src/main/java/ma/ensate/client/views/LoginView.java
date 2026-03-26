@@ -76,10 +76,9 @@ public class LoginView {
                                     " Réessayez après 5 minutes.");
                             messageLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
 
-                            // Débloquer automatiquement après 5 minutes
                             new Thread(() -> {
                                 try {
-                                    Thread.sleep(5 * 60 * 1000); // 5 minutes
+                                    Thread.sleep(5 * 60 * 1000);
                                     Platform.runLater(() -> {
                                         emailField.setDisable(false);
                                         passwordField.setDisable(false);

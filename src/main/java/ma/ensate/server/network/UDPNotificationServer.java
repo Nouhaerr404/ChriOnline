@@ -19,7 +19,7 @@ public class UDPNotificationServer {
             byte[] data = message.getBytes("UTF-8");
             InetAddress adresse = InetAddress.getByName(clientIP);
             DatagramPacket packet = new DatagramPacket(
-                    data, data.length, adresse, clientPort); // ← port dynamique
+                    data, data.length, adresse, clientPort);
             socket.send(packet);
             logger.info("Notification UDP → " + clientIP
                     + ":" + clientPort + " : " + message);

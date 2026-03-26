@@ -39,23 +39,10 @@ public class UDPNotificationClient implements Runnable {
         String contenu = "";
         String commandeId = "";
 
-        // Parser le message
         if (message.startsWith("COMMANDE_VALIDEE:")) {
             commandeId = message.replace("COMMANDE_VALIDEE:", "");
             titre   = " Commande confirmée !";
             contenu = "Votre commande a été validée.\n"
-                    + "Réf : #" + commandeId.substring(0, 8).toUpperCase();
-
-        } else if (message.startsWith("COMMANDE_EXPEDIEE:")) {
-            commandeId = message.replace("COMMANDE_EXPEDIEE:", "");
-            titre   = " Commande expédiée !";
-            contenu = "Votre commande est en route.\n"
-                    + "Réf : #" + commandeId.substring(0, 8).toUpperCase();
-
-        } else if (message.startsWith("COMMANDE_LIVREE:")) {
-            commandeId = message.replace("COMMANDE_LIVREE:", "");
-            titre   = " Commande livrée !";
-            contenu = "Votre commande a été livrée.\n"
                     + "Réf : #" + commandeId.substring(0, 8).toUpperCase();
         } else {
             titre   = " Notification";
@@ -85,7 +72,7 @@ public class UDPNotificationClient implements Runnable {
         while (port <= 5020) {
             try {
                 new DatagramSocket(port).close();
-                break; // port libre !
+                break;
             } catch (Exception e) {
                 port++;
             }
