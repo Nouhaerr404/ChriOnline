@@ -7,156 +7,181 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import ma.ensate.client.network.ClientTCP;
+import ma.ensate.client.network.SessionManager;
 import ma.ensate.models.Commande;
 import ma.ensate.models.LigneCommande;
 import ma.ensate.models.StatutCommande;
+import ma.ensate.models.Utilisateur;
 import ma.ensate.protocol.Response;
 import ma.ensate.protocol.dto.ChangerStatutRequest;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class AdminCommandeView {
 
-    @FXML private TableView<Commande> commandesTable;
-    @FXML private TableColumn<Commande, String> idColumn;
-    @FXML private TableColumn<Commande, String> clientColumn;
-    @FXML private TableColumn<Commande, String> dateColumn;
-    @FXML private TableColumn<Commande, Double> prixColumn;
-    @FXML private TableColumn<Commande, String> detailsColumn;
-    @FXML private TableColumn<Commande, StatutCommande> statutColumn;
-    @FXML private Label statusLabel;
+    @FXML
+    private TableView<Commande> commandesTable;
+    @FXML
+    private TableColumn<Commande, String> idColumn;
+    @FXML
+    private TableColumn<Commande, String> clientColumn;
+    @FXML
+    private TableColumn<Commande, String> dateColumn;
+    @FXML
+    private TableColumn<Commande, Double> prixColumn;
+    @FXML
+    private TableColumn<Commande, String> detailsColumn;
+    @FXML
+    private TableColumn<Commande, StatutCommande> statutColumn;
+    @FXML
+    private Label statusLabel;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     @FXML
     public void initialize() {
-        setupTableColumns();
-        loadAllCommandes();
-    }
-
-    private void setupTableColumns() {
+        // --- Configuration des colonnes (Style direct simple) ---
         idColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getId()));
-        
-        clientColumn.setCellValueFactory(data -> new SimpleStringProperty(
-                data.getValue().getClient() != null ? data.getValue().getClient().getNom() : "Inconnu"
-        ));
-        
-        dateColumn.setCellValueFactory(data -> new SimpleStringProperty(
-                data.getValue().getCommandeDate() != null ? data.getValue().getCommandeDate().format(formatter) : ""
-        ));
-        
+
+        clientColumn.setCellValueFactory(data -> {
+            Utilisateur c = data.getValue().getClient();
+            return new SimpleStringProperty(c != null ? c.getNom() : "Client Inconnu");
+        });
+
+        dateColumn.setCellValueFactory(data -> {
+            if (data.getValue().getCommandeDate() != null) {
+                return new SimpleStringProperty(data.getValue().getCommandeDate().format(formatter));
+            }
+            return new SimpleStringProperty("");
+        });
+
         prixColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getPrixAPayer()));
-        
+
         detailsColumn.setCellValueFactory(data -> {
             List<LigneCommande> lignes = data.getValue().getLignes();
-            if (lignes == null || lignes.isEmpty()) return new SimpleStringProperty("Aucun article");
-            String summary = lignes.stream()
-                    .map(l -> l.getQuantite() + "x " + (l.getProduitNom() != null ? l.getProduitNom() : "Produit #" + l.getProduit().getId()))
-                    .collect(Collectors.joining(", "));
-            return new SimpleStringProperty(summary);
+            if (lignes == null || lignes.isEmpty())
+                return new SimpleStringProperty("Aucun article");
+
+            StringBuilder sb = new StringBuilder();
+            for (LigneCommande l : lignes) {
+                sb.append(l.getQuantite()).append("x ").append(l.getProduitNom()).append(", ");
+            }
+            String res = sb.toString();
+            return new SimpleStringProperty(res.substring(0, res.length() - 2));
         });
 
-        // Configurer la colonne Statut avec une ComboBox
+        // Colonne Statut modifiable
         statutColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getStatut()));
-        statutColumn.setCellFactory(column -> {
-            ComboBoxTableCell<Commande, StatutCommande> cell = new ComboBoxTableCell<>(StatutCommande.values());
-            cell.setComboBoxEditable(false);
-            
-            // Styliser la cellule
-            cell.itemProperty().addListener((obs, oldVal, newVal) -> {
-                if (newVal != null) {
-                    switch (newVal) {
-                        case EN_ATTENTE: cell.setTextFill(Color.web("#F59E0B")); break;
-                        case VALIDE: cell.setTextFill(Color.web("#10B981")); break;
-                        case EXPEDIE: cell.setTextFill(Color.web("#3B82F6")); break;
-                        case LIVRE: cell.setTextFill(Color.web("#6366F1")); break;
-                    }
-                    cell.setStyle("-fx-font-weight: bold;");
-                }
-            });
-            
-            return cell;
-        });
-
-        // Gérer le changement de valeur dans la ComboBox
+        statutColumn.setCellFactory(ComboBoxTableCell.forTableColumn(StatutCommande.values()));
         statutColumn.setOnEditCommit(event -> {
-            Commande cmd = event.getRowValue();
-            StatutCommande nouveauStatut = event.getNewValue();
-            updateCommandeStatut(cmd, nouveauStatut);
+            StatutCommande nouveau = event.getNewValue();
+            if (nouveau != null)
+                mettreAJourStatut(event.getRowValue(), nouveau);
         });
 
         commandesTable.setEditable(true);
+        chargerDonnees();
     }
 
-    private void loadAllCommandes() {
-        setStatus("Chargement des commandes...");
+    private void chargerDonnees() {
+        setStatus("Chargement des données en cours...");
         new Thread(() -> {
             try {
                 Response response = ClientTCP.getInstance().envoyerRequeteSecurisee("GET_ALL_COMMANDES", null);
-                Platform.runLater(() -> {
-                    if (response.isSuccess()) {
-                        @SuppressWarnings("unchecked")
-                        List<Commande> list = (List<Commande>) response.getData();
+                if (response.isSuccess()) {
+                    @SuppressWarnings("unchecked")
+                    List<Commande> list = (List<Commande>) response.getData();
+                    Platform.runLater(() -> {
                         commandesTable.setItems(FXCollections.observableArrayList(list));
-                        setStatus(list.size() + " commandes chargées.");
-                    } else {
-                        setStatus("Erreur: " + response.getMessage());
-                    }
-                });
+                        setStatus(list.size() + " commandes récupérées.");
+                    });
+                } else {
+                    Platform.runLater(() -> setStatus("Erreur: " + response.getMessage()));
+                }
             } catch (Exception e) {
-                Platform.runLater(() -> setStatus("Erreur réseau: " + e.getMessage()));
+                Platform.runLater(() -> setStatus("Erreur de connexion au serveur."));
             }
         }).start();
     }
 
-    private void updateCommandeStatut(Commande cmd, StatutCommande nouveauStatut) {
-        if (cmd.getStatut() == nouveauStatut) return;
-        
+    private void mettreAJourStatut(Commande cmd, StatutCommande nouveau) {
         setStatus("Mise à jour du statut...");
         new Thread(() -> {
             try {
-                ChangerStatutRequest req = new ChangerStatutRequest(cmd.getId(), nouveauStatut.name());
+                ChangerStatutRequest req = new ChangerStatutRequest(cmd.getId(), nouveau.name());
                 Response response = ClientTCP.getInstance().envoyerRequeteSecurisee("CHANGER_STATUT_COMMANDE", req);
                 Platform.runLater(() -> {
                     if (response.isSuccess()) {
-                        cmd.setStatut(nouveauStatut);
-                        commandesTable.refresh();
-                        setStatus("Statut mis à jour avec succès.");
+                        cmd.setStatut(nouveau);
+                        setStatus("Statut modifié avec succès !");
                     } else {
                         setStatus("Échec: " + response.getMessage());
-                        commandesTable.refresh(); // Remettre l'ancien statut visuellement
+                        commandesTable.refresh();
                     }
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
-                    setStatus("Erreur réseau: " + e.getMessage());
+                    setStatus("Erreur réseau.");
                     commandesTable.refresh();
                 });
             }
         }).start();
     }
 
+    // --- Navigation et Header ---
+
     @FXML
-    private void handleRefresh() {
-        loadAllCommandes();
+    public void handleRefresh() {
+        chargerDonnees();
     }
 
     @FXML
-    private void handleBack() {
+    public void handleUtilisateurs() {
+        naviguer("/ma/ensate/fxml/admin_utilisateurs.fxml", "Gestion des Utilisateurs");
+    }
+
+    @FXML
+    public void handleBack() {
+        naviguer("/ma/ensate/fxml/admin_produits.fxml", "Dashboard Admin Produits");
+    }
+
+    @FXML
+    public void handleHistoriquePlaceholder() {
+        setStatus("L'historique sera bientôt disponible.");
+    }
+
+    @FXML
+    public void handleLogout() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/admin_produits.fxml"));
+            Utilisateur current = SessionManager.getInstance().getUtilisateur();
+            if (current != null)
+                ClientTCP.getInstance().envoyerRequeteSecurisee("LOGOUT", current.getId());
+            SessionManager.getInstance().clear();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/login.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) commandesTable.getScene().getWindow();
-            stage.getScene().setRoot(root);
+            stage.setScene(new Scene(root, 500, 600));
+            stage.setTitle("ChriOnline - Connexion");
         } catch (Exception e) {
-            setStatus("Erreur lors du retour: " + e.getMessage());
+            setStatus("Erreur déconnexion.");
+        }
+    }
+
+    private void naviguer(String fxml, String titre) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(fxml));
+            Stage stage = (Stage) commandesTable.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setTitle(titre);
+        } catch (Exception e) {
+            setStatus("Erreur de navigation : " + e.getMessage());
         }
     }
 

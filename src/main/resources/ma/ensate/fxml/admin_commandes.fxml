@@ -1,38 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #F8FAFC;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.AdminCommandeView">
+<AnchorPane prefHeight="620.0" prefWidth="980.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.AdminCommandeView">
    <children>
-      <VBox spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <padding>
-            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-         </padding>
-         <children>
-            <HBox alignment="CENTER_LEFT" spacing="20.0">
+      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <!-- HEADER SECTION IDENTIQUE AUX AUTRES PAGES ADMIN -->
+            <VBox spacing="14.0" styleClass="header-section" BorderPane.alignment="CENTER">
                <children>
-                  <VBox HBox.hgrow="ALWAYS">
+                  <HBox alignment="CENTER_LEFT" spacing="14.0">
                      <children>
-                        <Label text="Gestion des Commandes" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #0F172A;" />
-                        <Label text="Visualisez et gérez le cycle de vie des commandes clients" style="-fx-font-size: 14px; -fx-text-fill: #64748B;" />
+                        <Label text="Dashboard Administrateur - Commandes" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <AnchorPane HBox.hgrow="ALWAYS" />
+                        <Button onAction="#handleUtilisateurs" styleClass="secondary-btn" text="Gérer Utilisateurs" />
+                        <Button onAction="#handleBack" styleClass="secondary-btn" text="Produits" />
+                        <Button onAction="#handleHistoriquePlaceholder" styleClass="secondary-btn" text="Historique" />
+                        <Button onAction="#handleLogout" styleClass="secondary-btn" text="Deconnexion" />
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="16.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </VBox>
+         </top>
+         <center>
+            <VBox spacing="20.0" BorderPane.alignment="CENTER">
+               <children>
+                  <VBox spacing="5.0">
+                     <children>
+                        <Label text="Gestion des Commandes" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+                        <Label text="Visualisez et gérez le cycle de vie des commandes clients" style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" />
                      </children>
                   </VBox>
-                  <Button mnemonicParsing="false" onAction="#handleRefresh" style="-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;" text="Actualiser" />
-                  <Button mnemonicParsing="false" onAction="#handleBack" style="-fx-background-color: #F1F5F9; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;" text="Retour" />
-               </children>
-            </HBox>
-            
-            <AnchorPane VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 15, 0, 0, 5);">
-               <children>
-                  <TableView fx:id="commandesTable" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0" style="-fx-background-color: transparent; -fx-selection-bar: #EFF6FF;">
+
+                  <TableView fx:id="commandesTable" VBox.vgrow="ALWAYS" styleClass="admin-table">
                     <columns>
                       <TableColumn fx:id="idColumn" prefWidth="120.0" text="N° Commande" />
                       <TableColumn fx:id="clientColumn" prefWidth="150.0" text="Client" />
-                        <TableColumn fx:id="dateColumn" prefWidth="150.0" text="Date de commande" />
+                        <TableColumn fx:id="dateColumn" prefWidth="160.0" text="Date de commande" />
                         <TableColumn fx:id="prixColumn" prefWidth="120.0" text="Montant (MAD)" />
                         <TableColumn fx:id="detailsColumn" prefWidth="250.0" text="Détails Articles" />
                         <TableColumn fx:id="statutColumn" prefWidth="140.0" text="Statut" />
@@ -41,15 +61,20 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                   </TableView>
+                  
+                  <HBox alignment="CENTER_LEFT" spacing="10.0">
+                     <children>
+                        <Label fx:id="statusLabel" text="Prêt" textFill="#7f8c8d" />
+                        <AnchorPane HBox.hgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#handleRefresh" styleClass="primary-btn" text="Actualiser la liste" />
+                     </children>
+                  </HBox>
                </children>
-            </AnchorPane>
-            
-            <HBox alignment="CENTER_RIGHT" spacing="10.0">
-               <children>
-                  <Label fx:id="statusLabel" text="Prêt" style="-fx-text-fill: #94A3B8; -fx-font-size: 12px;" />
-               </children>
-            </HBox>
-         </children>
-      </VBox>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </VBox>
+         </center>
+      </BorderPane>
    </children>
 </AnchorPane>

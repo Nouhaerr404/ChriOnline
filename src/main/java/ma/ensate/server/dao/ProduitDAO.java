@@ -18,7 +18,7 @@ public class ProduitDAO {
      * Décrémente le stock de la quantité achetée
      */
     public boolean mettreAJourStock(int produitId, int quantiteAchetee) throws SQLException {
-        String sql = "UPDATE produit SET stock = stock - ? WHERE id = ? AND stock >= ?";
+        String sql = "UPDATE produit SET stock = stock - ? WHERE id = ? AND stock >= ?"; //pour empêcher les ventes de produits qui ne sont pas disponibles.
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

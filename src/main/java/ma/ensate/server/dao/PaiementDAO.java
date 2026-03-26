@@ -44,9 +44,9 @@ public class PaiementDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, commandeId);
-            
+            //try : bonne pratique : Java ferme automatiquement TOUS les objets dans les parenthèses du try(pas de finally )
             try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
+                if (rs.next()) { // s’il y a un résultat
                     Paiement paiement = new Paiement();
                     paiement.setId(rs.getString("id"));
                     paiement.setCommandeId(rs.getString("commande_id"));
