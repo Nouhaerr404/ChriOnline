@@ -37,7 +37,7 @@ public class ProduitDAO {
      */
     public List<Produit> findAll() throws SQLException {
         List<Produit> produits = new ArrayList<>();
-        String sql = "SELECT p.*, c.nom as cat_nom FROM produit p LEFT JOIN categorie c ON p.categorie_id = c.id";
+        String sql = "SELECT p.*, c.nom as cat_nom FROM produit p LEFT JOIN categorie c ON p.categorie_id = c.id WHERE p.actif = true";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -55,7 +55,7 @@ public class ProduitDAO {
      */
     public List<Produit> findByCategorie(int categoryId) throws SQLException {
         List<Produit> produits = new ArrayList<>();
-        String sql = "SELECT p.*, c.nom as cat_nom FROM produit p LEFT JOIN categorie c ON p.categorie_id = c.id WHERE p.categorie_id = ?";
+        String sql = "SELECT p.*, c.nom as cat_nom FROM produit p LEFT JOIN categorie c ON p.categorie_id = c.id WHERE p.categorie_id = ? AND p.actif = true";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -92,7 +92,7 @@ public class ProduitDAO {
      * Récupère un produit par son ID
      */
     public Produit findById(int id) throws SQLException {
-        String sql = "SELECT p.*, c.nom as cat_nom FROM produit p LEFT JOIN categorie c ON p.categorie_id = c.id WHERE p.id = ?";
+        String sql = "SELECT p.*, c.nom as cat_nom FROM produit p LEFT JOIN categorie c ON p.categorie_id = c.id WHERE p.id = ? AND p.actif = true";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -163,7 +163,7 @@ public class ProduitDAO {
      * Supprime un produit par identifiant.
      */
     public boolean supprimer(int id) throws SQLException {
-        String sql = "DELETE FROM produit WHERE id = ?";
+        String sql = "UPDATE produit SET actif = false WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -204,6 +204,7 @@ public class ProduitDAO {
         produit.setPrix(rs.getDouble("prix"));
         produit.setStock(rs.getInt("stock"));
         produit.setImageUrl(rs.getString("image_url"));
+        produit.setActif(rs.getBoolean("actif"));
         
         int catId = rs.getInt("categorie_id");
         String catNom = rs.getString("cat_nom");
