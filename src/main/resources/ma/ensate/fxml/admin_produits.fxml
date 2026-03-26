@@ -36,6 +36,7 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
+                        <Button onAction="#handleAddProduct" styleClass="primary-btn" text="Ajouter Produit" />
                         <Button onAction="#handleDeleteProduct" styleClass="danger-btn" text="Supprimer" />
                         <ComboBox fx:id="categoryComboBox" onAction="#handleCategoryFilter" prefWidth="220.0" promptText="Filtrer par categorie" styleClass="filter-combo" />
                         <AnchorPane HBox.hgrow="ALWAYS" />

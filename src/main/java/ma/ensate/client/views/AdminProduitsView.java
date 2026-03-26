@@ -126,6 +126,11 @@ public class AdminProduitsView {
     }
 
     @FXML
+    private void handleAddProduct() {
+        openForm(null);
+    }
+
+    @FXML
     private void handleDeleteProduct() {
         Produit selected = productsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
