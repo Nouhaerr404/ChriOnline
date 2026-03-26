@@ -6,7 +6,7 @@
 
 /* Header Section */
 .header-section {
-    -fx-background-color: linear-gradient(to right, #2c3e50, #4ca1af);
+    -fx-background-color: #1a73e8;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
 }
 
@@ -78,18 +78,56 @@
     opacity: 0.8;
 }
 
-.logout-link {
-    -fx-border-color: #e74c3c;
-    border-color: #e74c3c;
-    -fx-border-radius: 5;
-    border-radius: 5;
+.logout-btn {
+    -fx-background-color: white;
+    -fx-text-fill: #1a73e8;
+    -fx-font-weight: bold;
+    -fx-background-radius: 999;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-border-color: white;
+    -fx-border-radius: 999;
     -fx-border-width: 1;
-    border-width: 1;
 }
 
-.logout-link:hover {
-    -fx-background-color: rgba(231, 76, 60, 0.1);
-    background-color: rgba(231, 76, 60, 0.1);
+.logout-btn:hover {
+    -fx-background-color: #dce8ff;
+    -fx-text-fill: #145fc4;
+}
+
+.profile-entry {
+    -fx-alignment: center-left;
+    -fx-cursor: hand;
+}
+
+.profile-avatar {
+    -fx-min-width: 38;
+    -fx-min-height: 38;
+    -fx-pref-width: 38;
+    -fx-pref-height: 38;
+    -fx-max-width: 38;
+    -fx-max-height: 38;
+    -fx-background-color: white;
+    -fx-background-radius: 999;
+    -fx-border-color: #dce8ff;
+    -fx-border-radius: 999;
+    -fx-border-width: 2;
+}
+
+.profile-entry:hover .profile-avatar {
+    -fx-background-color: #dce8ff;
+}
+
+.profile-initial {
+    -fx-text-fill: #1a73e8;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+}
+
+.profile-hover-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 0 6 0 0;
 }
 
 /* Product Details Styles */

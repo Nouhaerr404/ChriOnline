@@ -301,4 +301,82 @@ public class UtilisateurDAO {
             return rows > 0;
         }
     }
+
+    public Utilisateur trouverParId(int id) throws SQLException {
+        String sql = "SELECT u.*, c.adresse, c.tel " +
+                "FROM utilisateur u " +
+                "LEFT JOIN client c ON c.id = u.id " +
+                "WHERE u.id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Client client = new Client();
+                client.setId(rs.getInt("id"));
+                client.setNom(rs.getString("nom"));
+                client.setEmail(rs.getString("email"));
+                client.setTypeCompte(rs.getString("type_compte"));
+                client.setAdresse(rs.getString("adresse"));
+                client.setTel(rs.getString("tel"));
+                client.setStatut(rs.getString("status"));
+                return client;
+            }
+        }
+        return null;
+    }
+
+    public boolean mettreAJourProfil(int id, String nom,
+                                     String adresse,
+                                     String tel) throws SQLException {
+
+        String sqlUser = "UPDATE utilisateur SET nom = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sqlUser)) {
+            ps.setString(1, nom);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        }
+
+        // Mettre à jour la table client
+        String sqlClient = "UPDATE client SET adresse = ?, tel = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sqlClient)) {
+            ps.setString(1, adresse);
+            ps.setString(2, tel);
+            ps.setInt(3, id);
+            ps.executeUpdate();
+        }
+
+        logger.info("Profil mis à jour pour userId : " + id);
+        return true;
+    }
+
+    public boolean changerMotDePasse(int id, String ancienPassword,
+                                     String nouveauPassword) throws SQLException {
+
+        String sqlVerif = "SELECT id FROM utilisateur " +
+                "WHERE id = ? AND password = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sqlVerif)) {
+            ps.setInt(1, id);
+            ps.setString(2, hasherMotDePasse(ancienPassword));
+            ResultSet rs = ps.executeQuery();
+            if (!rs.next()) {
+                logger.warn("Ancien mot de passe incorrect pour userId : " + id);
+                return false;
+            }
+        }
+
+        // Mettre à jour avec le nouveau mot de passe hashé
+        String sqlUpdate = "UPDATE utilisateur SET password = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
+            ps.setString(1, hasherMotDePasse(nouveauPassword));
+            ps.setInt(2, id);
+            ps.executeUpdate();
+            logger.info("Mot de passe changé pour userId : " + id);
+            return true;
+        }
+    }
 }

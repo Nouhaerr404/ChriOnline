@@ -11,6 +11,10 @@ public class SessionManager {
 
     private static SessionManager instance;
 
+    private int udpPort = 5001;
+
+    public int getUdpPort() { return udpPort; }
+    public void setUdpPort(int port) { this.udpPort = port; }
 
     private Utilisateur utilisateurConnecte;
 

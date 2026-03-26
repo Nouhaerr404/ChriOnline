@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import ma.ensate.client.network.ClientTCP;
+import ma.ensate.client.network.SessionManager;
+import ma.ensate.client.network.UDPNotificationClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,17 +18,18 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        // Connexion au serveur TCP
         try {
             ClientTCP.getInstance().connecter();
             logger.info("Connexion serveur etablie");
         } catch (Exception e) {
             logger.error(" Serveur inaccessible : " + e.getMessage());
-            // L'app démarre quand même
-            // les vues afficheront l'erreur si besoin
+
         }
 
-        // Charger la vue Login
+        UDPNotificationClient udpClient = UDPNotificationClient.demarrer();
+        SessionManager.getInstance().setUdpPort(udpClient.getUdpPort());
+        logger.info("Système de notifications UDP démarré");
+
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/ma/ensate/fxml/login.fxml"));
         Parent root = loader.load();
@@ -39,7 +42,7 @@ public class MainApp extends Application {
 
     @Override
     public void stop() {
-        // Fermer la connexion TCP proprement
+
         ClientTCP.getInstance().deconnecter();
         logger.info("Application fermée.");
     }

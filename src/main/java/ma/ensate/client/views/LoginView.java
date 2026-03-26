@@ -54,6 +54,14 @@ public class LoginView {
 
                         Utilisateur u = (Utilisateur) response.getData();
                         SessionManager.getInstance().setUtilisateur(u);
+                        int udpPort = SessionManager.getInstance().getUdpPort();
+                        try {
+                            ClientTCP.getInstance().envoyerRequeteSecurisee(
+                                    "REGISTER_UDP_PORT",
+                                    new Object[]{u.getId(), udpPort});
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         logger.info(" Login réussi : " + email);
 
                         ouvrirPagePrincipale();

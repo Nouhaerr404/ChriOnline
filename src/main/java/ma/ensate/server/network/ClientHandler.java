@@ -29,6 +29,7 @@ public class ClientHandler implements Runnable {
     private static final Logger logger = LogManager.getLogger(ClientHandler.class);
 
     private final Socket socket;
+    private String clientIP;
 
     private final CommandeService commandeService;
     private final PaymentService  paymentService;
@@ -54,7 +55,7 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
-        String clientIP = socket.getInetAddress().getHostAddress();
+        clientIP = socket.getInetAddress().getHostAddress();
         logger.info("Handler démarre pour : " + clientIP);
 
         try (
@@ -97,15 +98,39 @@ public class ClientHandler implements Runnable {
             switch (action) {
 
                 case "LOGIN":
-                    return UserService.login(request.getData());
+                    return UserService.login(request.getData(), clientIP);
 
                 case "REGISTER":
                     return UserService.register(request.getData());
 
+                case "REGISTER_UDP_PORT":
+                    Object[] portData = (Object[]) request.getData();
+                    int userId = (int) portData[0];
+                    int udpPort = (int) portData[1];
+                    ClientIPRegistry.registerPort(userId, udpPort);
+                    logger.info("Port UDP enregistré : userId="
+                            + userId + " port=" + udpPort);
+                    return new Response(true, "Port UDP enregistré");
+
                 case "LOGOUT":
+                    try {
+                        Utilisateur u = utilisateurDAO.trouverParToken(request.getToken());
+                        if (u != null) {
+                            ClientIPRegistry.unregister(u.getId());
+                            logger.info("IP supprimée du registry : userId=" + u.getId());
+                        }
+                    } catch (SQLException e) {
+                        logger.warn("Erreur nettoyage registry : " + e.getMessage());
+                    }
                     return UserService.logout(request.getData());
+                case "GET_PROFIL":
+                    return UserService.getProfil(request.getData());
 
+                case "UPDATE_PROFIL":
+                    return UserService.updateProfil(request.getData());
 
+                case "CHANGER_PASSWORD":
+                    return UserService.changerMotDePasse(request.getData());
                 case "GET_ALL_PRODUCTS":
                     return productService.getAllProducts();
 
@@ -181,7 +206,7 @@ public class ClientHandler implements Runnable {
                     return validerCommande(request);
 
                 case "CHANGER_STATUT_COMMANDE":
-                    return changerStatutCommande(request);
+                    return changerStatutCommande(request, clientIP);
 
                 case "GET_ALL_COMMANDES":
                     if (!isAdmin(request.getToken())) {
@@ -253,7 +278,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private Response changerStatutCommande(Request request) {
+    private Response changerStatutCommande(Request request, String clientIP) {
         try {
             ChangerStatutRequest req = (ChangerStatutRequest) request.getData();
             if (req == null || req.getCommandeId() == null || req.getNouveauStatut() == null)
@@ -265,9 +290,32 @@ public class ClientHandler implements Runnable {
                 return new Response(false, "Statut invalide : " + req.getNouveauStatut());
             }
             boolean success = commandeService.changerStatutCommande(req.getCommandeId(), nouveauStatut);
-            return success
-                    ? new Response(true,  "Statut mis à jour avec succès")
-                    : new Response(false, "Echec de la mise à jour du statut");
+
+            if (success) {
+                Commande commande = commandeService.getCommandeById(req.getCommandeId());
+                String destinataireIP = null;
+
+                if (commande != null && commande.getClient() != null) {
+                    destinataireIP = ClientIPRegistry.getIP(
+                            commande.getClient().getId());
+                }
+
+                if (destinataireIP != null
+                        && nouveauStatut == StatutCommande.VALIDE) {
+                    int port = ClientIPRegistry.getPort(
+                            commande.getClient().getId()); // ← port unique
+                    UDPNotificationServer.notifierCommandeValidee(
+                            destinataireIP, port, req.getCommandeId());
+                }
+                else {
+                    logger.warn("Client non connecté, notification ignorée");
+                }
+
+                return new Response(true, "Statut mis à jour avec succès");
+            }
+            else {
+                return new Response(false, "Echec de la mise à jour du statut");
+            }
         } catch (IllegalArgumentException | IllegalStateException e) {
             return new Response(false, e.getMessage());
         } catch (SQLException e) {
@@ -332,6 +380,18 @@ public class ClientHandler implements Runnable {
             if (success) {
                 if (commande.getClient() != null) {
                     servicePanier.viderPanier(commande.getClient().getId());
+                }
+                if (commande.getClient() != null) {
+                    String destinataireIP = ClientIPRegistry.getIP(
+                            commande.getClient().getId());
+                    if (destinataireIP != null) {
+                        int port = ClientIPRegistry.getPort(
+                                commande.getClient().getId()); // ← port unique
+                        UDPNotificationServer.notifierCommandeValidee(
+                                destinataireIP, port, req.getCommandeId());
+                    } else {
+                        logger.warn("Client non connecté, notification ignorée");
+                    }
                 }
                 Paiement paiement = paymentService.getPaiementByCommandeId(req.getCommandeId());
                 logger.info("Paiement effectué : " + req.getCommandeId());

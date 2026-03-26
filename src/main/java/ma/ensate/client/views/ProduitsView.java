@@ -2,13 +2,13 @@ package ma.ensate.client.views;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import ma.ensate.client.network.ClientTCP;
 import ma.ensate.client.network.SessionManager;
@@ -29,9 +29,41 @@ public class ProduitsView {
     private FlowPane productsFlowPane;
 
     @FXML
+    private Label profileInitialLabel;
+
+    @FXML
+    private Label profileHoverLabel;
+
+    @FXML
     public void initialize() {
         loadCategories();
         loadAllProducts();
+        profileInitialLabel.setText(buildUserInitial());
+    }
+
+    @FXML
+    private void goToProfil() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/profil.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) productsFlowPane.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setTitle("ChriOnline - Mon Profil");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void showProfileText() {
+        profileHoverLabel.setManaged(true);
+        profileHoverLabel.setVisible(true);
+    }
+
+    @FXML
+    private void hideProfileText() {
+        profileHoverLabel.setVisible(false);
+        profileHoverLabel.setManaged(false);
     }
 
     @FXML
@@ -51,22 +83,18 @@ public class ProduitsView {
     @FXML
     private void handleLogout() {
         try {
-            // Informer le serveur de la déconnexion
             Utilisateur current = SessionManager.getInstance().getUtilisateur();
             if (current != null) {
                 ClientTCP.getInstance().envoyerRequeteSecurisee("LOGOUT", current.getId());
             }
-            
-            // Effacer la session locale
+
             SessionManager.getInstance().clear();
-            
-            // Retourner à la page de connexion
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/login.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) productsFlowPane.getScene().getWindow();
-            stage.setScene(new Scene(root, 500, 600)); // Garder la taille de la page de login
-            stage.setTitle("ChriOnline — Connexion");
-            
+            stage.setScene(new Scene(root, 500, 600));
+            stage.setTitle("ChriOnline - Connexion");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,7 +105,7 @@ public class ProduitsView {
             List<Categorie> categories = fetchCategoriesFromServer();
             Platform.runLater(() -> {
                 categoryComboBox.getItems().clear();
-                categoryComboBox.getItems().add(new Categorie(0, "Toutes les catégories"));
+                categoryComboBox.getItems().add(new Categorie(0, "Toutes les categories"));
                 categoryComboBox.getItems().addAll(categories);
                 categoryComboBox.getSelectionModel().selectFirst();
             });
@@ -131,14 +159,13 @@ public class ProduitsView {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/produit_details.fxml"));
                 Parent root = loader.load();
-                
+
                 ProduitDetailsView controller = loader.getController();
                 controller.setProduit(produit);
-                
+
                 Stage stage = (Stage) productsFlowPane.getScene().getWindow();
                 stage.getScene().setRoot(root);
-                stage.setTitle("ChriOnline — " + produit.getNom());
-                
+                stage.setTitle("ChriOnline - " + produit.getNom());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -147,9 +174,13 @@ public class ProduitsView {
         return card;
     }
 
-    // =============================================
-    // NETWORK METHODS (Moved from client-side service)
-    // =============================================
+    private String buildUserInitial() {
+        String nomUtilisateur = SessionManager.getInstance().getNomUtilisateur();
+        if (nomUtilisateur == null || nomUtilisateur.isBlank()) {
+            return "U";
+        }
+        return nomUtilisateur.trim().substring(0, 1).toUpperCase();
+    }
 
     @SuppressWarnings("unchecked")
     private List<Produit> fetchProductsFromServer() {
