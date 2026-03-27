@@ -215,38 +215,35 @@ public class UtilisateurDAO {
     }
     public List<Utilisateur> findAll() throws SQLException {
         String sql = """
-                   Select u.id, u.nom, u.email, u.type_compte, u.statut, c.adresse, c.tel
-                   FROM utilisateur u
-                   LEFT JOIN client c ON c.id = u.id 
-                   ORDER BY u.id
-                   """;
+            SELECT u.id, u.nom, u.email, u.type_compte, u.statut,
+                   c.adresse, c.tel
+            FROM utilisateur u
+            JOIN client c ON c.id = u.id
+            WHERE u.type_compte = 'CLIENT'
+            ORDER BY u.id
+            """;
+
         List<Utilisateur> liste = new ArrayList<>();
 
         try (Connection conn = DBConnection.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery()) {
-    while (rs.next()) {
-        String type = rs.getString("type_compte");
-        Utilisateur u ;
-        if ("CLIENT".equals(type)) {
-            Client c = new Client();
-            c.setAdresse(rs.getString("adresse"));
-            c.setTel(rs.getString("tel"));
-            u = c;
-        } else {
-            u = new Utilisateur();
-        }
-        u.setId(rs.getInt("id"));
-        u.setNom(rs.getString("nom"));
-        u.setEmail(rs.getString("email"));
-        u.setTypeCompte(type);
-        u.setStatut(rs.getString("statut"));
-        liste.add(u);
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-    }
+            while (rs.next()) {
+                Client c = new Client();
+                c.setId(rs.getInt("id"));
+                c.setNom(rs.getString("nom"));
+                c.setEmail(rs.getString("email"));
+                c.setTypeCompte(rs.getString("type_compte"));
+                c.setStatut(rs.getString("statut"));
+                c.setAdresse(rs.getString("adresse"));
+                c.setTel(rs.getString("tel"));
+                liste.add(c);
+            }
         }
         return liste;
     }
+
     public Utilisateur findById(int id) throws SQLException {
         String sql = """
                 SELECT u.id, u.nom, u.email, u.type_compte, u.statut, c.adresse, c.tel
