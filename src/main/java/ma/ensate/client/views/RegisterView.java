@@ -21,16 +21,20 @@ public class RegisterView {
     @FXML private TextField     nomField;
     @FXML private TextField     emailField;
     @FXML private PasswordField passwordField;
+    @FXML private TextField     passwordVisibleField;
     @FXML private TextField     adresseField;
     @FXML private TextField     telField;
     @FXML private Label         messageLabel;
     @FXML private Button        registerButton;
+    @FXML private Button        togglePasswordBtn;
+
+    private boolean passwordVisible = false;
 
     @FXML
     private void handleRegister() {
         String nom      = nomField.getText().trim();
         String email    = emailField.getText().trim();
-        String password = passwordField.getText();
+        String password = getPasswordValue();
         String adresse  = adresseField.getText().trim();
         String tel      = telField.getText().trim();
 
@@ -112,5 +116,31 @@ public class RegisterView {
     private void afficherInfo(String msg) {
         messageLabel.setText(msg);
         messageLabel.setStyle("-fx-text-fill: #1a73e8; -fx-font-size: 12px;");
+    }
+
+    @FXML
+    private void togglePassword() {
+        passwordVisible = !passwordVisible;
+
+        if (passwordVisible) {
+            passwordVisibleField.setText(passwordField.getText());
+            passwordField.setVisible(false);
+            passwordField.setManaged(false);
+            passwordVisibleField.setVisible(true);
+            passwordVisibleField.setManaged(true);
+            togglePasswordBtn.setText("Masquer");
+            return;
+        }
+
+        passwordField.setText(passwordVisibleField.getText());
+        passwordVisibleField.setVisible(false);
+        passwordVisibleField.setManaged(false);
+        passwordField.setVisible(true);
+        passwordField.setManaged(true);
+        togglePasswordBtn.setText("Voir");
+    }
+
+    private String getPasswordValue() {
+        return passwordVisible ? passwordVisibleField.getText() : passwordField.getText();
     }
 }

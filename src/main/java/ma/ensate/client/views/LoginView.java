@@ -21,13 +21,17 @@ public class LoginView {
 
     @FXML private TextField     emailField;
     @FXML private PasswordField passwordField;
+    @FXML private TextField     passwordVisibleField;
     @FXML private Label         messageLabel;
     @FXML private Button        loginButton;
+    @FXML private Button        togglePasswordBtn;
+
+    private boolean passwordVisible = false;
 
     @FXML
     private void handleLogin() {
         String email    = emailField.getText().trim();
-        String password = passwordField.getText();
+        String password = getPasswordValue();
 
         if (email.isEmpty() || password.isEmpty()) {
             afficherErreur("Veuillez remplir tous les champs !");
@@ -70,7 +74,7 @@ public class LoginView {
                         afficherErreur(response.getMessage());
                         if (response.getMessage().contains("bloqué")) {
                             emailField.setDisable(true);
-                            passwordField.setDisable(true);
+                            setPasswordInputsDisabled(true);
                             loginButton.setDisable(true);
                             messageLabel.setText(
                                     " Réessayez après 5 minutes.");
@@ -81,10 +85,10 @@ public class LoginView {
                                     Thread.sleep(5 * 60 * 1000);
                                     Platform.runLater(() -> {
                                         emailField.setDisable(false);
-                                        passwordField.setDisable(false);
+                                        setPasswordInputsDisabled(false);
                                         loginButton.setDisable(false);
                                         emailField.clear();
-                                        passwordField.clear();
+                                        clearPasswordFields();
                                         messageLabel.setText(
                                                 "Vous pouvez réessayer maintenant.");
                                         messageLabel.setStyle("-fx-text-fill: green;");
@@ -142,5 +146,42 @@ public class LoginView {
     private void afficherErreur(String msg) {
         messageLabel.setText(msg);
         messageLabel.setStyle("-fx-text-fill: red;");
+    }
+
+    @FXML
+    private void togglePassword() {
+        passwordVisible = !passwordVisible;
+
+        if (passwordVisible) {
+            passwordVisibleField.setText(passwordField.getText());
+            passwordField.setVisible(false);
+            passwordField.setManaged(false);
+            passwordVisibleField.setVisible(true);
+            passwordVisibleField.setManaged(true);
+            togglePasswordBtn.setText("Masquer");
+            return;
+        }
+
+        passwordField.setText(passwordVisibleField.getText());
+        passwordVisibleField.setVisible(false);
+        passwordVisibleField.setManaged(false);
+        passwordField.setVisible(true);
+        passwordField.setManaged(true);
+        togglePasswordBtn.setText("Voir");
+    }
+
+    private String getPasswordValue() {
+        return passwordVisible ? passwordVisibleField.getText() : passwordField.getText();
+    }
+
+    private void clearPasswordFields() {
+        passwordField.clear();
+        passwordVisibleField.clear();
+    }
+
+    private void setPasswordInputsDisabled(boolean disabled) {
+        passwordField.setDisable(disabled);
+        passwordVisibleField.setDisable(disabled);
+        togglePasswordBtn.setDisable(disabled);
     }
 }

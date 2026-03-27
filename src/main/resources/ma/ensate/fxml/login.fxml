@@ -32,10 +32,30 @@
 
         <Label text="Mot de passe"
                style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
-        <PasswordField fx:id="passwordField"
-                       promptText="Votre mot de passe"
-                       style="-fx-padding: 10; -fx-background-radius: 5;
-                              -fx-border-color: #ddd; -fx-border-radius: 5;"/>
+        <HBox spacing="8" alignment="CENTER_LEFT">
+            <StackPane HBox.hgrow="ALWAYS">
+                <PasswordField fx:id="passwordField"
+                               promptText="Votre mot de passe"
+                               maxWidth="Infinity"
+                               style="-fx-padding: 10; -fx-background-radius: 5;
+                                      -fx-border-color: #ddd; -fx-border-radius: 5;"/>
+                <TextField fx:id="passwordVisibleField"
+                           promptText="Votre mot de passe"
+                           visible="false"
+                           managed="false"
+                           maxWidth="Infinity"
+                           style="-fx-padding: 10; -fx-background-radius: 5;
+                                  -fx-border-color: #ddd; -fx-border-radius: 5;"/>
+            </StackPane>
+            <Button fx:id="togglePasswordBtn"
+                    text="Voir"
+                    onAction="#togglePassword"
+                    style="-fx-background-color: #e8f0fe;
+                           -fx-text-fill: #1a73e8;
+                           -fx-font-weight: bold;
+                           -fx-background-radius: 5;
+                           -fx-cursor: hand;"/>
+        </HBox>
 
 
         <Label fx:id="messageLabel"
