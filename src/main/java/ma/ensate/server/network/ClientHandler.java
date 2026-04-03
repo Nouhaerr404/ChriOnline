@@ -143,6 +143,12 @@ public class ClientHandler implements Runnable {
                 case "GET_ALL_CATEGORIES":
                     return productService.getAllCategories();
 
+                case "CREATE_CATEGORY":
+                    if (!isAdmin(request.getToken())) {
+                        return new Response(false, "Action reservee aux administrateurs");
+                    }
+                    return productService.createCategory(request.getData());
+
                 case "CREATE_PRODUCT":
                     if (!isAdmin(request.getToken())) {
                         return new Response(false, "Action reservee aux administrateurs");

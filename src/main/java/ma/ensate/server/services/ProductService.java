@@ -77,6 +77,24 @@ public class ProductService {
         }
     }
 
+    public Response createCategory(Object data) {
+        try {
+            if (!(data instanceof String) || ((String) data).trim().isEmpty()) {
+                return new Response(false, "Nom de catégorie invalide");
+            }
+            String nom = ((String) data).trim();
+            Categorie created = produitDAO.ajouterCategorie(nom);
+            if (created != null) {
+                return new Response(true, "Catégorie créée avec succès", created);
+            } else {
+                return new Response(false, "Echec de création de la catégorie");
+            }
+        } catch (SQLException e) {
+            logger.error("Erreur lors de la création de la catégorie : " + e.getMessage());
+            return new Response(false, "Erreur base de données : " + e.getMessage());
+        }
+    }
+
     public Response createProduct(Object data) {
         try {
             if (!(data instanceof ProduitAdminRequest req)) {

@@ -88,9 +88,23 @@ public class ProduitDAO {
         return categories;
     }
 
-    /**
-     * Récupère un produit par son ID
-     */
+  
+    public Categorie ajouterCategorie(String nom) throws SQLException {
+        String sql = "INSERT INTO categorie(nom) VALUES (?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, nom);
+            int rows = stmt.executeUpdate();
+            if (rows == 0) return null;
+            try (ResultSet keys = stmt.getGeneratedKeys()) {
+                if (keys.next()) {
+                    return new Categorie(keys.getInt(1), nom);
+                }
+            }
+        }
+        return null;
+    }
+
     public Produit findById(int id) throws SQLException {
         String sql = "SELECT p.*, c.nom as cat_nom FROM produit p LEFT JOIN categorie c ON p.categorie_id = c.id WHERE p.id = ? AND p.actif = true";
         
