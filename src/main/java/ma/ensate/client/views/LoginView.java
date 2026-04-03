@@ -22,37 +22,53 @@ public class LoginView {
     @FXML private TextField     emailField;
     @FXML private PasswordField passwordField;
     @FXML private TextField     passwordVisibleField;
+    @FXML private TextField     captchaField;
+    @FXML private Label         captchaQuestionLabel;
     @FXML private Label         messageLabel;
     @FXML private Button        loginButton;
     @FXML private Button        togglePasswordBtn;
+    @FXML private Button        refreshCaptchaBtn;
 
     private boolean passwordVisible = false;
+    private String captchaId;
+
+    @FXML
+    public void initialize() {
+        chargerCaptcha();
+    }
 
     @FXML
     private void handleLogin() {
         String email    = emailField.getText().trim();
         String password = getPasswordValue();
+        String captchaAnswer = captchaField.getText().trim();
 
-        if (email.isEmpty() || password.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty() || captchaAnswer.isEmpty()) {
             afficherErreur("Veuillez remplir tous les champs !");
+            return;
+        }
+        if (captchaId == null || captchaId.isBlank()) {
+            afficherErreur("Captcha indisponible. Rafraichissez puis reessayez.");
             return;
         }
 
         loginButton.setDisable(true);
+        refreshCaptchaBtn.setDisable(true);
         messageLabel.setText("Connexion en cours...");
         messageLabel.setStyle("-fx-text-fill: #1a73e8;");
 
         new Thread(() -> {
             try {
 
-                String[] credentials = {email, password};
-                Request request = new Request("LOGIN", credentials);
+                Object[] payload = {email, password, captchaId, captchaAnswer};
+                Request request = new Request("LOGIN", payload);
 
                 Response response = ClientTCP.getInstance()
                         .envoyerRequete(request);
 
                 Platform.runLater(() -> {
                     loginButton.setDisable(false);
+                    refreshCaptchaBtn.setDisable(false);
 
                     if (response.isSuccess()) {
 
@@ -72,9 +88,13 @@ public class LoginView {
 
                     } else {
                         afficherErreur(response.getMessage());
+                        chargerCaptcha();
+                        captchaField.clear();
                         if (response.getMessage().contains("bloqué")) {
                             emailField.setDisable(true);
                             setPasswordInputsDisabled(true);
+                            captchaField.setDisable(true);
+                            refreshCaptchaBtn.setDisable(true);
                             loginButton.setDisable(true);
                             messageLabel.setText(
                                     " Réessayez après 5 minutes.");
@@ -86,9 +106,13 @@ public class LoginView {
                                     Platform.runLater(() -> {
                                         emailField.setDisable(false);
                                         setPasswordInputsDisabled(false);
+                                        captchaField.setDisable(false);
+                                        refreshCaptchaBtn.setDisable(false);
                                         loginButton.setDisable(false);
                                         emailField.clear();
                                         clearPasswordFields();
+                                        captchaField.clear();
+                                        chargerCaptcha();
                                         messageLabel.setText(
                                                 "Vous pouvez réessayer maintenant.");
                                         messageLabel.setStyle("-fx-text-fill: green;");
@@ -102,6 +126,7 @@ public class LoginView {
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     loginButton.setDisable(false);
+                    refreshCaptchaBtn.setDisable(false);
                     afficherErreur("Impossible de contacter le serveur.");
                     logger.error("Erreur login : " + e.getMessage());
                 });
@@ -183,5 +208,38 @@ public class LoginView {
         passwordField.setDisable(disabled);
         passwordVisibleField.setDisable(disabled);
         togglePasswordBtn.setDisable(disabled);
+    }
+
+    @FXML
+    private void handleRefreshCaptcha() {
+        chargerCaptcha();
+    }
+
+    private void chargerCaptcha() {
+        captchaQuestionLabel.setText("Chargement du captcha...");
+        refreshCaptchaBtn.setDisable(true);
+        new Thread(() -> {
+            try {
+                Response response = ClientTCP.getInstance().envoyerRequete(new Request("GET_CAPTCHA"));
+                Platform.runLater(() -> {
+                    refreshCaptchaBtn.setDisable(false);
+                    if (!response.isSuccess() || !(response.getData() instanceof String[] data) || data.length < 2) {
+                        captchaId = null;
+                        captchaQuestionLabel.setText("Captcha indisponible");
+                        afficherErreur("Impossible de charger le captcha.");
+                        return;
+                    }
+                    captchaId = data[0];
+                    captchaQuestionLabel.setText(data[1]);
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    captchaId = null;
+                    refreshCaptchaBtn.setDisable(false);
+                    captchaQuestionLabel.setText("Captcha indisponible");
+                    afficherErreur("Impossible de charger le captcha.");
+                });
+            }
+        }).start();
     }
 }

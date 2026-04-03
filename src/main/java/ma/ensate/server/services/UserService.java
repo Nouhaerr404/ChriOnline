@@ -12,13 +12,39 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class UserService {
 
     private static final Logger logger = LogManager.getLogger(UserService.class);
     private static final UtilisateurDAO dao = new UtilisateurDAO();
     private static final EmailService emailService = new EmailService();
+    private static final Map<String, CaptchaEntry> captchaStore = new ConcurrentHashMap<>();
+    private static final Random random = new Random();
+    private static final long CAPTCHA_TTL_MS = 2 * 60 * 1000; // 2 minutes
+
+    private static class CaptchaEntry {
+        private final String expectedAnswer;
+        private final long expiresAt;
+
+        private CaptchaEntry(String expectedAnswer, long expiresAt) {
+            this.expectedAnswer = expectedAnswer;
+            this.expiresAt = expiresAt;
+        }
+    }
+
+    public static Response genererCaptcha() {
+        nettoyerCaptchaExpires();
+        int a = random.nextInt(9) + 1;
+        int b = random.nextInt(9) + 1;
+        String captchaId = UUID.randomUUID().toString();
+        captchaStore.put(captchaId, new CaptchaEntry(String.valueOf(a + b), System.currentTimeMillis() + CAPTCHA_TTL_MS));
+        String question = "Combien font " + a + " + " + b + " ?";
+        return new Response(true, "Captcha genere", new String[]{captchaId, question});
+    }
 
     public static Response register(Object data) {
         try {
@@ -57,9 +83,15 @@ public class UserService {
 
     public static Response login(Object data, String clientIP) {
         try {
-            String[] credentials = (String[]) data;
-            String email    = credentials[0].trim();
-            String password = credentials[1];
+            Object[] loginPayload = (Object[]) data;
+            String email = ((String) loginPayload[0]).trim();
+            String password = (String) loginPayload[1];
+            String captchaId = (String) loginPayload[2];
+            String captchaReponse = ((String) loginPayload[3]).trim();
+
+            if (!verifierCaptcha(captchaId, captchaReponse)) {
+                return new Response(false, "Captcha invalide ou expiré.");
+            }
 
             if (dao.estBloque(email)) {
                 return new Response(false,
@@ -102,6 +134,9 @@ public class UserService {
         } catch (ClassCastException e) {
             logger.error("Erreur cast données login : " + e.getMessage());
             return new Response(false, "Données invalides.");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            logger.error("Payload login incomplet : " + e.getMessage());
+            return new Response(false, "Données de connexion incomplètes.");
         } catch (SQLException e) {
             logger.error("Erreur BD login : " + e.getMessage());
             return new Response(false, "Erreur serveur.");
@@ -253,6 +288,28 @@ public class UserService {
                 logger.error("Echec envoi email notification statut compte userId={} : {}", userId, e.getMessage());
             }
         }).start();
+    }
+
+    private static boolean verifierCaptcha(String captchaId, String reponse) {
+        if (captchaId == null || captchaId.isBlank() || reponse == null || reponse.isBlank()) {
+            return false;
+        }
+
+        CaptchaEntry entry = captchaStore.remove(captchaId);
+        if (entry == null) {
+            return false;
+        }
+
+        if (System.currentTimeMillis() > entry.expiresAt) {
+            return false;
+        }
+
+        return entry.expectedAnswer.equals(reponse.trim());
+    }
+
+    private static void nettoyerCaptchaExpires() {
+        long now = System.currentTimeMillis();
+        captchaStore.entrySet().removeIf(e -> e.getValue().expiresAt < now);
     }
 
 

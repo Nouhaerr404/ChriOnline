@@ -40,7 +40,7 @@ public class ClientHandler implements Runnable {
     private final ProductService  productService;
 
     private static final Set<String> ACTIONS_PUBLIQUES =
-            new HashSet<>(Arrays.asList("LOGIN", "REGISTER"));
+            new HashSet<>(Arrays.asList("LOGIN", "REGISTER", "GET_CAPTCHA"));
 
     public ClientHandler(Socket socket) {
         this.socket          = socket;
@@ -102,6 +102,9 @@ public class ClientHandler implements Runnable {
 
                 case "REGISTER":
                     return UserService.register(request.getData());
+
+                case "GET_CAPTCHA":
+                    return UserService.genererCaptcha();
 
                 case "REGISTER_UDP_PORT":
                     Object[] portData = (Object[]) request.getData();
