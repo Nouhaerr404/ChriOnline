@@ -55,8 +55,16 @@
                         <TextField fx:id="txtHold" promptText="PRÉNOM NOM" prefHeight="45" style="-fx-background-radius: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 8;"/>
                     </VBox>
                 </VBox>
-                
+
                 <RadioButton fx:id="rbCash" text="Paiement à la Livraison" toggleGroup="$group" style="-fx-font-weight: bold; -fx-text-fill: #0F172A;"/>
+                
+                <VBox fx:id="livraisonForm" spacing="10" visible="false" managed="false">
+                    <padding><Insets left="25" top="5" bottom="5"/></padding>
+                    <RadioButton fx:id="rbLivraisonCash" text="Payer en espèces (Cash)" selected="true" style="-fx-text-fill: #0F172A;">
+                        <toggleGroup><ToggleGroup fx:id="livraisonGroup"/></toggleGroup>
+                    </RadioButton>
+                    <RadioButton fx:id="rbLivraisonCard" text="Payer par carte à la livraison" toggleGroup="$livraisonGroup" style="-fx-text-fill: #0F172A;"/>
+                </VBox>
             </VBox>
             
             <Button fx:id="btnPay" text="CONFIRMER LE RÈGLEMENT" maxWidth="Infinity" prefHeight="50" style="-fx-background-color: #10B981; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;" onMouseEntered="#btnPayHover" onMouseExited="#btnPayExit" onAction="#handlePayment"/>

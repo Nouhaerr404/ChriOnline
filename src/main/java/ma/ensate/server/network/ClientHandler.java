@@ -12,6 +12,7 @@ import ma.ensate.server.services.PaymentService;
 import ma.ensate.server.services.ProductService;
 import ma.ensate.server.services.ServicePanier;
 import ma.ensate.server.services.UserService;
+import ma.ensate.server.services.PaymentRateLimiter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,20 +70,38 @@ public class ClientHandler implements Runnable {
 
                 if (!ACTIONS_PUBLIQUES.contains(request.getAction())) {
                     String token = request.getToken();
-                    if (!UserService.verifierToken(token)) {
-                        logger.warn(" Accès refuse — token invalide"
+                    ma.ensate.server.services.SessionManager.SessionResult sResult = 
+                        ma.ensate.server.services.SessionManager.evaluerEtRegenerer(token);
+                        
+                    if (!sResult.isValid) {
+                        logger.warn(" Accès refusé : " + sResult.errorMessage
                                 + " | Action : " + request.getAction()
                                 + " | Client : " + clientIP);
-                        out.writeObject(new Response(false,
-                                "Non autorise. Veuillez vous connecter."));
+                        out.writeObject(new Response(false, sResult.errorMessage));
                         out.flush();
                         continue;
                     }
-                }
 
-                Response response = traiterRequete(request);
-                out.writeObject(response);
-                out.flush();
+                    Response response = traiterRequete(request);
+                    
+                    if (sResult.latestToken != null && !sResult.latestToken.equals(token)) {
+                        response.setNewToken(sResult.latestToken);
+                        try {
+                            Utilisateur u = utilisateurDAO.trouverParToken(token);
+                            if (u != null) {
+                                utilisateurDAO.sauvegarderToken(u.getId(), sResult.latestToken);
+                            }
+                        } catch (Exception e) {
+                            logger.error("Erreur sauvegarde du nouveau token: " + e.getMessage());
+                        }
+                    }
+                    out.writeObject(response);
+                    out.flush();
+                } else {
+                    Response response = traiterRequete(request);
+                    out.writeObject(response);
+                    out.flush();
+                }
             }
 
         } catch (EOFException e) {
@@ -125,6 +144,7 @@ public class ClientHandler implements Runnable {
                     } catch (SQLException e) {
                         logger.warn("Erreur nettoyage registry : " + e.getMessage());
                     }
+                    ma.ensate.server.services.SessionManager.endSession(request.getToken());
                     return UserService.logout(request.getData());
                 case "GET_PROFIL":
                     return UserService.getProfil(request.getData());
@@ -385,6 +405,13 @@ public class ClientHandler implements Runnable {
             Commande commande = commandeService.getCommandeById(req.getCommandeId());
             if (commande == null)
                 return new Response(false, "Commande introuvable");
+                
+            if (commande.getClient() != null) {
+                if (PaymentRateLimiter.isReplayAttack(String.valueOf(commande.getClient().getId()), commande.getPrixAPayer())) {
+                    logger.warn("Replay attack évité pour la commande: " + req.getCommandeId());
+                    return new Response(false, "Paiement en cours ou déjà effectué récemment (anti-rejeu). Veuillez patienter.");
+                }
+            }
             boolean success = paymentService.effectuerPaiement(commande, methode, req.getCardLast4());
             if (success) {
                 if (commande.getClient() != null) {

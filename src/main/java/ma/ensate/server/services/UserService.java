@@ -125,6 +125,7 @@ public class UserService {
             dao.reinitialiserTentatives(email);
             u.setSessionToken(token);
             ClientIPRegistry.register(u.getId(), clientIP);
+            SessionManager.startSession(token, u.getId());
             logger.info("IP enregistrée pour userId=" + u.getId()
                     + " : " + clientIP);
 
