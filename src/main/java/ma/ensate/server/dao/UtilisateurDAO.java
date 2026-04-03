@@ -4,6 +4,7 @@ import ma.ensate.models.Client;
 import ma.ensate.models.Utilisateur;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,9 +24,14 @@ public class UtilisateurDAO {
 
     private static final int MAX_TENTATIVES  = 3;
     private static final int DUREE_BLOCAGE_MS = 5 * 60 * 1000; // 5 minutes
+    private static final int BCRYPT_COST = 12;
 
 
     public static String hasherMotDePasse(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt(BCRYPT_COST));
+    }
+
+    private static String hasherMotDePasseLegacySHA256(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(password.getBytes());
@@ -37,6 +43,29 @@ public class UtilisateurDAO {
         } catch (NoSuchAlgorithmException e) {
             logger.error("Erreur hashage SHA-256 : " + e.getMessage());
             throw new RuntimeException(e);
+        }
+    }
+
+    private boolean verifierMotDePasse(String passwordEnClair, String hashStocke) {
+        if (hashStocke == null || hashStocke.isBlank()) {
+            return false;
+        }
+
+        if (hashStocke.startsWith("$2a$") || hashStocke.startsWith("$2b$") || hashStocke.startsWith("$2y$")) {
+            return BCrypt.checkpw(passwordEnClair, hashStocke);
+        }
+
+        // Compatibilite temporaire avec les anciens comptes SHA-256.
+        return hashStocke.equals(hasherMotDePasseLegacySHA256(passwordEnClair));
+    }
+
+    private void mettreAJourHashMotDePasse(int userId, String nouveauHash) throws SQLException {
+        String sqlUpdate = "UPDATE utilisateur SET password = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
+            ps.setString(1, nouveauHash);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
         }
     }
 
@@ -134,20 +163,27 @@ public class UtilisateurDAO {
     public Utilisateur trouverParEmailPassword(String email, String password)
             throws SQLException {
 
-        String passwordHashe = hasherMotDePasse(password);
         String sql = "SELECT u.*, c.adresse, c.tel " +
                 "FROM utilisateur u " +
                 "LEFT JOIN client c ON c.id = u.id " +
-                "WHERE u.email = ? AND u.password = ?";
+                "WHERE u.email = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, email);
-            ps.setString(2, passwordHashe);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
+                String hashStocke = rs.getString("password");
+                if (!verifierMotDePasse(password, hashStocke)) {
+                    return null;
+                }
+
+                if (!hashStocke.startsWith("$2")) {
+                    mettreAJourHashMotDePasse(rs.getInt("id"), hasherMotDePasse(password));
+                    logger.info("Migration SHA-256 -> BCrypt effectuee pour {}", email);
+                }
 
                 String type = rs.getString("type_compte");
                 Utilisateur u;
@@ -351,27 +387,20 @@ public class UtilisateurDAO {
     public boolean changerMotDePasse(int id, String ancienPassword,
                                      String nouveauPassword) throws SQLException {
 
-        String sqlVerif = "SELECT id FROM utilisateur " +
-                "WHERE id = ? AND password = ?";
+        String sqlVerif = "SELECT password FROM utilisateur WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sqlVerif)) {
             ps.setInt(1, id);
-            ps.setString(2, hasherMotDePasse(ancienPassword));
             ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
+            if (!rs.next() || !verifierMotDePasse(ancienPassword, rs.getString("password"))) {
                 logger.warn("Ancien mot de passe incorrect pour userId : " + id);
                 return false;
             }
         }
 
-        String sqlUpdate = "UPDATE utilisateur SET password = ? WHERE id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
-            ps.setString(1, hasherMotDePasse(nouveauPassword));
-            ps.setInt(2, id);
-            ps.executeUpdate();
-            logger.info("Mot de passe changé pour userId : " + id);
-            return true;
-        }
+        // Mettre à jour avec le nouveau mot de passe hashé
+        mettreAJourHashMotDePasse(id, hasherMotDePasse(nouveauPassword));
+        logger.info("Mot de passe changé pour userId : " + id);
+        return true;
     }
 }
