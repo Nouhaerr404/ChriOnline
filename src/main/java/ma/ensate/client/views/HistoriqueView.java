@@ -42,11 +42,14 @@ public class HistoriqueView {
 
     public void afficher() {
         try {
+            //Crée un objet FXMLLoader qui va charger un fichier FXML (la description visuelle de l'interface)
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/historique.fxml"));
+            //Définit le contrôleur du FXML comme étant l'objet courant
             loader.setController(this);
             Parent root = loader.load();
 
             Scene scene = new Scene(root, 1000, 750);
+            //stage = la fenêtre principale
             stage.setScene(scene);
             stage.show();
 

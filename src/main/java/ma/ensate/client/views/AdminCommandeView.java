@@ -45,7 +45,8 @@ public class AdminCommandeView {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     @FXML
-    public void initialize() {
+    public void initialize() { // — appelée automatiquement au chargement du fxml
+
         // --- Configuration des colonnes (Style direct simple) ---
         idColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getId()));
 

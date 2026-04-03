@@ -25,6 +25,9 @@ public class PaiementView {
     @FXML private VBox cardForm;
     @FXML private TextField txtNum, txtExp, txtCvv, txtHold;
     @FXML private Button btnPay;
+    @FXML private VBox livraisonForm;
+    @FXML private RadioButton rbLivraisonCash;
+    @FXML private RadioButton rbLivraisonCard;
 
     private final Stage stage;
     private final ClientTCP clientTCP;
@@ -45,15 +48,27 @@ public class PaiementView {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/paiement.fxml"));
             loader.setController(this);
             Parent root = loader.load();
-            
+
             // Initialisation des données
             lblSub.setText("Commande #" + commande.getId().substring(0, 8).toUpperCase());
             valT.setText(String.format("%.2f MAD", commande.getPrixAPayer()));
-            
+
             // Gestion de l'affichage du formulaire carte
             cardForm.setVisible(true);
-            rbCard.setOnAction(e -> cardForm.setVisible(true));
-            rbCash.setOnAction(e -> cardForm.setVisible(false));
+
+
+            rbCard.setOnAction(e -> {
+                cardForm.setVisible(true);
+                cardForm.setManaged(true);
+                livraisonForm.setVisible(false);
+                livraisonForm.setManaged(false);
+            });
+            rbCash.setOnAction(e -> {
+                cardForm.setVisible(false);
+                cardForm.setManaged(false);
+                livraisonForm.setVisible(true);
+                livraisonForm.setManaged(true);
+            });
 
             stage.setScene(new Scene(root, 1000, 700));
             stage.show();
@@ -64,10 +79,30 @@ public class PaiementView {
 
     @FXML
     private void handlePayment() {
-        // Validation basique
         if (rbCard.isSelected()) {
-            if (txtNum.getText().isEmpty() || txtCvv.getText().length() < 3) {
-                montrerAlerte("Données manquantes", "Veuillez remplir les informations de carte.");
+            String num = txtNum.getText().replace(" ", "");
+
+            // Numéro de carte : exactement 16 chiffres
+            if (num.length() != 16) {
+                montrerAlerte("Données manquantes", "Le numéro de carte doit contenir 16 chiffres.");
+                return;
+            }
+
+            // CVV : exactement 3 chiffres
+            if (txtCvv.getText().length() != 3) {
+                montrerAlerte("Données manquantes", "Le CVV doit contenir exactement 3 chiffres.");
+                return;
+            }
+
+            // Date d'expiration : format MM/AA
+            if (!txtExp.getText().matches("\\d{2}/\\d{2}")) {
+                montrerAlerte("Données manquantes", "La date d'expiration doit être au format MM/AA.");
+                return;
+            }
+
+            int mois = Integer.parseInt(txtExp.getText().substring(0, 2));
+            if (mois < 1 || mois > 12) {
+                montrerAlerte("Date invalide", "Le mois doit être compris entre 01 et 12.");
                 return;
             }
         }
@@ -76,25 +111,32 @@ public class PaiementView {
         String last4 = "0000";
         if (rbCard.isSelected()) {
             String num = txtNum.getText().replace(" ", "");
-            if (num.length() >= 4) {
-                last4 = num.substring(num.length() - 4);
-            }
+            last4 = num.substring(num.length() - 4);
         }
-        
+
         traiterPaiement(last4);
     }
 
     private void traiterPaiement(String last4) {
-        String methode = rbCard.isSelected() ? "CARTE_BANCAIRE" : "ALIVRAISON";
+     
+        String methode;
+        if (rbCard.isSelected()) {
+            methode = "CARTE_BANCAIRE";
+        } else if (rbLivraisonCard.isSelected()) {
+            methode = "ALIVRAISON_CARTE";
+        } else {
+            methode = "ALIVRAISON";
+        }
+
         PaiementRequest dt = new PaiementRequest(commande.getId(), methode, last4);
 
         new Thread(() -> {
             try {
                 Response res = clientTCP.envoyerRequete(new Request("EFFECTUER_PAIEMENT", dt, token));
-                
+
                 Platform.runLater(() -> {
                     if (res.isSuccess()) {
-                        viderPanier(); // Nettoyage
+                        viderPanier();
                         montrerMessageSucces();
                     } else {
                         montrerAlerte("Échec", res.getMessage());

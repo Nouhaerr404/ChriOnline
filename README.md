@@ -45,12 +45,12 @@ Le projet est structuré selon les meilleures pratiques pour faciliter la collab
 
 ## 👥 Équipe de Développement
 
-| Membre | Rôle / Responsabilité |
-| :--- | :--- |
+| Membre | Rôle / Responsabilité                         |
+| :--- |:----------------------------------------------|
 | **Nouha ERRABOUN** | Sécurité, Squelette Serveur, Authentification |
-| **Ismail LYAMANI** | Gestion des Produits, Catalogue, Vue Détails |
-| **Alae EL BARKOUKI** | Gestion du Panier & Logique d'Achat |
-| **Jihane EL HAMDAOUI** | Gestion des Commandes & Historique |
+| **Ismail LYAMANI** | Gestion des Produits, Catalogue, Vue Détails  |
+| **Alae EL BARKOUKI** | Gestion du Panier & Logique d'Achat           |
+| **Jihane EL HAMDAOUI** | Gestion des Commandes & Historique & paiement |
 
 ## 📄 Licence
 Ce projet est sous licence MIT. Voir le fichier [LICENSE](./LICENSE).

@@ -7,7 +7,7 @@
 /* Header Section */
 .header-section {
     -fx-background-color: #1a73e8;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
 
 /* Filter Combo */
@@ -23,6 +23,7 @@
     -fx-background-color: transparent;
     -fx-background-insets: 0;
 }
+
 .content-scroll .viewport {
     -fx-background-color: transparent;
 }
@@ -34,13 +35,13 @@
     -fx-padding: 15;
     -fx-alignment: center;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
     -fx-transition: 0.3s ease-in-out;
 }
 
 .product-card:hover {
     -fx-background-color: #ecf0f1;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 4);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 4);
     -fx-translate-y: -5;
 }
 
