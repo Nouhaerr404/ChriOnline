@@ -6,6 +6,7 @@ import ma.ensate.protocol.Request;
 import ma.ensate.protocol.Response;
 import ma.ensate.server.dao.UtilisateurDAO;
 import ma.ensate.server.network.ClientIPRegistry;
+import ma.ensate.util.EmailService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,6 +18,7 @@ public class UserService {
 
     private static final Logger logger = LogManager.getLogger(UserService.class);
     private static final UtilisateurDAO dao = new UtilisateurDAO();
+    private static final EmailService emailService = new EmailService();
 
     public static Response register(Object data) {
         try {
@@ -179,6 +181,7 @@ public class UserService {
             boolean ok = dao.suspendreCompte(userId);
             if (ok) {
                 logger.info("Compte suspendu par admin : userId=" + userId);
+                envoyerNotificationStatutCompte(userId, true);
                 return new Response(true, "Compte suspendu avec succès.");
             }
             return new Response(false, "Utilisateur introuvable.");
@@ -195,6 +198,7 @@ public class UserService {
             boolean ok = dao.reactiverCompte(userId);
             if (ok) {
                 logger.info("Compte réactivé par admin : userId=" + userId);
+                envoyerNotificationStatutCompte(userId, false);
                 return new Response(true, "Compte réactivé avec succès.");
             }
             return new Response(false, "Utilisateur introuvable.");
@@ -218,6 +222,37 @@ public class UserService {
             logger.error("Erreur getProfil : " + e.getMessage());
             return new Response(false, "Erreur serveur.");
         }
+    }
+
+    private static void envoyerNotificationStatutCompte(int userId, boolean suspendu) {
+        new Thread(() -> {
+            try {
+                Utilisateur utilisateur = dao.findById(userId);
+                if (utilisateur == null || utilisateur.getEmail() == null || utilisateur.getEmail().isBlank()) {
+                    logger.warn("Email introuvable pour notification statut compte: userId={}", userId);
+                    return;
+                }
+
+                String sujet = suspendu
+                        ? "ChriOnline - Suspension de votre compte"
+                        : "ChriOnline - Reactivation de votre compte";
+
+                String message = suspendu
+                        ? "<p>Bonjour " + utilisateur.getNom() + ",</p>"
+                        + "<p>Votre compte ChriOnline a ete suspendu par un administrateur.</p>"
+                        + "<p>Si vous pensez qu'il s'agit d'une erreur, contactez le support.</p>"
+                        + "<p>Cordialement,<br/>Equipe ChriOnline</p>"
+                        : "<p>Bonjour " + utilisateur.getNom() + ",</p>"
+                        + "<p>Votre compte ChriOnline a ete reactive. Vous pouvez de nouveau vous connecter.</p>"
+                        + "<p>Cordialement,<br/>Equipe ChriOnline</p>";
+
+                emailService.sendHtml(utilisateur.getEmail(), sujet, message);
+                logger.info("Email notification statut compte envoye a {}", utilisateur.getEmail());
+            } catch (Exception e) {
+                // Ne pas impacter la reponse admin si l'email echoue.
+                logger.error("Echec envoi email notification statut compte userId={} : {}", userId, e.getMessage());
+            }
+        }).start();
     }
 
 
