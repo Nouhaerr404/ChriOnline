@@ -202,6 +202,7 @@ public class UtilisateurDAO {
                 u.setEmail(rs.getString("email"));
                 u.setTypeCompte(type);
                 u.setStatut(rs.getString("statut"));
+                u.setTwoFaEnabled(rs.getBoolean("two_fa_enabled"));
                 return u;
             }
         }
@@ -244,10 +245,23 @@ public class UtilisateurDAO {
                 u.setEmail(rs.getString("email"));
                 u.setTypeCompte(rs.getString("type_compte"));
                 u.setSessionToken(token);
+                u.setTwoFaEnabled(rs.getBoolean("two_fa_enabled"));
                 return u;
             }
         }
         return null;
+    }
+
+    public boolean setTwoFaEnabled(int userId, boolean enabled) throws SQLException {
+        String sql = "UPDATE utilisateur SET two_fa_enabled = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setBoolean(1, enabled);
+            ps.setInt(2, userId);
+            int rows = ps.executeUpdate();
+            logger.info("2FA " + (enabled ? "activé" : "désactivé") + " pour userId : " + userId);
+            return rows > 0;
+        }
     }
     public List<Utilisateur> findAll() throws SQLException {
         String sql = """
@@ -352,7 +366,8 @@ public class UtilisateurDAO {
                 client.setTypeCompte(rs.getString("type_compte"));
                 client.setAdresse(rs.getString("adresse"));
                 client.setTel(rs.getString("tel"));
-                client.setStatut(rs.getString("status"));
+                client.setStatut(rs.getString("statut"));
+                client.setTwoFaEnabled(rs.getBoolean("two_fa_enabled"));
                 return client;
             }
         }

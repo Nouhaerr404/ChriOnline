@@ -41,7 +41,7 @@ public class ClientHandler implements Runnable {
     private final ProductService  productService;
 
     private static final Set<String> ACTIONS_PUBLIQUES =
-            new HashSet<>(Arrays.asList("LOGIN", "REGISTER", "GET_CAPTCHA"));
+            new HashSet<>(Arrays.asList("LOGIN", "REGISTER", "VERIFY_2FA", "GET_CAPTCHA"));
 
     public ClientHandler(Socket socket) {
         this.socket          = socket;
@@ -70,9 +70,9 @@ public class ClientHandler implements Runnable {
 
                 if (!ACTIONS_PUBLIQUES.contains(request.getAction())) {
                     String token = request.getToken();
-                    ma.ensate.server.services.SessionManager.SessionResult sResult = 
+                    ma.ensate.server.services.SessionManager.SessionResult sResult =
                         ma.ensate.server.services.SessionManager.evaluerEtRegenerer(token);
-                        
+
                     if (!sResult.isValid) {
                         logger.warn(" Accès refusé : " + sResult.errorMessage
                                 + " | Action : " + request.getAction()
@@ -83,7 +83,7 @@ public class ClientHandler implements Runnable {
                     }
 
                     Response response = traiterRequete(request);
-                    
+
                     if (sResult.latestToken != null && !sResult.latestToken.equals(token)) {
                         response.setNewToken(sResult.latestToken);
                         try {
@@ -154,6 +154,12 @@ public class ClientHandler implements Runnable {
 
                 case "CHANGER_PASSWORD":
                     return UserService.changerMotDePasse(request.getData());
+
+                case "SET_2FA":
+                    return UserService.setTwoFa(request.getData());
+
+                case "VERIFY_2FA":
+                    return UserService.verifyOtp(request.getData(), clientIP);
                 case "GET_ALL_PRODUCTS":
                     return productService.getAllProducts();
 
@@ -405,7 +411,7 @@ public class ClientHandler implements Runnable {
             Commande commande = commandeService.getCommandeById(req.getCommandeId());
             if (commande == null)
                 return new Response(false, "Commande introuvable");
-                
+
             if (commande.getClient() != null) {
                 if (PaymentRateLimiter.isReplayAttack(String.valueOf(commande.getClient().getId()), commande.getPrixAPayer())) {
                     logger.warn("Replay attack évité pour la commande: " + req.getCommandeId());

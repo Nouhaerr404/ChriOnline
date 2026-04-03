@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -60,6 +61,12 @@ public class ProfilView {
     @FXML
     private Button toggleNouveauBtn;
 
+    @FXML
+    private CheckBox twoFaCheckBox;
+
+    @FXML
+    private Label twoFaMessageLabel;
+
     private boolean ancienVisible = false;
     private boolean nouveauVisible = false;
 
@@ -83,6 +90,7 @@ public class ProfilView {
         }
 
         afficherStatut(utilisateur);
+        twoFaCheckBox.setSelected(utilisateur.isTwoFaEnabled());
 
         new Thread(() -> {
             try {
@@ -103,6 +111,7 @@ public class ProfilView {
                     }
 
                     afficherStatut(profil);
+                    twoFaCheckBox.setSelected(profil.isTwoFaEnabled());
                 });
             } catch (Exception e) {
                 logger.error("Erreur chargement profil : {}", e.getMessage());
@@ -197,6 +206,46 @@ public class ProfilView {
             } catch (Exception e) {
                 Platform.runLater(() -> afficherErreurPassword("Impossible de contacter le serveur."));
                 logger.error("Erreur changement password : {}", e.getMessage());
+            }
+        }).start();
+    }
+
+    @FXML
+    private void handleTwoFaToggle() {
+        boolean enabled = twoFaCheckBox.isSelected();
+        int userId = SessionManager.getInstance().getUtilisateur().getId();
+
+        twoFaCheckBox.setDisable(true);
+        twoFaMessageLabel.setText("Mise à jour en cours...");
+        twoFaMessageLabel.setStyle("-fx-text-fill: #1a73e8;");
+
+        new Thread(() -> {
+            try {
+                Object[] params = {userId, enabled};
+                Response response = ClientTCP.getInstance()
+                        .envoyerRequeteSecurisee("SET_2FA", params);
+
+                Platform.runLater(() -> {
+                    twoFaCheckBox.setDisable(false);
+                    if (response.isSuccess()) {
+                        SessionManager.getInstance().getUtilisateur().setTwoFaEnabled(enabled);
+                        twoFaMessageLabel.setText(response.getMessage());
+                        twoFaMessageLabel.setStyle("-fx-text-fill: green;");
+                        logger.info("2FA mis à jour : userId={} enabled={}", userId, enabled);
+                    } else {
+                        twoFaCheckBox.setSelected(!enabled);
+                        twoFaMessageLabel.setText(response.getMessage());
+                        twoFaMessageLabel.setStyle("-fx-text-fill: red;");
+                    }
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    twoFaCheckBox.setDisable(false);
+                    twoFaCheckBox.setSelected(!enabled);
+                    twoFaMessageLabel.setText("Impossible de contacter le serveur.");
+                    twoFaMessageLabel.setStyle("-fx-text-fill: red;");
+                });
+                logger.error("Erreur SET_2FA : {}", e.getMessage());
             }
         }).start();
     }

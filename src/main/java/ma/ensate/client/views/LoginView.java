@@ -15,6 +15,8 @@ import ma.ensate.protocol.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Optional;
+
 public class LoginView {
 
     private static final Logger logger = LogManager.getLogger(LoginView.class);
@@ -71,6 +73,14 @@ public class LoginView {
                     refreshCaptchaBtn.setDisable(false);
 
                     if (response.isSuccess()) {
+
+                        if ("REQUIRES_2FA".equals(response.getMessage())) {
+                            Object[] payload = (Object[]) response.getData();
+                            int    userId    = (int)    payload[0];
+                            String userEmail = (String) payload[1];
+                            afficherDialogOtp(userId, userEmail);
+                            return;
+                        }
 
                         Utilisateur u = (Utilisateur) response.getData();
                         SessionManager.getInstance().setUtilisateur(u);
@@ -149,8 +159,60 @@ public class LoginView {
         }
     }
 
-    private void ouvrirPagePrincipale() {
-        try {
+    private void afficherDialogOtp(int userId, String userEmail) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Vérification 2FA");
+        dialog.setHeaderText("Un code de vérification a été envoyé à :\n" + userEmail);
+        dialog.setContentText("Entrez le code à 6 chiffres :");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isEmpty() || result.get().trim().isEmpty()) {
+            loginButton.setDisable(false);
+            afficherErreur("Vérification annulée.");
+            return;
+        }
+
+        String code = result.get().trim();
+        loginButton.setDisable(true);
+        messageLabel.setText("Vérification en cours...");
+        messageLabel.setStyle("-fx-text-fill: #1a73e8;");
+
+        new Thread(() -> {
+            try {
+                Object[] params = {userId, code};
+                Response response = ClientTCP.getInstance()
+                        .envoyerRequete(new Request("VERIFY_2FA", params));
+
+                Platform.runLater(() -> {
+                    loginButton.setDisable(false);
+                    if (response.isSuccess()) {
+                        Utilisateur u = (Utilisateur) response.getData();
+                        SessionManager.getInstance().setUtilisateur(u);
+                        try {
+                            int udpPort = SessionManager.getInstance().getUdpPort();
+                            ClientTCP.getInstance().envoyerRequeteSecurisee(
+                                    "REGISTER_UDP_PORT", new Object[]{u.getId(), udpPort});
+                        } catch (Exception e) {
+                            logger.warn("Erreur enregistrement port UDP : " + e.getMessage());
+                        }
+                        logger.info("2FA validé, connexion réussie : userId=" + userId);
+                        ouvrirPagePrincipale();
+                    } else {
+                        afficherErreur(response.getMessage());
+                        afficherDialogOtp(userId, userEmail);
+                    }
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    loginButton.setDisable(false);
+                    afficherErreur("Impossible de contacter le serveur.");
+                });
+                logger.error("Erreur VERIFY_2FA : " + e.getMessage());
+            }
+        }).start();
+    }
+
+    private void ouvrirPagePrincipale() {        try {
             String target = SessionManager.getInstance().estAdmin()
                 ? "/ma/ensate/fxml/admin_produits.fxml"
                 : "/ma/ensate/fxml/produits.fxml";

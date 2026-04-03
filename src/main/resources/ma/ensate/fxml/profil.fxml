@@ -114,6 +114,26 @@
                                 style="-fx-background-color: #C00000; -fx-text-fill: white; -fx-padding: 10; -fx-background-radius: 5; -fx-cursor: hand;"/>
                     </VBox>
 
+                    <VBox spacing="12"
+                          style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian,#ccc,10,0,0,2);">
+
+                        <Label text="Sécurité — Authentification à deux facteurs (2FA)"
+                               style="-fx-font-weight: bold; -fx-text-fill: #2E75B6; -fx-font-size: 14px;"/>
+
+                        <Label text="Lorsque la 2FA est activée, un code de vérification sera envoyé à votre adresse email à chaque connexion."
+                               wrapText="true"
+                               style="-fx-text-fill: #555; -fx-font-size: 12px;"/>
+
+                        <CheckBox fx:id="twoFaCheckBox"
+                                  text="Activer l'authentification à deux facteurs"
+                                  onAction="#handleTwoFaToggle"
+                                  style="-fx-font-size: 13px;"/>
+
+                        <Label fx:id="twoFaMessageLabel" text=""
+                               wrapText="true"
+                               style="-fx-font-size: 12px;"/>
+                    </VBox>
+
                 </VBox>
             </content>
         </ScrollPane>

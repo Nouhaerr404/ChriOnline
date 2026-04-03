@@ -10,6 +10,8 @@ import ma.ensate.util.EmailService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -104,9 +106,7 @@ public class UserService {
 
             if (u == null) {
                 dao.enregistrerEchec(email);
-                int restantes = 3 - 1; // approximation
-                return new Response(false,
-                        "Email ou mot de passe incorrect.");
+                return new Response(false, "Email ou mot de passe incorrect.");
             }
 
             if ("SUSPENDU".equals(u.getStatut())) {
@@ -119,10 +119,26 @@ public class UserService {
                                 "Réessayez dans 5 minutes.");
             }
 
+            dao.reinitialiserTentatives(email);
+
+            if (u.isTwoFaEnabled()) {
+                String otp = OtpStore.generateAndStore(u.getId());
+                try {
+                    EmailService.envoyerCodeOtp(u.getEmail(), otp);
+                    logger.info("Code 2FA envoyé à : " + u.getEmail());
+                } catch (MessagingException e) {
+                    logger.error("Échec envoi email OTP : " + e.getMessage());
+                    OtpStore.cancel(u.getId());
+                    return new Response(false, "Impossible d'envoyer le code de vérification.");
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+                return new Response(true, "REQUIRES_2FA",
+                        new Object[]{u.getId(), u.getEmail()});
+            }
 
             String token = UUID.randomUUID().toString();
             dao.sauvegarderToken(u.getId(), token);
-            dao.reinitialiserTentatives(email);
             u.setSessionToken(token);
             ClientIPRegistry.register(u.getId(), clientIP);
             SessionManager.startSession(token, u.getId());
@@ -344,6 +360,54 @@ public class UserService {
         }
     }
 
+
+    public static Response setTwoFa(Object data) {
+        try {
+            Object[] params = (Object[]) data;
+            int     userId  = (int)     params[0];
+            boolean enabled = (boolean) params[1];
+            boolean ok = dao.setTwoFaEnabled(userId, enabled);
+            if (ok) {
+                logger.info("2FA mis à jour pour userId=" + userId + " enabled=" + enabled);
+                return new Response(true,
+                        enabled ? "Authentification à deux facteurs activée."
+                                : "Authentification à deux facteurs désactivée.");
+            }
+            return new Response(false, "Utilisateur introuvable.");
+        } catch (SQLException e) {
+            logger.error("Erreur setTwoFa : " + e.getMessage());
+            return new Response(false, "Erreur serveur.");
+        }
+    }
+
+    public static Response verifyOtp(Object data, String clientIP) {
+        try {
+            Object[] params = (Object[]) data;
+            int    userId   = (int)    params[0];
+            String code     = (String) params[1];
+
+            if (!OtpStore.validate(userId, code)) {
+                logger.warn("Code OTP invalide ou expiré pour userId=" + userId);
+                return new Response(false, "Code invalide ou expiré.");
+            }
+
+            Utilisateur u = dao.trouverParId(userId);
+            if (u == null) {
+                return new Response(false, "Utilisateur introuvable.");
+            }
+
+            String token = UUID.randomUUID().toString();
+            dao.sauvegarderToken(u.getId(), token);
+            u.setSessionToken(token);
+            ClientIPRegistry.register(u.getId(), clientIP);
+            logger.info("Vérification 2FA réussie pour userId=" + userId);
+            return new Response(true, "Connexion réussie !", u);
+
+        } catch (SQLException e) {
+            logger.error("Erreur verifyOtp : " + e.getMessage());
+            return new Response(false, "Erreur serveur.");
+        }
+    }
 
     public static Response changerMotDePasse(Object data) {
         try {
