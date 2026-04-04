@@ -75,9 +75,9 @@ public class LoginView {
                     if (response.isSuccess()) {
 
                         if ("REQUIRES_2FA".equals(response.getMessage())) {
-                            Object[] payload = (Object[]) response.getData();
-                            int    userId    = (int)    payload[0];
-                            String userEmail = (String) payload[1];
+                            Object[] twoFaPayload = (Object[]) response.getData();
+                            int    userId    = (int)    twoFaPayload[0];
+                            String userEmail = (String) twoFaPayload[1];
                             afficherDialogOtp(userId, userEmail);
                             return;
                         }

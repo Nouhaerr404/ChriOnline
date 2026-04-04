@@ -124,7 +124,7 @@ public class UserService {
             if (u.isTwoFaEnabled()) {
                 String otp = OtpStore.generateAndStore(u.getId());
                 try {
-                    EmailService.envoyerCodeOtp(u.getEmail(), otp);
+                    ma.ensate.server.services.EmailService.envoyerCodeOtp(u.getEmail(), otp);
                     logger.info("Code 2FA envoyé à : " + u.getEmail());
                 } catch (MessagingException e) {
                     logger.error("Échec envoi email OTP : " + e.getMessage());
@@ -400,6 +400,7 @@ public class UserService {
             dao.sauvegarderToken(u.getId(), token);
             u.setSessionToken(token);
             ClientIPRegistry.register(u.getId(), clientIP);
+            SessionManager.startSession(token, u.getId());
             logger.info("Vérification 2FA réussie pour userId=" + userId);
             return new Response(true, "Connexion réussie !", u);
 

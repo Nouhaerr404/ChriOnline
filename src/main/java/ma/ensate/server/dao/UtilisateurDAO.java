@@ -180,29 +180,38 @@ public class UtilisateurDAO {
                     return null;
                 }
 
+                // Lire TOUTES les colonnes avant tout appel DB
+                // (sinon mettreAJourHashMotDePasse ferme le ResultSet)
+                int    id      = rs.getInt("id");
+                String type    = rs.getString("type_compte");
+                String nom     = rs.getString("nom");
+                String emailDb = rs.getString("email");
+                String statut  = rs.getString("statut");
+                boolean twoFa  = rs.getBoolean("two_fa_enabled");
+                String adresse = rs.getString("adresse");
+                String tel     = rs.getString("tel");
+
                 if (!hashStocke.startsWith("$2")) {
-                    mettreAJourHashMotDePasse(rs.getInt("id"), hasherMotDePasse(password));
+                    mettreAJourHashMotDePasse(id, hasherMotDePasse(password));
                     logger.info("Migration SHA-256 -> BCrypt effectuee pour {}", email);
                 }
 
-                String type = rs.getString("type_compte");
                 Utilisateur u;
-
                 if ("CLIENT".equals(type)) {
                     Client c = new Client();
-                    c.setAdresse(rs.getString("adresse"));
-                    c.setTel(rs.getString("tel"));
+                    c.setAdresse(adresse);
+                    c.setTel(tel);
                     u = c;
                 } else {
                     u = new Utilisateur();
                 }
 
-                u.setId(rs.getInt("id"));
-                u.setNom(rs.getString("nom"));
-                u.setEmail(rs.getString("email"));
+                u.setId(id);
+                u.setNom(nom);
+                u.setEmail(emailDb);
                 u.setTypeCompte(type);
-                u.setStatut(rs.getString("statut"));
-                u.setTwoFaEnabled(rs.getBoolean("two_fa_enabled"));
+                u.setStatut(statut);
+                u.setTwoFaEnabled(twoFa);
                 return u;
             }
         }
