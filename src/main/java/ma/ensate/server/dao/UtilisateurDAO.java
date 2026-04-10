@@ -10,20 +10,20 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class UtilisateurDAO {
 
     private static final Logger logger = LogManager.getLogger(UtilisateurDAO.class);
 
-    private static final Map<String, Integer> tentatives = new HashMap<>();
-
-    private static final Map<String, Long> blocages = new HashMap<>();
+    private static final Map<String, Integer> tentatives = new ConcurrentHashMap<>();
+    private static final Map<String, Long> blocages = new ConcurrentHashMap<>();
+    private static final Map<String, Integer> niveauxBlocage = new ConcurrentHashMap<>();
 
     private static final int MAX_TENTATIVES  = 3;
-    private static final int DUREE_BLOCAGE_MS = 5 * 60 * 1000; // 5 minutes
+    private static final long DUREE_BLOCAGE_PALIER_MS = 5L * 60 * 1000; // 5 minutes par niveau
     private static final int BCRYPT_COST = 12;
 
 
@@ -55,7 +55,6 @@ public class UtilisateurDAO {
             return BCrypt.checkpw(passwordEnClair, hashStocke);
         }
 
-        // Compatibilite temporaire avec les anciens comptes SHA-256.
         return hashStocke.equals(hasherMotDePasseLegacySHA256(passwordEnClair));
     }
 
@@ -70,27 +69,18 @@ public class UtilisateurDAO {
     }
 
     public boolean estBloque(String email) {
-        if (!blocages.containsKey(email)) return false;
-
-        long tempsBlocage = blocages.get(email);
-        long maintenant   = System.currentTimeMillis();
-
-        if (maintenant - tempsBlocage < DUREE_BLOCAGE_MS) {
-            long resteMs      = DUREE_BLOCAGE_MS - (maintenant - tempsBlocage);
-            long resteMinutes = resteMs / 60000;
-            logger.warn("Compte bloque : " + email +
-                    " | Reste : " + resteMinutes + " minutes");
-            return true;
-        } else {
-            // Blocage expiré → réinitialiser
-            blocages.remove(email);
-            tentatives.remove(email);
+        long resteMs = getBlocageRestantMs(email);
+        if (resteMs <= 0) {
             return false;
         }
+
+        logger.warn("Compte bloque : " + email +
+                " | Reste : " + convertirMsEnMinutesArrondies(resteMs) + " minutes");
+        return true;
     }
 
 
-    public void enregistrerEchec(String email) {
+    public long enregistrerEchec(String email) {
         int nb = tentatives.getOrDefault(email, 0) + 1;
         tentatives.put(email, nb);
 
@@ -98,10 +88,17 @@ public class UtilisateurDAO {
                 " | Tentative " + nb + "/" + MAX_TENTATIVES);
 
         if (nb >= MAX_TENTATIVES) {
+            int niveauBlocage = niveauxBlocage.merge(email, 1, Integer::sum);
+            long dureeBlocageMs = calculerDureeBlocageMs(niveauBlocage);
             blocages.put(email, System.currentTimeMillis());
             tentatives.remove(email);
-            logger.warn(" Compte bloque 5 minutes : " + email);
+            logger.warn("Compte bloque " +
+                    convertirMsEnMinutesArrondies(dureeBlocageMs) +
+                    " minutes : " + email);
+            return dureeBlocageMs;
         }
+
+        return 0;
     }
 
 
@@ -111,6 +108,47 @@ public class UtilisateurDAO {
         }
         tentatives.remove(email);
         blocages.remove(email);
+    }
+
+    public long getBlocageRestantMs(String email) {
+        Long debutBlocage = blocages.get(email);
+        if (debutBlocage == null) {
+            return 0;
+        }
+
+        long dureeBlocageMs = calculerDureeBlocageMs(niveauxBlocage.getOrDefault(email, 1));
+        long ecouleMs = System.currentTimeMillis() - debutBlocage;
+        long resteMs = dureeBlocageMs - ecouleMs;
+
+        if (resteMs > 0) {
+            return resteMs;
+        }
+
+        blocages.remove(email);
+        tentatives.remove(email);
+        return 0;
+    }
+
+    public long getBlocageRestantMinutes(String email) {
+        return convertirMsEnMinutesArrondies(getBlocageRestantMs(email));
+    }
+
+    public String getMessageBlocage(String email) {
+        long resteMinutes = getBlocageRestantMinutes(email);
+        if (resteMinutes <= 0) {
+            long dureeCouranteMs = calculerDureeBlocageMs(niveauxBlocage.getOrDefault(email, 1));
+            resteMinutes = convertirMsEnMinutesArrondies(dureeCouranteMs);
+        }
+        return "Compte bloque suite a trop de tentatives. Reessayez dans "
+                + resteMinutes + " minute" + (resteMinutes > 1 ? "s." : ".");
+    }
+
+    private long calculerDureeBlocageMs(int niveauBlocage) {
+        return Math.max(1, niveauBlocage) * DUREE_BLOCAGE_PALIER_MS;
+    }
+
+    private long convertirMsEnMinutesArrondies(long dureeMs) {
+        return Math.max(1, (dureeMs + 59999) / 60000);
     }
 
     public boolean emailExiste(String email) throws SQLException {
