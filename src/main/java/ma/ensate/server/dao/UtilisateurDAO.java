@@ -308,7 +308,7 @@ public class UtilisateurDAO {
                 SELECT u.id, u.nom, u.email, u.type_compte, u.statut, c.adresse, c.tel
                 FROM utilisateur u
                 LEFT JOIN client c ON c.id = u.id
-                WHERE u.id = ?"
+                WHERE u.id = ?
                 """;
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

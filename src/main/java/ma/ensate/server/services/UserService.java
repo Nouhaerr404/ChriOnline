@@ -2,7 +2,6 @@ package ma.ensate.server.services;
 
 import ma.ensate.models.Client;
 import ma.ensate.models.Utilisateur;
-import ma.ensate.protocol.Request;
 import ma.ensate.protocol.Response;
 import ma.ensate.server.dao.UtilisateurDAO;
 import ma.ensate.server.network.ClientIPRegistry;
@@ -14,43 +13,30 @@ import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 public class UserService {
 
     private static final Logger logger = LogManager.getLogger(UserService.class);
     private static final UtilisateurDAO dao = new UtilisateurDAO();
     private static final EmailService emailService = new EmailService();
-    private static final Map<String, CaptchaEntry> captchaStore = new ConcurrentHashMap<>();
-    private static final Random random = new Random();
-    private static final long CAPTCHA_TTL_MS = 2 * 60 * 1000; // 2 minutes
-
-    private static class CaptchaEntry {
-        private final String expectedAnswer;
-        private final long expiresAt;
-
-        private CaptchaEntry(String expectedAnswer, long expiresAt) {
-            this.expectedAnswer = expectedAnswer;
-            this.expiresAt = expiresAt;
-        }
-    }
 
     public static Response genererCaptcha() {
-        nettoyerCaptchaExpires();
-        int a = random.nextInt(9) + 1;
-        int b = random.nextInt(9) + 1;
-        String captchaId = UUID.randomUUID().toString();
-        captchaStore.put(captchaId, new CaptchaEntry(String.valueOf(a + b), System.currentTimeMillis() + CAPTCHA_TTL_MS));
-        String question = "Combien font " + a + " + " + b + " ?";
-        return new Response(true, "Captcha genere", new String[]{captchaId, question});
+        String[] result = CaptchaService.generer();
+        return new Response(true, "Captcha genere", result);
     }
 
     public static Response register(Object data) {
         try {
-            Client client = (Client) data;
+            Object[] payload = (Object[]) data;
+            Client client = (Client) payload[0];
+            String captchaId = (String) payload[1];
+            String captchaAnswer = (String) payload[2];
+
+            if (!CaptchaService.verifier(captchaId, captchaAnswer)) {
+                return new Response(false, "Captcha invalide ou expiré.");
+            }
 
             String erreur = validerDonnees(client);
             if (erreur != null) {
@@ -91,7 +77,7 @@ public class UserService {
             String captchaId = (String) loginPayload[2];
             String captchaReponse = ((String) loginPayload[3]).trim();
 
-            if (!verifierCaptcha(captchaId, captchaReponse)) {
+            if (!CaptchaService.verifier(captchaId, captchaReponse)) {
                 return new Response(false, "Captcha invalide ou expiré.");
             }
 
@@ -307,27 +293,7 @@ public class UserService {
         }).start();
     }
 
-    private static boolean verifierCaptcha(String captchaId, String reponse) {
-        if (captchaId == null || captchaId.isBlank() || reponse == null || reponse.isBlank()) {
-            return false;
-        }
 
-        CaptchaEntry entry = captchaStore.remove(captchaId);
-        if (entry == null) {
-            return false;
-        }
-
-        if (System.currentTimeMillis() > entry.expiresAt) {
-            return false;
-        }
-
-        return entry.expectedAnswer.equals(reponse.trim());
-    }
-
-    private static void nettoyerCaptchaExpires() {
-        long now = System.currentTimeMillis();
-        captchaStore.entrySet().removeIf(e -> e.getValue().expiresAt < now);
-    }
 
 
     public static Response updateProfil(Object data) {

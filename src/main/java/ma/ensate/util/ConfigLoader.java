@@ -1,33 +1,89 @@
 package ma.ensate.util;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.nio.file.*;
 import java.util.Properties;
 
+/**
+ * Charge le fichier .env depuis la racine du projet.
+ * Stratégie de recherche (ordre de priorité) :
+ *  1. Dossier de travail courant (user.dir)
+ *  2. Dossier parent du JAR / classes (pour exécution Maven ou JAR)
+ *  3. Classpath (si .env est placé dans src/main/resources)
+ */
 public class ConfigLoader {
-    private static final String CONFIG_FILE = ".env";
-    private static Properties properties = new Properties();
+
+    private static final Properties properties = new Properties();
 
     static {
-        try (InputStream input = new FileInputStream(CONFIG_FILE)) {
-            properties.load(input);
-        } catch (IOException ex) {
-            System.err.println("Warning: .env file not found or could not be loaded. Using default values.");
+        boolean loaded = false;
+
+        // 1) user.dir (racine du projet quand on lance depuis l'IDE ou mvn)
+        Path workDir = Paths.get(System.getProperty("user.dir"), ".env");
+        loaded = tryLoad(workDir);
+
+        // 2) Dossier parent du JAR / dossier target/classes
+        if (!loaded) {
+            try {
+                Path jarDir = Paths.get(
+                        ConfigLoader.class.getProtectionDomain()
+                                .getCodeSource().getLocation().toURI()
+                ).getParent();
+                if (jarDir != null) {
+                    // remonter depuis target/classes → target → project root
+                    loaded = tryLoad(jarDir.resolve(".env"));
+                    if (!loaded) loaded = tryLoad(jarDir.getParent().resolve(".env"));
+                    if (!loaded) loaded = tryLoad(jarDir.getParent().getParent().resolve(".env"));
+                }
+            } catch (URISyntaxException ignored) {}
+        }
+
+        // 3) Classpath (src/main/resources/.env)
+        if (!loaded) {
+            try (InputStream is = ConfigLoader.class.getResourceAsStream("/.env")) {
+                if (is != null) {
+                    properties.load(is);
+                    loaded = true;
+                    System.out.println("[ConfigLoader] .env chargé depuis le classpath.");
+                }
+            } catch (IOException ignored) {}
+        }
+
+        if (!loaded) {
+            System.err.println("[ConfigLoader] AVERTISSEMENT : .env introuvable. " +
+                    "Les valeurs par défaut seront utilisées.");
         }
     }
 
+    private static boolean tryLoad(Path path) {
+        if (Files.exists(path)) {
+            try (InputStream is = new FileInputStream(path.toFile())) {
+                properties.load(is);
+                System.out.println("[ConfigLoader] .env chargé depuis : " + path.toAbsolutePath());
+                return true;
+            } catch (IOException e) {
+                System.err.println("[ConfigLoader] Impossible de lire : " + path + " — " + e.getMessage());
+            }
+        }
+        return false;
+    }
+
     public static String get(String key, String defaultValue) {
+        // Priorité : variable d'environnement système > .env
+        String env = System.getenv(key);
+        if (env != null && !env.isBlank()) return env;
         return properties.getProperty(key, defaultValue);
     }
 
     public static int getInt(String key, int defaultValue) {
-        String value = properties.getProperty(key);
-        if (value != null) {
+        String value = get(key, null);
+        if (value != null && !value.isBlank()) {
             try {
                 return Integer.parseInt(value.trim());
             } catch (NumberFormatException e) {
-                System.err.println("Warning: Invalid integer for " + key + ". Using default: " + defaultValue);
+                System.err.println("[ConfigLoader] Valeur entière invalide pour '" + key +
+                        "'. Défaut utilisé : " + defaultValue);
             }
         }
         return defaultValue;

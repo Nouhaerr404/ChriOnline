@@ -13,6 +13,8 @@ import ma.ensate.server.services.ProductService;
 import ma.ensate.server.services.ServicePanier;
 import ma.ensate.server.services.UserService;
 import ma.ensate.server.services.PaymentRateLimiter;
+import ma.ensate.server.security.SYNFloodProtection;
+import ma.ensate.server.security.SYNCookieManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,6 +41,8 @@ public class ClientHandler implements Runnable {
     private final ProduitDAO      produitDAO;
     private final UtilisateurDAO  utilisateurDAO;
     private final ProductService  productService;
+    private final SYNFloodProtection synFloodProtection;
+    private final SYNCookieManager synCookieManager;
 
     private static final Set<String> ACTIONS_PUBLIQUES =
             new HashSet<>(Arrays.asList("LOGIN", "REGISTER", "VERIFY_2FA", "GET_CAPTCHA"));
@@ -52,12 +56,31 @@ public class ClientHandler implements Runnable {
         this.produitDAO      = new ProduitDAO();
         this.utilisateurDAO  = new UtilisateurDAO();
         this.productService  = new ProductService();
+        this.synFloodProtection = null;
+        this.synCookieManager = null;
+    }
+
+    public ClientHandler(Socket socket, SYNFloodProtection synFloodProtection, SYNCookieManager synCookieManager) {
+        this.socket          = socket;
+        this.commandeService = new CommandeService();
+        this.paymentService  = new PaymentService();
+        this.servicePanier   = new ServicePanier();
+        this.clientDAO       = new ClientDAO();
+        this.produitDAO      = new ProduitDAO();
+        this.utilisateurDAO  = new UtilisateurDAO();
+        this.productService  = new ProductService();
+        this.synFloodProtection = synFloodProtection;
+        this.synCookieManager = synCookieManager;
     }
 
     @Override
     public void run() {
         clientIP = socket.getInetAddress().getHostAddress();
         logger.info("Handler démarre pour : " + clientIP);
+
+        if (synFloodProtection != null) {
+            synFloodProtection.confirmConnection(socket.getInetAddress());
+        }
 
         try (
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());

@@ -12,6 +12,10 @@ import ma.ensate.client.network.SessionManager;
 import ma.ensate.models.Utilisateur;
 import ma.ensate.protocol.Request;
 import ma.ensate.protocol.Response;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import java.io.ByteArrayInputStream;
+import java.util.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,7 +29,7 @@ public class LoginView {
     @FXML private PasswordField passwordField;
     @FXML private TextField     passwordVisibleField;
     @FXML private TextField     captchaField;
-    @FXML private Label         captchaQuestionLabel;
+    @FXML private ImageView     captchaImageView;
     @FXML private Label         messageLabel;
     @FXML private Button        loginButton;
     @FXML private Button        togglePasswordBtn;
@@ -278,7 +282,6 @@ public class LoginView {
     }
 
     private void chargerCaptcha() {
-        captchaQuestionLabel.setText("Chargement du captcha...");
         refreshCaptchaBtn.setDisable(true);
         new Thread(() -> {
             try {
@@ -287,18 +290,25 @@ public class LoginView {
                     refreshCaptchaBtn.setDisable(false);
                     if (!response.isSuccess() || !(response.getData() instanceof String[] data) || data.length < 2) {
                         captchaId = null;
-                        captchaQuestionLabel.setText("Captcha indisponible");
                         afficherErreur("Impossible de charger le captcha.");
                         return;
                     }
                     captchaId = data[0];
-                    captchaQuestionLabel.setText(data[1]);
+
+                    // Décoder le base64 → Image JavaFX
+                    try {
+                        byte[] imageBytes = Base64.getDecoder().decode(data[1]);
+                        Image fxImage = new Image(new ByteArrayInputStream(imageBytes));
+                        captchaImageView.setImage(fxImage);
+                    } catch (Exception e) {
+                        logger.error("Erreur decodage captcha image : " + e.getMessage());
+                        afficherErreur("Erreur affichage captcha.");
+                    }
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     captchaId = null;
                     refreshCaptchaBtn.setDisable(false);
-                    captchaQuestionLabel.setText("Captcha indisponible");
                     afficherErreur("Impossible de charger le captcha.");
                 });
             }

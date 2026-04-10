@@ -2,6 +2,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="ma.ensate.client.views.LoginView"
@@ -58,10 +59,11 @@
         </HBox>
 
         <HBox spacing="8" alignment="CENTER_LEFT">
-            <Label fx:id="captchaQuestionLabel"
-                   text="Chargement du captcha..."
-                   style="-fx-font-weight: bold; -fx-text-fill: #333;"
-                   HBox.hgrow="ALWAYS"/>
+            <ImageView fx:id="captchaImageView"
+                       fitWidth="200"
+                       fitHeight="70"
+                       preserveRatio="true"
+                       HBox.hgrow="ALWAYS"/>
             <Button fx:id="refreshCaptchaBtn"
                     text="↻"
                     onAction="#handleRefreshCaptcha"
