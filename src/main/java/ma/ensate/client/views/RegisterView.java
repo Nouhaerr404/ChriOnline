@@ -62,8 +62,8 @@ public class RegisterView {
             return;
         }
 
-        if (password.length() < 6) {
-            afficherErreur("Le mot de passe doit contenir au moins 6 caracteres !");
+        if (password.length() < 6 || !password.matches(".*[A-Z].*") || !password.matches(".*[a-z].*") || !password.matches(".*[1-9].*") || !password.matches(".*[@&#%!].*")) {
+            afficherErreur("Le mot de passe doit contenir au moins 6 caracteres et il doit contenir au moins une lettre majuscule, une lettre miniscule, une chiffre  et des caracteres speciaux comme ( @ & # % !) ");
             return;
         }
 

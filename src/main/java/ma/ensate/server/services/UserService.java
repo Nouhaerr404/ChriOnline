@@ -82,16 +82,17 @@ public class UserService {
             }
 
             if (dao.estBloque(email)) {
-                return new Response(false,
-                        "Compte bloqué suite à trop de tentatives. " +
-                                "Réessayez dans 5 minutes.");
+                return new Response(false, dao.getMessageBlocage(email));
             }
 
             Utilisateur u = dao.trouverParEmailPassword(email, password);
 
 
             if (u == null) {
-                dao.enregistrerEchec(email);
+                long dureeBlocageMs = dao.enregistrerEchec(email);
+                if (dureeBlocageMs > 0) {
+                    return new Response(false, dao.getMessageBlocage(email));
+                }
                 return new Response(false, "Email ou mot de passe incorrect.");
             }
 
@@ -100,9 +101,7 @@ public class UserService {
             }
 
             if (dao.estBloque(email)) {
-                return new Response(false,
-                        "Compte bloqué suite à trop de tentatives. " +
-                                "Réessayez dans 5 minutes.");
+                return new Response(false, dao.getMessageBlocage(email));
             }
 
             dao.reinitialiserTentatives(email);
@@ -401,3 +400,4 @@ public class UserService {
         }
     }
 }
+
