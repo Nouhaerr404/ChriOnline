@@ -48,8 +48,8 @@ public class SessionManager {
 
         // PROTECTION CONTRE L'USURPATION D'IP (Session Hijacking)
         if (currentIP != null && !currentIP.equals(details.clientIP)) {
-            logger.error("ALERTE SÉCURITÉ : Tentative de hijacking de session !");
-            logger.error("UserId: {} | IP Session: {} | IP Actuelle: {}", 
+            logger.warn("ALERTE SÉCURITÉ : Tentative de hijacking de session !");
+            logger.warn("UserId: {} | IP Session: {} | IP Actuelle: {}", 
                     details.userId, details.clientIP, currentIP);
             
             // On invalide la session immédiatement par sécurité
