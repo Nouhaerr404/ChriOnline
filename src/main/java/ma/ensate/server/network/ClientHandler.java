@@ -94,7 +94,7 @@ public class ClientHandler implements Runnable {
                 if (!ACTIONS_PUBLIQUES.contains(request.getAction())) {
                     String token = request.getToken();
                     ma.ensate.server.services.SessionManager.SessionResult sResult =
-                        ma.ensate.server.services.SessionManager.evaluerEtRegenerer(token);
+                        ma.ensate.server.services.SessionManager.evaluerEtRegenerer(token, clientIP);
 
                     if (!sResult.isValid) {
                         logger.warn(" Accès refusé : " + sResult.errorMessage

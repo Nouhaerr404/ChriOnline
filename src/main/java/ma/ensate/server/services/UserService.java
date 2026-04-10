@@ -100,6 +100,9 @@ public class UserService {
                 return new Response(false, "Compte suspendu. Contactez l'administrateur.");
             }
 
+            Response ipCheck = verifierAccesIPAdmin(u, clientIP, email);
+            if (ipCheck != null) return ipCheck;
+
             if (dao.estBloque(email)) {
                 return new Response(false, dao.getMessageBlocage(email));
             }
@@ -126,7 +129,7 @@ public class UserService {
             dao.sauvegarderToken(u.getId(), token);
             u.setSessionToken(token);
             ClientIPRegistry.register(u.getId(), clientIP);
-            SessionManager.startSession(token, u.getId());
+            SessionManager.startSession(token, u.getId(), clientIP);
             logger.info("IP enregistrée pour userId=" + u.getId()
                     + " : " + clientIP);
 
@@ -361,11 +364,14 @@ public class UserService {
                 return new Response(false, "Utilisateur introuvable.");
             }
 
+            Response ipCheck = verifierAccesIPAdmin(u, clientIP, String.valueOf(userId));
+            if (ipCheck != null) return ipCheck;
+
             String token = UUID.randomUUID().toString();
             dao.sauvegarderToken(u.getId(), token);
             u.setSessionToken(token);
             ClientIPRegistry.register(u.getId(), clientIP);
-            SessionManager.startSession(token, u.getId());
+            SessionManager.startSession(token, u.getId(), clientIP);
             logger.info("Vérification 2FA réussie pour userId=" + userId);
             return new Response(true, "Connexion réussie !", u);
 
@@ -398,6 +404,31 @@ public class UserService {
             logger.error("Erreur changerMotDePasse : " + e.getMessage());
             return new Response(false, "Erreur serveur.");
         }
+    }
+
+    /**
+     * Centralise la vérification de l'IP pour les administrateurs.
+     * @return un Response d'erreur si l'accès est refusé, sinon null.
+     */
+    private static Response verifierAccesIPAdmin(Utilisateur u, String clientIP, String identifier) {
+        if ("ADMINISTRATEUR".equals(u.getTypeCompte()) && !isInternalIP(clientIP)) {
+            logger.warn("Accès bloqué - Admin sur IP externe : {} | Identifiant : {}", clientIP, identifier);
+            return new Response(false, "Accès administrateur refusé : vous devez être connecté au réseau interne.");
+        }
+        return null;
+    }
+
+    /**
+     * Vérifie si l'adresse IP est une adresse interne (réseau privé).
+     */
+    private static boolean isInternalIP(String ip) {
+        if (ip == null || ip.isBlank()) return false;
+        return ip.startsWith("192.168.")
+                || ip.startsWith("10.")
+                || ip.matches("^172\\.(1[6-9]|2[0-9]|3[01])\\..*")
+                || ip.equals("127.0.0.1")
+                || ip.equals("0:0:0:0:0:0:0:1")
+                || ip.equals("::1");
     }
 }
 
