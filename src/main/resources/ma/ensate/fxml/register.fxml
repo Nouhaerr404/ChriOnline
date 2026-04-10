@@ -9,20 +9,22 @@
       spacing="12"
       style="-fx-background-color: #f0f4f8; -fx-padding: 40;">
 
-
     <Label text="ChriOnline"
            style="-fx-font-size: 28px; -fx-font-weight: bold;
                   -fx-text-fill: #1a73e8;"/>
     <Label text="Créer un compte"
            style="-fx-font-size: 14px; -fx-text-fill: #666;"/>
 
-
-    <VBox spacing="12"
-          style="-fx-background-color: white;
-                 -fx-padding: 25;
-                 -fx-background-radius: 10;
-                 -fx-effect: dropshadow(gaussian, #ccc, 10, 0, 0, 2);"
-          maxWidth="420">
+    <ScrollPane fitToWidth="true"
+                prefHeight="600"
+                maxWidth="450"
+                style="-fx-background-color: transparent; -fx-border-color: transparent;">
+        <VBox spacing="12"
+              style="-fx-background-color: white;
+                     -fx-padding: 25;
+                     -fx-background-radius: 10;
+                     -fx-effect: dropshadow(gaussian, #ccc, 10, 0, 0, 2);"
+              maxWidth="420">
 
 
         <Label text="Nom complet"
@@ -76,6 +78,13 @@
 
         <Label text="Téléphone (optionnel)"
                style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
+        <TextField fx:id="telField"
+                   promptText="Votre numéro de téléphone"
+                   style="-fx-padding: 10; -fx-background-radius: 5;
+                          -fx-border-color: #ddd; -fx-border-radius: 5;"/>
+
+        <Label text="Vérification (Captcha)"
+               style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
         <HBox spacing="8" alignment="CENTER_LEFT">
             <ImageView fx:id="captchaImageView"
                        fitWidth="200"
@@ -120,5 +129,6 @@
                        style="-fx-text-fill: #1a73e8;"/>
         </HBox>
 
-    </VBox>
+        </VBox>
+    </ScrollPane>
 </VBox>
