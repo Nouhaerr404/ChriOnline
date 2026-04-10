@@ -16,11 +16,13 @@ public class SessionManager {
 
     static class SessionDetails {
         int userId;
+        String clientIP; // Liaison Session-IP
         long lastAccessTime;
         long tokenCreationTime;
 
-        public SessionDetails(int userId) {
+        public SessionDetails(int userId, String clientIP) {
             this.userId = userId;
+            this.clientIP = clientIP;
             this.lastAccessTime = System.currentTimeMillis();
             this.tokenCreationTime = System.currentTimeMillis();
         }
@@ -28,11 +30,11 @@ public class SessionManager {
 
     private static final ConcurrentHashMap<String, SessionDetails> activeSessions = new ConcurrentHashMap<>();
 
-    public static void startSession(String token, int userId) {
-        activeSessions.put(token, new SessionDetails(userId));
+    public static void startSession(String token, int userId, String clientIP) {
+        activeSessions.put(token, new SessionDetails(userId, clientIP));
     }
 
-    public static SessionResult evaluerEtRegenerer(String currentToken) {
+    public static SessionResult evaluerEtRegenerer(String currentToken, String currentIP) {
         if (currentToken == null || currentToken.isEmpty()) {
             return new SessionResult(false, null, "Non autorisé. Veuillez vous connecter.");
         }
@@ -42,6 +44,17 @@ public class SessionManager {
 
         if (details == null) {
             return new SessionResult(false, null, "Session introuvable ou non-connectée. Veuillez vous reconnecter.");
+        }
+
+        // PROTECTION CONTRE L'USURPATION D'IP (Session Hijacking)
+        if (currentIP != null && !currentIP.equals(details.clientIP)) {
+            logger.error("ALERTE SÉCURITÉ : Tentative de hijacking de session !");
+            logger.error("UserId: {} | IP Session: {} | IP Actuelle: {}", 
+                    details.userId, details.clientIP, currentIP);
+            
+            // On invalide la session immédiatement par sécurité
+            activeSessions.remove(currentToken);
+            return new SessionResult(false, null, "Alerte Sécurité : Votre session a été invalidée car votre IP a changé.");
         }
 
         // 1. Expiration (inactivité)
