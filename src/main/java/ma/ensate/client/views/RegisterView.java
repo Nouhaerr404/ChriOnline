@@ -11,6 +11,10 @@ import ma.ensate.client.network.ClientTCP;
 import ma.ensate.models.Client;
 import ma.ensate.protocol.Request;
 import ma.ensate.protocol.Response;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import java.io.ByteArrayInputStream;
+import java.util.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,8 +31,17 @@ public class RegisterView {
     @FXML private Label         messageLabel;
     @FXML private Button        registerButton;
     @FXML private Button        togglePasswordBtn;
+    @FXML private ImageView     captchaImageView;
+    @FXML private TextField     captchaField;
+    @FXML private Button        refreshCaptchaBtn;
 
     private boolean passwordVisible = false;
+    private String captchaId;
+
+    @FXML
+    public void initialize() {
+        chargerCaptcha();
+    }
 
     @FXML
     private void handleRegister() {
@@ -37,9 +50,15 @@ public class RegisterView {
         String password = getPasswordValue();
         String adresse  = adresseField.getText().trim();
         String tel      = telField.getText().trim();
+        String captchaAnswer = captchaField.getText().trim();
 
-        if (nom.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            afficherErreur("Nom, email et mot de passe sont obligatoires !");
+        if (nom.isEmpty() || email.isEmpty() || password.isEmpty() || captchaAnswer.isEmpty()) {
+            afficherErreur("Nom, email, mot de passe et captcha sont obligatoires !");
+            return;
+        }
+
+        if (captchaId == null || captchaId.isEmpty()) {
+            afficherErreur("Captcha indisponible. Rafraichissez.");
             return;
         }
 
@@ -49,24 +68,26 @@ public class RegisterView {
         }
 
         registerButton.setDisable(true);
+        refreshCaptchaBtn.setDisable(true);
         afficherInfo("Inscription en cours...");
 
         new Thread(() -> {
             try {
                 Client client = new Client(nom, email, password, adresse, tel);
-
-                Request request = new Request("REGISTER", client);
+                Object[] payload = {client, captchaId, captchaAnswer};
+                Request request = new Request("REGISTER", payload);
 
                 Response response = ClientTCP.getInstance()
                         .envoyerRequete(request);
 
                 Platform.runLater(() -> {
                     registerButton.setDisable(false);
+                    refreshCaptchaBtn.setDisable(false);
 
                     if (response.isSuccess()) {
                         afficherSucces(" Inscription reussie ! Redirection...");
                         logger.info(" Inscription reussie : " + email);
-
+                        
                         new Thread(() -> {
                             try {
                                 Thread.sleep(1000);
@@ -76,6 +97,8 @@ public class RegisterView {
 
                     } else {
                         afficherErreur(response.getMessage());
+                        chargerCaptcha();
+                        captchaField.clear();
                     }
                 });
 
@@ -142,5 +165,44 @@ public class RegisterView {
 
     private String getPasswordValue() {
         return passwordVisible ? passwordVisibleField.getText() : passwordField.getText();
+    }
+
+    @FXML
+    private void handleRefreshCaptcha() {
+        chargerCaptcha();
+    }
+
+    private void chargerCaptcha() {
+        refreshCaptchaBtn.setDisable(true);
+        new Thread(() -> {
+            try {
+                Response response = ClientTCP.getInstance().envoyerRequete(new Request("GET_CAPTCHA"));
+                Platform.runLater(() -> {
+                    refreshCaptchaBtn.setDisable(false);
+                    if (!response.isSuccess() || !(response.getData() instanceof String[] data) || data.length < 2) {
+                        captchaId = null;
+                        afficherErreur("Impossible de charger le captcha.");
+                        return;
+                    }
+                    captchaId = data[0];
+
+                    // Décoder le base64 → Image JavaFX
+                    try {
+                        byte[] imageBytes = Base64.getDecoder().decode(data[1]);
+                        Image fxImage = new Image(new ByteArrayInputStream(imageBytes));
+                        captchaImageView.setImage(fxImage);
+                    } catch (Exception e) {
+                        logger.error("Erreur decodage captcha image : " + e.getMessage());
+                        afficherErreur("Erreur affichage captcha.");
+                    }
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    captchaId = null;
+                    refreshCaptchaBtn.setDisable(false);
+                    afficherErreur("Impossible de charger le captcha.");
+                });
+            }
+        }).start();
     }
 }

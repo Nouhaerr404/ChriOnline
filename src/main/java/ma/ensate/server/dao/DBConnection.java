@@ -7,9 +7,9 @@ import ma.ensate.util.ConfigLoader;
 
 public class DBConnection {
 
-    private static final String URL      = ConfigLoader.get("DB_URL", "jdbc:mysql://localhost:8889/chrionline");
+    private static final String URL      = ConfigLoader.get("DB_URL", "jdbc:mysql://localhost:3306/chrionline");
     private static final String USER     = ConfigLoader.get("DB_USER", "root");
-    private static final String PASSWORD = ConfigLoader.get("DB_PASSWORD", "root");
+    private static final String PASSWORD = ConfigLoader.get("DB_PASSWORD", "");
 
     private static Connection instance = null;
 
