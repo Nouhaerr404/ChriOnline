@@ -72,18 +72,17 @@ public class PanierView {
 
     // ── Affichage ─────────────────────────────────────────────────────────────
     public void afficher() {
-        BorderPane root = new BorderPane();
-        root.setStyle("-fx-background-color:" + BG_PAGE + ";");
-        root.setTop(construireNavBar());
-        root.setCenter(construireCentre());
-        root.setBottom(construireFooter());
-
-        Scene scene = new Scene(root, 980, 640);
-        scene.setFill(Color.web(BG_PAGE));
-        stage.setTitle("ChriOnline — Mon Panier");
-        stage.setScene(scene);
-        stage.show();
-        chargerPanier();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/panier.fxml"));
+            Parent root = loader.load();
+            
+            Scene scene = new Scene(root, 1280, 800);
+            stage.setTitle("ChriOnline — Mon Panier");
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // ── NavBar ────────────────────────────────────────────────────────────────

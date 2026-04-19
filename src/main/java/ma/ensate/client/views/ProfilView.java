@@ -67,12 +67,18 @@ public class ProfilView {
     @FXML
     private Label twoFaMessageLabel;
 
+    @FXML
+    private Label profileInitialLabel;
+
     private boolean ancienVisible = false;
     private boolean nouveauVisible = false;
 
     @FXML
     public void initialize() {
         chargerProfil();
+        if (profileInitialLabel != null) {
+            profileInitialLabel.setText(buildUserInitial());
+        }
     }
 
     private void chargerProfil() {
@@ -251,6 +257,24 @@ public class ProfilView {
     }
 
     @FXML
+    private void goToPanier() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/panier.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) nomField.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setTitle("ChriOnline - Mon Panier");
+        } catch (Exception e) {
+            logger.error("Erreur navigation panier : {}", e.getMessage());
+        }
+    }
+
+    private String buildUserInitial() {
+        String nom = SessionManager.getInstance().getNomUtilisateur();
+        return (nom != null && !nom.isBlank()) ? nom.trim().substring(0, 1).toUpperCase() : "U";
+    }
+
+    @FXML
     private void handleRetour() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/produits.fxml"));
@@ -263,14 +287,38 @@ public class ProfilView {
         }
     }
 
+    @FXML
+    private void handleCommandes() {
+        new HistoriqueView(
+            (Stage) nomField.getScene().getWindow(),
+            ClientTCP.getInstance(),
+            SessionManager.getInstance().getUserId(),
+            SessionManager.getInstance().getToken()
+        ).afficher();
+    }
+
+    @FXML
+    private void handleDeconnexion() {
+        SessionManager.getInstance().logout();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/login.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) nomField.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setTitle("ChriOnline - Connexion");
+        } catch (Exception e) {
+            logger.error("Erreur deconnexion : {}", e.getMessage());
+        }
+    }
+
     private void afficherErreur(String msg) {
         messageLabel.setText(msg);
-        messageLabel.setStyle("-fx-text-fill: red;");
+        messageLabel.setStyle("-fx-text-fill: #EF4444;");
     }
 
     private void afficherSucces(String msg) {
         messageLabel.setText(msg);
-        messageLabel.setStyle("-fx-text-fill: green;");
+        messageLabel.setStyle("-fx-text-fill: #10B981;");
     }
 
     private void afficherErreurPassword(String msg) {

@@ -39,6 +39,10 @@ public class SessionManager {
         return utilisateurConnecte;
     }
 
+    public int getUserId() {
+        return utilisateurConnecte != null ? utilisateurConnecte.getId() : -1;
+    }
+
     public String getToken() {
         if (utilisateurConnecte == null) return null;
         return utilisateurConnecte.getSessionToken();
@@ -56,6 +60,10 @@ public class SessionManager {
                     + utilisateurConnecte.getEmail());
         }
         this.utilisateurConnecte = null;
+    }
+
+    public void logout() {
+        clear();
     }
 
     public String getNomUtilisateur() {

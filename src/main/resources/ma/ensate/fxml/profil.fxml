@@ -1,141 +1,161 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Line?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.ProfilView">
-    <children>
-        <ScrollPane fitToWidth="true"
-                    hbarPolicy="NEVER"
-                    pannable="true"
-                    styleClass="content-scroll"
-                    AnchorPane.bottomAnchor="0.0"
-                    AnchorPane.leftAnchor="0.0"
-                    AnchorPane.rightAnchor="0.0"
-                    AnchorPane.topAnchor="0.0">
-            <content>
-                <VBox spacing="15"
-                      style="-fx-background-color: #f0f4f8; -fx-padding: 30;">
+<VBox prefHeight="800.0" prefWidth="1280.0" spacing="0" styleClass="app-shell" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.ProfilView">
+   <children>
+      <!-- Global Header -->
+      <HBox alignment="CENTER_LEFT" prefHeight="90.0" styleClass="header-section">
+         <children>
+            <HBox alignment="CENTER" spacing="10.0" styleClass="brand-outline">
+                <children>
+                    <Label styleClass="brand-mark" text="ChriOnline" />
+                </children>
+            </HBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER" spacing="25.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#handleRetour" styleClass="nav-link-btn" text="BOUTIQUE" />
+                  <Button mnemonicParsing="false" onAction="#handleCommandes" styleClass="nav-link-btn" text="COMMANDES" />
+                  <Button mnemonicParsing="false" onAction="#goToPanier" styleClass="nav-link-btn" text="PANIER" />
+                  <HBox alignment="CENTER" mouseTransparent="true" pickOnBounds="true" spacing="12.0" styleClass="profile-bubble, profile-bubble-active">
+                      <children>
+                          <Label fx:id="profileHoverLabel" mouseTransparent="true" styleClass="profile-hover" text="MON COMPTE" visible="false" managed="false"/>
+                          <Label fx:id="profileInitialLabel" mouseTransparent="true" styleClass="profile-initial" text="U" />
+                      </children>
+                  </HBox>
+                  <Button mnemonicParsing="false" onAction="#handleDeconnexion" styleClass="logout-btn" text="DÉCONNEXION">
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets left="42.0" right="42.0" />
+         </padding>
+      </HBox>
 
-                    <Button text="Retour"
-                            onAction="#handleRetour"
-                            style="-fx-background-color: transparent; -fx-text-fill: #2E75B6; -fx-cursor: hand; -fx-font-size: 13px;"/>
+      <HBox VBox.vgrow="ALWAYS" styleClass="catalog-wrap">
+         <children>
+            <!-- Sidebar Navigation -->
+            <VBox minWidth="280.0" prefWidth="280.0" spacing="40.0" styleClass="catalog-sidebar">
+               <children>
+                  <VBox spacing="10.0">
+                      <children>
+                          <Label styleClass="catalog-sidebar-label" text="VOTRE ESPACE" />
+                          <Label styleClass="catalog-sidebar-accent" text="REGLAGES" />
+                      </children>
+                  </VBox>
+                  <VBox spacing="12.0">
+                     <children>
+                        <Button alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" styleClass="catalog-side-link, catalog-side-link-active" text="Informations Générales" />
+                        <Button alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" onAction="#handleCommandes" styleClass="catalog-side-link" text="Historique Commandes" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
 
-                    <Label text="Mon Profil"
-                           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1F4E79;"/>
+            <!-- Main dashboard Area -->
+            <ScrollPane fitToWidth="true" styleClass="content-scroll" HBox.hgrow="ALWAYS">
+               <content>
+                  <VBox spacing="45.0" style="-fx-padding: 0 0 0 45;">
+                     <children>
+                        <VBox spacing="12.0">
+                            <children>
+                                <Label styleClass="section-kicker" text="VOS INFORMATIONS" />
+                                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                    <children>
+                                        <Label styleClass="section-title" text="NOTRE" />
+                                        <Label styleClass="section-title-accent" text="COMPTE" />
+                                    </children>
+                                </HBox>
+                                <Line endX="100.0" styleClass="section-divider" />
+                                <Label styleClass="hero-subtitle" text="Gérez vos données personnelles et renforcez la sécurité de votre compte." />
+                            </children>
+                        </VBox>
 
-                    <VBox spacing="12"
-                          style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian,#ccc,10,0,0,2);">
+                        <HBox spacing="40.0">
+                           <children>
+                              <!-- Personal Info Card -->
+                              <VBox spacing="30.0" styleClass="showcase-card" HBox.hgrow="ALWAYS" style="-fx-pref-height: -1;">
+                                 <children>
+                                    <VBox spacing="5.0">
+                                        <children>
+                                            <Label text="COORDONNÉES" styleClass="summary-title" />
+                                            <Label text="Utilisées pour vos livraisons et factures." styleClass="catalog-sidebar-label" />
+                                            <Label fx:id="statutLabel" text="Actif" styleClass="catalog-sidebar-accent" />
+                                        </children>
+                                    </VBox>
+                                    <VBox spacing="20.0">
+                                       <children>
+                                          <VBox spacing="8.0">
+                                             <Label text="NOM COMPLET" styleClass="catalog-sidebar-label" />
+                                             <TextField fx:id="nomField" promptText="Votre nom" styleClass="promo-field" />
+                                          </VBox>
+                                          <VBox spacing="8.0">
+                                             <Label text="EMAIL" styleClass="catalog-sidebar-label" />
+                                             <TextField fx:id="emailField" editable="false" styleClass="promo-field" style="-fx-opacity: 0.7; -fx-background-color: rgba(255,255,255,0.02);" />
+                                          </VBox>
+                                          <VBox spacing="8.0">
+                                             <Label text="ADRESSE DE LIVRAISON" styleClass="catalog-sidebar-label" />
+                                             <TextField fx:id="adresseField" promptText="Votre adresse" styleClass="promo-field" />
+                                          </VBox>
+                                          <VBox spacing="8.0">
+                                             <Label text="TÉLÉPHONE" styleClass="catalog-sidebar-label" />
+                                             <TextField fx:id="telField" promptText="Votre numéro" styleClass="promo-field" />
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                    <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleUpdateProfil" prefHeight="55.0" styleClass="secondary-btn" text="SAUVEGARDER LES MODIFICATIONS" />
+                                    <Label fx:id="messageLabel" text="" styleClass="catalog-sidebar-accent" />
+                                 </children>
+                              </VBox>
 
-                        <Label text="Informations personnelles"
-                               style="-fx-font-weight: bold; -fx-text-fill: #2E75B6; -fx-font-size: 14px;"/>
-
-                        <Label text="Nom complet"
-                               style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
-                        <TextField fx:id="nomField"
-                                   style="-fx-padding: 8; -fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;"/>
-
-                        <Label text="Email (non modifiable)"
-                               style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
-                        <TextField fx:id="emailField" editable="false"
-                                   style="-fx-padding: 8; -fx-background-radius: 5; -fx-background-color: #f5f5f5; -fx-border-color: #ddd; -fx-border-radius: 5;"/>
-
-                        <Label text="Adresse"
-                               style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
-                        <TextField fx:id="adresseField"
-                                   style="-fx-padding: 8; -fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;"/>
-
-                        <Label text="Telephone"
-                               style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
-                        <TextField fx:id="telField"
-                                   style="-fx-padding: 8; -fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;"/>
-
-                        <HBox spacing="10" alignment="CENTER_LEFT">
-                            <Label text="Statut :"
-                                   style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
-                            <Label fx:id="statutLabel"
-                                   style="-fx-font-weight: bold;"/>
+                              <!-- Security Card -->
+                              <VBox prefWidth="420.0" spacing="25.0" styleClass="summary-card">
+                                 <children>
+                                     <VBox spacing="5.0">
+                                        <children>
+                                            <Label text="SÉCURITÉ" styleClass="summary-title" />
+                                            <Label text="Protégez votre espace client." styleClass="catalog-sidebar-label" />
+                                        </children>
+                                     </VBox>
+                                    
+                                    <VBox spacing="18.0">
+                                       <children>
+                                          <VBox spacing="8.0">
+                                             <Label text="MOT DE PASSE" styleClass="catalog-sidebar-label" />
+                                             <PasswordField fx:id="ancienPasswordField" promptText="Ancien mot de passe" styleClass="promo-field" />
+                                          </VBox>
+                                          <PasswordField fx:id="nouveauPasswordField" promptText="Nouveau mot de passe" styleClass="promo-field" />
+                                          <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleChangerPassword" styleClass="outline-btn" text="MODIFIER LE PASS" />
+                                          <Label fx:id="passwordMessageLabel" text="" styleClass="catalog-sidebar-label" />
+                                       </children>
+                                    </VBox>
+                                    
+                                    <Separator styleClass="summary-separator" />
+                                    
+                                    <VBox spacing="15.0" styleClass="shipping-card">
+                                       <children>
+                                          <Label text="DOUBLE AUTHENTIFICATION" styleClass="shipping-title" />
+                                          <CheckBox fx:id="twoFaCheckBox" onAction="#handleTwoFaToggle" text="Activer la protection par email" styleClass="nav-link" />
+                                          <Label fx:id="twoFaMessageLabel" text="Recommandé pour sécuriser vos transactions." styleClass="shipping-copy" wrapText="true" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </VBox>
+                           </children>
                         </HBox>
-
-                        <Label fx:id="messageLabel" text=""
-                               wrapText="true"
-                               style="-fx-font-size: 12px;"/>
-
-                        <Button text="Sauvegarder les modifications"
-                                onAction="#handleUpdateProfil"
-                                maxWidth="Infinity"
-                                style="-fx-background-color: #2E75B6; -fx-text-fill: white; -fx-padding: 10; -fx-background-radius: 5; -fx-cursor: hand;"/>
-                    </VBox>
-
-                    <VBox spacing="12"
-                          style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian,#ccc,10,0,0,2);">
-
-                        <Label text="Changer le mot de passe"
-                               style="-fx-font-weight: bold; -fx-text-fill: #2E75B6; -fx-font-size: 14px;"/>
-
-                        <Label text="Ancien mot de passe"
-                               style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
-                        <HBox spacing="5" alignment="CENTER_LEFT">
-                            <PasswordField fx:id="ancienPasswordField"
-                                           HBox.hgrow="ALWAYS"
-                                           style="-fx-padding: 8; -fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;"/>
-                            <TextField fx:id="ancienPasswordVisible"
-                                       HBox.hgrow="ALWAYS"
-                                       visible="false" managed="false"
-                                       style="-fx-padding: 8; -fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;"/>
-                            <Button fx:id="toggleAncienBtn"
-                                    text="Voir"
-                                    onAction="#toggleAncienPassword"
-                                    style="-fx-background-color: transparent; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-padding: 5 10;"/>
-                        </HBox>
-
-                        <Label text="Nouveau mot de passe"
-                               style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
-                        <HBox spacing="5" alignment="CENTER_LEFT">
-                            <PasswordField fx:id="nouveauPasswordField"
-                                           HBox.hgrow="ALWAYS"
-                                           style="-fx-padding: 8; -fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;"/>
-                            <TextField fx:id="nouveauPasswordVisible"
-                                       HBox.hgrow="ALWAYS"
-                                       visible="false" managed="false"
-                                       style="-fx-padding: 8; -fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;"/>
-                            <Button fx:id="toggleNouveauBtn"
-                                    text="Voir"
-                                    onAction="#toggleNouveauPassword"
-                                    style="-fx-background-color: transparent; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-padding: 5 10;"/>
-                        </HBox>
-
-                        <Label fx:id="passwordMessageLabel" text=""
-                               wrapText="true"
-                               style="-fx-font-size: 12px;"/>
-
-                        <Button text="Changer le mot de passe"
-                                onAction="#handleChangerPassword"
-                                maxWidth="Infinity"
-                                style="-fx-background-color: #C00000; -fx-text-fill: white; -fx-padding: 10; -fx-background-radius: 5; -fx-cursor: hand;"/>
-                    </VBox>
-
-                    <VBox spacing="12"
-                          style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian,#ccc,10,0,0,2);">
-
-                        <Label text="Sécurité — Authentification à deux facteurs (2FA)"
-                               style="-fx-font-weight: bold; -fx-text-fill: #2E75B6; -fx-font-size: 14px;"/>
-
-                        <Label text="Lorsque la 2FA est activée, un code de vérification sera envoyé à votre adresse email à chaque connexion."
-                               wrapText="true"
-                               style="-fx-text-fill: #555; -fx-font-size: 12px;"/>
-
-                        <CheckBox fx:id="twoFaCheckBox"
-                                  text="Activer l'authentification à deux facteurs"
-                                  onAction="#handleTwoFaToggle"
-                                  style="-fx-font-size: 13px;"/>
-
-                        <Label fx:id="twoFaMessageLabel" text=""
-                               wrapText="true"
-                               style="-fx-font-size: 12px;"/>
-                    </VBox>
-
-                </VBox>
-            </content>
-        </ScrollPane>
-    </children>
-</AnchorPane>
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+         </children>
+      </HBox>
+   </children>
+</VBox>

@@ -138,8 +138,18 @@ public class AdminCommandeView {
     // --- Navigation et Header ---
 
     @FXML
-    public void handleRefresh() {
+    public void refreshOrders() {
         chargerDonnees();
+    }
+
+    @FXML
+    public void handleDashboardPlaceholder() {
+        setStatus("Dashboard en développement.");
+    }
+
+    @FXML
+    public void handleProduits() {
+        naviguer("/ma/ensate/fxml/admin_produits.fxml", "Admin Produits");
     }
 
     @FXML

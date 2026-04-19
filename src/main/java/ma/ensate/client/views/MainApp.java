@@ -31,11 +31,11 @@ public class MainApp extends Application {
         logger.info("Système de notifications UDP démarré");
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/ma/ensate/fxml/login.fxml"));
+                getClass().getResource("/ma/ensate/fxml/landing.fxml"));
         Parent root = loader.load();
 
-        primaryStage.setTitle("ChriOnline");
-        primaryStage.setScene(new Scene(root, 500, 500));
+        primaryStage.setTitle("ChriOnline - Premium E-Commerce");
+        primaryStage.setScene(new Scene(root, 1280, 800));
         primaryStage.setResizable(true);
         primaryStage.show();
     }

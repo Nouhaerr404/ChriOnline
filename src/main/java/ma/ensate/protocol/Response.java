@@ -9,7 +9,7 @@ public class Response implements Serializable {
     private String message;
     private Object data;
     
-    // NOUVEAU: Token regénéré pour l'anti-hijacking
+    // Token regénéré pour l'anti-hijacking
     private String newToken;
 
     public Response() {}

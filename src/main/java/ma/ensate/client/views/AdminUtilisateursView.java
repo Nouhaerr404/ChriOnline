@@ -276,14 +276,33 @@ public class AdminUtilisateursView {
     // NAVIGATION — vers la vue produits admin
     // =========================================================================
     @FXML
-    private void allerVersProduits() {
+    private void handleDashboardPlaceholder() {
+        setStatus("Dashboard en développement.");
+    }
+
+    @FXML
+    private void handleProduits() {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/ma/ensate/fxml/admin_produits.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) usersTable.getScene().getWindow();
             stage.getScene().setRoot(root);
-            stage.setTitle("ChriOnline - Dashboard Admin Produits");
+            stage.setTitle("ChriOnline - Admin Produits");
+        } catch (Exception e) {
+            setStatus("Erreur navigation : " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleCommandesPlaceholder() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ma/ensate/fxml/admin_commandes.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) usersTable.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setTitle("ChriOnline - Admin Commandes");
         } catch (Exception e) {
             setStatus("Erreur navigation : " + e.getMessage());
         }

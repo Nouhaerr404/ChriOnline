@@ -63,32 +63,58 @@ public class ProduitDetailsView {
         if (currentProduit == null) return;
         
         ma.ensate.models.Utilisateur u = ma.ensate.client.network.SessionManager.getInstance().getUtilisateur();
-        if (u == null) {
-            System.err.println("Utilisateur non connecté !");
-            return;
-        }
+        if (u == null) return;
 
         new Thread(() -> {
             try {
                 String data = u.getId() + "," + currentProduit.getId() + ",1";
                 ma.ensate.protocol.Response r = ma.ensate.client.network.ClientTCP.getInstance()
-                        .envoyerRequete(new ma.ensate.protocol.Request("AJOUTER_AU_PANIER", data, u.getSessionToken()));
+                        .envoyerRequeteSecurisee("AJOUTER_AU_PANIER", data);
                 
                 javafx.application.Platform.runLater(() -> {
-                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                            r.isSuccess() ? javafx.scene.control.Alert.AlertType.INFORMATION : javafx.scene.control.Alert.AlertType.ERROR
+                    ma.ensate.client.utils.NotificationUtils.showToast(
+                        (Stage) nomLabel.getScene().getWindow(), 
+                        r.isSuccess() ? "Produit ajouté au panier !" : "Erreur: " + r.getMessage()
                     );
-                    alert.setTitle("Ajout au panier");
-                    alert.setHeaderText(null);
-                    alert.setContentText(r.isSuccess() ? "Produit ajouté au panier avec succès !" : "Erreur : " + r.getMessage());
-                    alert.showAndWait();
                 });
             } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }).start();
+    }
+
+    @FXML
+    private void handleBuyNow() {
+        if (currentProduit == null) return;
+        
+        ma.ensate.models.Utilisateur u = ma.ensate.client.network.SessionManager.getInstance().getUtilisateur();
+        if (u == null) return;
+
+        new Thread(() -> {
+            try {
+                String data = u.getId() + "," + currentProduit.getId() + ",1";
+                ma.ensate.protocol.Response r = ma.ensate.client.network.ClientTCP.getInstance()
+                        .envoyerRequeteSecurisee("AJOUTER_AU_PANIER", data);
+                
                 javafx.application.Platform.runLater(() -> {
-                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
-                    alert.setContentText("Erreur réseau: " + ex.getMessage());
-                    alert.showAndWait();
+                    if (r.isSuccess()) {
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/panier.fxml"));
+                            Parent root = loader.load();
+                            Stage stage = (Stage) nomLabel.getScene().getWindow();
+                            stage.getScene().setRoot(root);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        ma.ensate.client.utils.NotificationUtils.showToast(
+                            (Stage) nomLabel.getScene().getWindow(), 
+                            "Erreur: " + r.getMessage()
+                        );
+                    }
                 });
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }).start();
     }

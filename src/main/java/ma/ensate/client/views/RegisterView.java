@@ -138,7 +138,7 @@ public class RegisterView {
 
     private void afficherInfo(String msg) {
         messageLabel.setText(msg);
-        messageLabel.setStyle("-fx-text-fill: #1a73e8; -fx-font-size: 12px;");
+        messageLabel.setStyle("-fx-text-fill: #1E293B; -fx-font-size: 12px;");
     }
 
     @FXML
@@ -173,23 +173,34 @@ public class RegisterView {
     }
 
     private void chargerCaptcha() {
-        refreshCaptchaBtn.setDisable(true);
+        if (refreshCaptchaBtn != null) refreshCaptchaBtn.setDisable(true);
         new Thread(() -> {
             try {
                 Response response = ClientTCP.getInstance().envoyerRequete(new Request("GET_CAPTCHA"));
                 Platform.runLater(() -> {
-                    refreshCaptchaBtn.setDisable(false);
+                    if (refreshCaptchaBtn != null) refreshCaptchaBtn.setDisable(false);
                     if (!response.isSuccess() || !(response.getData() instanceof String[] data) || data.length < 2) {
                         captchaId = null;
+                        logger.error("Echec chargement captcha : response.isSuccess=" + response.isSuccess());
                         afficherErreur("Impossible de charger le captcha.");
                         return;
                     }
                     captchaId = data[0];
+                    logger.info("Captcha recu - ID: " + captchaId + " | Base64 Length: " + (data[1] != null ? data[1].length() : 0));
+
+                    if (data[1] == null || data[1].isBlank()) {
+                        logger.error("Données image captcha vides !");
+                        afficherErreur("Erreur image captcha.");
+                        return;
+                    }
 
                     // Décoder le base64 → Image JavaFX
                     try {
-                        byte[] imageBytes = Base64.getDecoder().decode(data[1]);
+                        byte[] imageBytes = Base64.getDecoder().decode(data[1].trim());
                         Image fxImage = new Image(new ByteArrayInputStream(imageBytes));
+                        if (fxImage.isError()) {
+                            logger.error("Erreur chargement Image FX: " + fxImage.getException());
+                        }
                         captchaImageView.setImage(fxImage);
                     } catch (Exception e) {
                         logger.error("Erreur decodage captcha image : " + e.getMessage());
@@ -199,7 +210,7 @@ public class RegisterView {
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     captchaId = null;
-                    refreshCaptchaBtn.setDisable(false);
+                    if (refreshCaptchaBtn != null) refreshCaptchaBtn.setDisable(false);
                     afficherErreur("Impossible de charger le captcha.");
                 });
             }

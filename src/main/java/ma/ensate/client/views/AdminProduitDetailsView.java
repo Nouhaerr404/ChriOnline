@@ -17,6 +17,7 @@ import java.util.Optional;
 
 public class AdminProduitDetailsView {
 
+    @FXML private Label idLabel;
     @FXML private Label nomLabel;
     @FXML private Label categorieLabel;
     @FXML private Label prixLabel;
@@ -28,6 +29,7 @@ public class AdminProduitDetailsView {
 
     public void setProduit(Produit produit) {
         this.currentProduit = produit;
+        idLabel.setText("#" + produit.getId());
         nomLabel.setText(produit.getNom());
         categorieLabel.setText(produit.getCategorie() != null ? produit.getCategorie().getNom() : "Sans categorie");
         prixLabel.setText(String.format("%.2f MAD", produit.getPrix()));

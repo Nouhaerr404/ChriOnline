@@ -1,7 +1,9 @@
 package ma.ensate.client.network;
 
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+import ma.ensate.client.utils.NotificationUtils;
 import ma.ensate.util.ConfigLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -137,26 +139,33 @@ public class UDPNotificationClient implements Runnable {
     private void traiterNotification(String message) {
         String titre;
         String contenu;
+        boolean success = true;
 
         if (message.startsWith("COMMANDE_VALIDEE:")) {
             String commandeId = message.replace("COMMANDE_VALIDEE:", "");
-            titre = "Commande confirmee";
-            contenu = "Votre commande a ete validee.\n"
-                    + "Ref : #" + commandeId.substring(0, Math.min(8, commandeId.length())).toUpperCase();
+            titre = "Commande confirmée";
+            contenu = "Votre commande est validée.\nRef : #" + 
+                     commandeId.substring(0, Math.min(8, commandeId.length())).toUpperCase();
         } else {
             titre = "Notification";
             contenu = message;
+            success = !message.toLowerCase().contains("erreur");
         }
 
-        final String titreF = titre;
-        final String contenuF = contenu;
+        final String finalTitre = titre;
+        final String finalContenu = contenu;
+        final boolean finalSuccess = success;
 
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("ChriOnline - Notification");
-            alert.setHeaderText(titreF);
-            alert.setContentText(contenuF);
-            alert.show();
+            // Trouver la fenêtre active pour afficher le popup
+            Window activeWindow = Window.getWindows().stream()
+                    .filter(Window::isShowing)
+                    .findFirst()
+                    .orElse(null);
+            
+            if (activeWindow instanceof Stage) {
+                NotificationUtils.showNeonPopup((Stage) activeWindow, finalTitre, finalContenu, finalSuccess);
+            }
         });
     }
 

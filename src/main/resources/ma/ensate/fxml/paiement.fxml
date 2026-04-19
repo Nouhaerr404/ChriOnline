@@ -2,72 +2,166 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Line?>
 
-<StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
-    <VBox spacing="30" style="-fx-background-color: #F8FAFC; -fx-padding: 0;" alignment="TOP_CENTER">
-        <HBox style="-fx-background-color: #0F172A;">
-            <padding><Insets top="20" right="50" bottom="20" left="50"/></padding>
-            <VBox spacing="-3">
-                <Label text="ChriOnline" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
-                <Label text="CHECKOUT" style="-fx-text-fill: #3B82F6; -fx-font-size: 10px; -fx-font-weight: bold;"/>
-            </VBox>
-        </HBox>
-        <VBox spacing="25" maxWidth="500" style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 40;" alignment="CENTER">
-            <effect><DropShadow radius="20"><color><Color red="0.0" green="0.0" blue="0.0" opacity="0.1"/></color></DropShadow></effect>
-            
-            <Label text="Paiement Sécurisé" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #0F172A;"/>
-            <Label fx:id="lblSub" style="-fx-text-fill: #64748B; -fx-font-size: 14px;"/>
-            
-            <HBox spacing="10" alignment="CENTER">
-                <Label text="Montant :"/>
-                <Label fx:id="valT" style="-fx-font-size: 22px; -fx-font-weight: 900; -fx-text-fill: #3B82F6;"/>
-            </HBox>
-            
-            <Separator/>
-            
-            <VBox spacing="15">
-                <padding><Insets top="10" bottom="10"/></padding>
-                
-                <RadioButton fx:id="rbCard" text="Carte Bancaire (VISA/Mastercard)" selected="true" style="-fx-font-weight: bold; -fx-text-fill: #0F172A;">
-                    <toggleGroup><ToggleGroup fx:id="group"/></toggleGroup>
-                </RadioButton>
-                
-                <VBox fx:id="cardForm" spacing="15">
-                    <padding><Insets top="10" left="25"/></padding>
-                    <VBox spacing="5">
-                        <Label text="Numéro de carte:" style="-fx-font-size: 13px; -fx-text-fill: #64748B;"/>
-                        <TextField fx:id="txtNum" promptText="xxxx xxxx xxxx xxxx" prefHeight="45" style="-fx-background-radius: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 8; -fx-font-family: 'Monospaced';"/>
-                    </VBox>
-                    <HBox spacing="15">
-                        <VBox spacing="5" HBox.hgrow="ALWAYS">
-                            <Label text="Date d'expiration:" style="-fx-font-size: 13px; -fx-text-fill: #64748B;"/>
-                            <TextField fx:id="txtExp" promptText="MM / AA" prefHeight="45" style="-fx-background-radius: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 8;"/>
-                        </VBox>
-                        <VBox spacing="5" HBox.hgrow="ALWAYS">
-                            <Label text="CVV:" style="-fx-font-size: 13px; -fx-text-fill: #64748B;"/>
-                            <TextField fx:id="txtCvv" promptText="123" prefHeight="45" style="-fx-background-radius: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 8;"/>
-                        </VBox>
-                    </HBox>
-                    <VBox spacing="5">
-                        <Label text="Titulaire de la carte:" style="-fx-font-size: 13px; -fx-text-fill: #64748B;"/>
-                        <TextField fx:id="txtHold" promptText="PRÉNOM NOM" prefHeight="45" style="-fx-background-radius: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 8;"/>
-                    </VBox>
-                </VBox>
+<StackPane fx:id="rootPane" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <ScrollPane fitToWidth="true" styleClass="app-shell">
+            <content>
+                <VBox alignment="TOP_CENTER" spacing="40" styleClass="app-shell">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="90.0" styleClass="header-section">
+                            <children>
+                                <HBox alignment="CENTER" spacing="10.0" styleClass="brand-outline">
+                                    <children>
+                                        <Label styleClass="brand-mark" text="ChriOnline" />
+                                    </children>
+                                </HBox>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <HBox alignment="CENTER" spacing="25.0">
+                                    <children>
+                                        <Button mnemonicParsing="false" onAction="#retourBoutique" styleClass="nav-link-btn" text="BOUTIQUE" />
+                                        <Button mnemonicParsing="false" onAction="#goToOrders" styleClass="nav-link-btn" text="COMMANDES" />
+                                        <Button mnemonicParsing="false" onAction="#goToPanier" styleClass="nav-link-btn" text="PANIER" />
+                                        
+                                        <Button mnemonicParsing="false" onAction="#goToProfil" styleClass="profile-bubble-btn">
+                                            <graphic>
+                                                <HBox alignment="CENTER" mouseTransparent="true" pickOnBounds="true" spacing="12.0" styleClass="profile-bubble">
+                                                    <children>
+                                                        <Label fx:id="profileHoverLabel" mouseTransparent="true" styleClass="profile-hover" text="MON COMPTE" visible="false" managed="false"/>
+                                                        <Label fx:id="profileInitialLabel" mouseTransparent="true" styleClass="profile-initial" text="U" />
+                                                    </children>
+                                                </HBox>
+                                            </graphic>
+                                        </Button>
 
-                <RadioButton fx:id="rbCash" text="Paiement à la Livraison" toggleGroup="$group" style="-fx-font-weight: bold; -fx-text-fill: #0F172A;"/>
-                
-                <VBox fx:id="livraisonForm" spacing="10" visible="false" managed="false">
-                    <padding><Insets left="25" top="5" bottom="5"/></padding>
-                    <RadioButton fx:id="rbLivraisonCash" text="Payer en espèces (Cash)" selected="true" style="-fx-text-fill: #0F172A;">
-                        <toggleGroup><ToggleGroup fx:id="livraisonGroup"/></toggleGroup>
-                    </RadioButton>
-                    <RadioButton fx:id="rbLivraisonCard" text="Payer par carte à la livraison" toggleGroup="$livraisonGroup" style="-fx-text-fill: #0F172A;"/>
+                                        <Button mnemonicParsing="false" onAction="#handleLogout" styleClass="logout-btn" text="DÉCONNEXION">
+                                           <HBox.margin>
+                                              <Insets left="10.0" />
+                                           </HBox.margin>
+                                        </Button>
+                                    </children>
+                                </HBox>
+                            </children>
+                            <padding>
+                                <Insets left="42.0" right="42.0" />
+                            </padding>
+                        </HBox>
+                        <!-- ... rest of VBox content ... -->
+
+                <VBox alignment="CENTER" spacing="0" maxWidth="1200">
+                    <children>
+                        <HBox spacing="40" alignment="TOP_CENTER">
+                            <children>
+                                <VBox spacing="30" prefWidth="650" styleClass="showcase-card" style="-fx-pref-height: -1; -fx-padding: 40;">
+                                    <children>
+                                        <VBox spacing="10">
+                                            <children>
+                                                <Label text="MÉTHODE DE PAIEMENT" styleClass="summary-title" />
+                                                <Label text="Choisissez votre mode de règlement préféré." styleClass="catalog-sidebar-label" />
+                                                <Line endX="60" styleClass="section-divider" />
+                                            </children>
+                                        </VBox>
+
+                                        <VBox spacing="20">
+                                            <children>
+                                                <RadioButton fx:id="rbCard" text="CARTE BANCAIRE (VISA / MASTERCARD)" selected="true" styleClass="nav-link" style="-fx-font-size: 16px;">
+                                                    <toggleGroup><ToggleGroup fx:id="group"/></toggleGroup>
+                                                </RadioButton>
+                                                
+                                                <VBox fx:id="cardForm" spacing="20" styleClass="shipping-card">
+                                                    <children>
+                                                        <VBox spacing="8">
+                                                            <children>
+                                                                <Label text="NUMÉRO DE CARTE" styleClass="catalog-sidebar-label" />
+                                                                <TextField fx:id="txtNum" promptText="XXXX XXXX XXXX XXXX" styleClass="promo-field" prefHeight="55" style="-fx-font-family: 'Monospacded';" />
+                                                            </children>
+                                                        </VBox>
+                                                        <HBox spacing="20">
+                                                            <children>
+                                                                <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                                                    <children>
+                                                                        <Label text="EXPIRATION (MM/AA)" styleClass="catalog-sidebar-label" />
+                                                                        <TextField fx:id="txtExp" promptText="01/27" styleClass="promo-field" prefHeight="50" />
+                                                                    </children>
+                                                                </VBox>
+                                                                <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                                                    <children>
+                                                                        <Label text="CVC" styleClass="catalog-sidebar-label" />
+                                                                        <TextField fx:id="txtCvv" promptText="123" styleClass="promo-field" prefHeight="50" />
+                                                                    </children>
+                                                                </VBox>
+                                                            </children>
+                                                        </HBox>
+                                                        <VBox spacing="8">
+                                                            <children>
+                                                                <Label text="TITULAIRE" styleClass="catalog-sidebar-label" />
+                                                                <TextField fx:id="txtHold" promptText="PRÉNOM NOM" styleClass="promo-field" prefHeight="50" />
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </VBox>
+
+                                                <RadioButton fx:id="rbCash" text="PAIEMENT À LA LIVRAISON" toggleGroup="$group" styleClass="nav-link" style="-fx-font-size: 16px;" />
+                                                
+                                                <VBox fx:id="livraisonForm" spacing="15" visible="false" managed="false" styleClass="shipping-card">
+                                                    <padding><Insets left="20" /></padding>
+                                                    <children>
+                                                       <RadioButton fx:id="rbLivraisonCash" text="Espèces (Cash)" selected="true" styleClass="footer-link">
+                                                           <toggleGroup><ToggleGroup fx:id="livraisonGroup"/></toggleGroup>
+                                                       </RadioButton>
+                                                       <RadioButton fx:id="rbLivraisonCard" text="Carte à la livraison" toggleGroup="$livraisonGroup" styleClass="footer-link" />
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+
+                                <VBox spacing="35" prefWidth="420" styleClass="summary-card">
+                                    <children>
+                                        <VBox spacing="10">
+                                            <children>
+                                                <Label text="VOTRE COMMANDE" styleClass="summary-title" />
+                                                <Label fx:id="lblSub" text="Résumé des articles dans votre panier." styleClass="catalog-sidebar-label" />
+                                            </children>
+                                        </VBox>
+                                        
+                                        <Separator styleClass="summary-separator" />
+                                        
+                                        <VBox spacing="15">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT">
+                                                    <children>
+                                                        <Label text="Total Commande" styleClass="summary-label" />
+                                                        <Region HBox.hgrow="ALWAYS" />
+                                                        <Label fx:id="valT" text="0.00 MAD" styleClass="summary-total-accent" />
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+
+                                        <VBox spacing="15" styleClass="shipping-card">
+                                            <children>
+                                                <Label text="SÉCURITÉ SSL" styleClass="shipping-title" />
+                                                <Label text="Vos données sont chiffrées de bout en bout pour garantir la confidentialité de vos paiements." styleClass="shipping-copy" wrapText="true" />
+                                            </children>
+                                        </VBox>
+
+                                        <Region VBox.vgrow="ALWAYS" />
+
+                                        <Button fx:id="btnPay" onAction="#handlePayment" maxWidth="Infinity" prefHeight="65" styleClass="secondary-btn" text="CONFIRMER ET PAYER" />
+                                        <Button onAction="#handleRetour" maxWidth="Infinity" prefHeight="55" styleClass="outline-btn" text="RETOUR AU PANIER" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                    </children>
                 </VBox>
-            </VBox>
-            
-            <Button fx:id="btnPay" text="CONFIRMER LE RÈGLEMENT" maxWidth="Infinity" prefHeight="50" style="-fx-background-color: #10B981; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;" onMouseEntered="#btnPayHover" onMouseExited="#btnPayExit" onAction="#handlePayment"/>
+                <Region prefHeight="50" />
+            </children>
         </VBox>
-    </VBox>
+    </content>
+        </ScrollPane>
+    </children>
 </StackPane>

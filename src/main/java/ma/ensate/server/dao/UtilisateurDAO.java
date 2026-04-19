@@ -1,5 +1,6 @@
 package ma.ensate.server.dao;
 
+import ma.ensate.models.Administrateur;
 import ma.ensate.models.Client;
 import ma.ensate.models.Utilisateur;
 import org.apache.logging.log4j.LogManager;
@@ -406,16 +407,24 @@ public class UtilisateurDAO {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                Client client = new Client();
-                client.setId(rs.getInt("id"));
-                client.setNom(rs.getString("nom"));
-                client.setEmail(rs.getString("email"));
-                client.setTypeCompte(rs.getString("type_compte"));
-                client.setAdresse(rs.getString("adresse"));
-                client.setTel(rs.getString("tel"));
-                client.setStatut(rs.getString("statut"));
-                client.setTwoFaEnabled(rs.getBoolean("two_fa_enabled"));
-                return client;
+                String type = rs.getString("type_compte");
+                Utilisateur u;
+                if ("ADMINISTRATEUR".equals(type)) {
+                    u = new Administrateur();
+                } else {
+                    Client c = new Client();
+                    c.setAdresse(rs.getString("adresse"));
+                    c.setTel(rs.getString("tel"));
+                    u = c;
+                }
+                
+                u.setId(rs.getInt("id"));
+                u.setNom(rs.getString("nom"));
+                u.setEmail(rs.getString("email"));
+                u.setTypeCompte(type);
+                u.setStatut(rs.getString("statut"));
+                u.setTwoFaEnabled(rs.getBoolean("two_fa_enabled"));
+                return u;
             }
         }
         return null;
