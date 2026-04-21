@@ -4,98 +4,91 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Line?>
 
-<AnchorPane prefHeight="620.0" prefWidth="900.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.AdminProduitDetailsView">
-   <children>
-      <VBox spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <HBox alignment="CENTER_LEFT" spacing="14.0" styleClass="header-section">
-               <children>
-                  <Button onAction="#retourner" styleClass="secondary-btn" text="Retour Admin" />
-                  <Label text="Details Produit (Admin)" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Label>
-               </children>
-               <padding>
-                  <Insets bottom="16.0" left="20.0" right="20.0" top="20.0" />
-               </padding>
-            </HBox>
+<VBox prefHeight="700.0" prefWidth="950.0" spacing="0.0" styleClass="app-shell" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.AdminProduitDetailsView">
+    <children>
+        <!-- Compact Header -->
+        <HBox alignment="CENTER_LEFT" prefHeight="80.0" styleClass="header-section">
+            <children>
+                <Button onAction="#retourner" styleClass="logout-btn" text="← RETOUR INVENTAIRE" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label text="INSPECTION PRODUIT" style="-fx-text-fill: #ff9fc7; -fx-font-weight: 900; -fx-font-size: 14px; -fx-letter-spacing: 2;" />
+            </children>
+            <padding>
+                <Insets left="30.0" right="30.0" />
+            </padding>
+        </HBox>
 
-            <HBox spacing="30.0" VBox.vgrow="ALWAYS">
-               <children>
-                  <VBox alignment="TOP_CENTER" prefWidth="320.0" spacing="10.0">
-                     <children>
-                        <AnchorPane prefHeight="320.0" prefWidth="320.0" styleClass="product-image-container">
-                           <children>
-                              <Label alignment="CENTER" text="IMAGE" textFill="#95a5a6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <font>
-                                    <Font name="System Bold" size="24.0" />
-                                 </font>
-                              </Label>
-                              <ImageView fx:id="produitImageView" fitHeight="320.0" fitWidth="320.0" pickOnBounds="true" preserveRatio="true" />
-                           </children>
-                        </AnchorPane>
-                     </children>
-                  </VBox>
+        <HBox spacing="40.0" VBox.vgrow="ALWAYS">
+            <children>
+                <!-- Image Side -->
+                <VBox prefWidth="380.0" spacing="20.0">
+                    <children>
+                        <StackPane styleClass="feature-image-box" VBox.vgrow="ALWAYS">
+                            <children>
+                                <Label text="IMAGE PREVIEW" styleClass="catalog-sidebar-label" />
+                                <ImageView fx:id="produitImageView" fitHeight="340.0" fitWidth="340.0" pickOnBounds="true" preserveRatio="true" />
+                            </children>
+                        </StackPane>
+                        <VBox spacing="10.0" styleClass="summary-card">
+                            <children>
+                                <Label styleClass="catalog-sidebar-label" text="RÉSUMÉ ANALYTIQUE" />
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="REF ID:" styleClass="catalog-sidebar-label" />
+                                    <Label fx:id="idLabel" styleClass="catalog-price-small" text="#000" />
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
 
-                  <VBox spacing="14.0" HBox.hgrow="ALWAYS">
-                     <children>
-                        <Label fx:id="nomLabel" text="Nom du Produit" textFill="#2c3e50">
-                           <font>
-                              <Font name="System Bold" size="32.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="categorieLabel" text="Categorie" textFill="#7f8c8d">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="prixLabel" text="0.00 MAD" textFill="#27ae60">
-                           <font>
-                              <Font name="System Bold" size="28.0" />
-                           </font>
-                        </Label>
-                        <Label text="Description" textFill="#34495e">
-                           <font>
-                              <Font name="System Bold" size="16.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="descriptionLabel" text="Description" wrapText="true" />
-                        <HBox alignment="CENTER_LEFT" spacing="8.0">
-                           <children>
-                              <Label text="Stock:" textFill="#34495e">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="stockLabel" text="0" textFill="#e67e22">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </HBox>
-                        <AnchorPane VBox.vgrow="ALWAYS" />
-                        <HBox alignment="CENTER_LEFT" spacing="10.0">
-                           <children>
-                              <Button onAction="#modifierProduit" styleClass="primary-btn" text="Modifier" />
-                              <Button onAction="#supprimerProduit" styleClass="danger-btn" text="Supprimer" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-               </children>
-               <padding>
-                  <Insets bottom="28.0" left="26.0" right="26.0" top="10.0" />
-               </padding>
-            </HBox>
-         </children>
-      </VBox>
-   </children>
-</AnchorPane>
+                <!-- Data Side -->
+                <VBox spacing="30.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <VBox spacing="10">
+                            <children>
+                                <Label fx:id="categorieLabel" styleClass="section-kicker" text="SÉRIE X500" />
+                                <Label fx:id="nomLabel" styleClass="section-title" text="Désignation" wrapText="true" />
+                                <Line endX="80.0" styleClass="section-divider" />
+                            </children>
+                        </VBox>
+
+                        <VBox spacing="25.0" styleClass="feature-card">
+                            <children>
+                                <Label fx:id="prixLabel" styleClass="summary-total-accent" text="0.00 MAD" />
+                                
+                                <VBox spacing="10">
+                                    <Label styleClass="catalog-sidebar-label" text="DESCRIPTION TECHNIQUE" />
+                                    <Label fx:id="descriptionLabel" styleClass="feature-copy" text="Chargement..." wrapText="true" />
+                                </VBox>
+
+                                <HBox spacing="30">
+                                    <VBox spacing="5">
+                                        <Label styleClass="catalog-sidebar-label" text="STOCK ACTUEL" />
+                                        <Label fx:id="stockLabel" styleClass="product-stock" text="0 UNITES" style="-fx-text-fill: #5cff90; -fx-font-size: 20px;" />
+                                    </VBox>
+                                    <VBox spacing="5">
+                                        <Label styleClass="catalog-sidebar-label" text="ÉTAT" />
+                                        <Label styleClass="stock-pill" text="DISPONIBLE" />
+                                    </VBox>
+                                </HBox>
+
+                                <HBox spacing="15.0" alignment="BOTTOM_RIGHT">
+                                    <children>
+                                        <Button onAction="#supprimerProduit" styleClass="outline-btn" text="SUPPRIMER" style="-fx-text-fill: #ffb86b; -fx-border-color: #ffb86b;" />
+                                        <Button onAction="#modifierProduit" styleClass="secondary-btn" text="MODIFIER LES INFOS" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="40.0" left="40.0" right="40.0" top="30.0" />
+            </padding>
+        </HBox>
+    </children>
+</VBox>

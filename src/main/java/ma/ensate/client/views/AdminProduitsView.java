@@ -35,22 +35,21 @@ public class AdminProduitsView {
     @FXML private ComboBox<Categorie> categoryComboBox;
     @FXML private TableView<Produit> productsTable;
     @FXML private TableColumn<Produit, Integer> idColumn;
-    @FXML private TableColumn<Produit, String> nameColumn;
+    @FXML private TableColumn<Produit, String> nomColumn;
     @FXML private TableColumn<Produit, String> categoryColumn;
-    @FXML private TableColumn<Produit, Double> priceColumn;
+    @FXML private TableColumn<Produit, Double> prixColumn;
     @FXML private TableColumn<Produit, Integer> stockColumn;
-    @FXML private ScrollPane cardsScrollPane;
-    @FXML private FlowPane productsCardsPane;
+    @FXML private TableColumn<Produit, Void> actionsColumn;
     @FXML private Label statusLabel;
 
     @FXML
     public void initialize() {
         idColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getId()));
-        nameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNom()));
+        nomColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNom()));
         categoryColumn.setCellValueFactory(data -> new SimpleStringProperty(
                 data.getValue().getCategorie() != null ? data.getValue().getCategorie().getNom() : "Sans categorie"
         ));
-        priceColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getPrix()));
+        prixColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getPrix()));
         stockColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getStock()));
         productsTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
@@ -63,7 +62,6 @@ public class AdminProduitsView {
 
         loadCategories();
         loadAllProducts();
-        switchToTableView();
     }
 
     @FXML
@@ -85,29 +83,40 @@ public class AdminProduitsView {
     }
 
     @FXML
-    private void switchToTableView() {
-        productsTable.setVisible(true);
-        productsTable.setManaged(true);
-        cardsScrollPane.setVisible(false);
-        cardsScrollPane.setManaged(false);
-    }
-
-    @FXML
-    private void switchToCardView() {
-        productsTable.setVisible(false);
-        productsTable.setManaged(false);
-        cardsScrollPane.setVisible(true);
-        cardsScrollPane.setManaged(true);
-    }
-
-    @FXML
     private void handleCommandesPlaceholder() {
-        setStatus("La gestion des commandes est geree dans une autre tache d'equipe.");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/admin_commandes.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) productsTable.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setTitle("ChriOnline - Gestion des commandes (Admin)");
+        } catch (Exception e) {
+            setStatus("Erreur navigation commandes: " + e.getMessage());
+        }
     }
 
     @FXML
     private void handleHistoriquePlaceholder() {
         setStatus("La vue historique admin sera integree par l'autre membre.");
+    }
+
+    // Nouveau bouton pour rediriger vers la gestion des utilisateurs
+    @FXML
+    private void handleDashboard() {
+        ma.ensate.client.utils.NotificationUtils.showToast((Stage) productsTable.getScene().getWindow(), "Dashboard en cours de développement");
+    }
+
+    @FXML
+    private void handleUtilisateurs() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/admin_utilisateurs.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) productsTable.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setTitle("ChriOnline - Gestion des Utilisateurs");
+        } catch (Exception e) {
+            setStatus("Erreur navigation utilisateurs: " + e.getMessage());
+        }
     }
 
     private void openDetails(Produit selected) {
@@ -126,7 +135,17 @@ public class AdminProduitsView {
     }
 
     @FXML
-    private void handleDeleteProduct() {
+    private void handleAjouterProduit() {
+        openForm(null);
+    }
+
+    @FXML
+    private void refreshProducts() {
+        loadAllProducts();
+    }
+
+    @FXML
+    private void handleSupprimer() {
         Produit selected = productsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             setStatus("Selectionnez un produit a supprimer");
@@ -227,51 +246,6 @@ public class AdminProduitsView {
 
     private void displayProducts(List<Produit> produits) {
         productsTable.getItems().setAll(produits);
-        productsCardsPane.getChildren().clear();
-        for (Produit produit : produits) {
-            productsCardsPane.getChildren().add(createProductCard(produit));
-        }
-    }
-
-    private VBox createProductCard(Produit produit) {
-        VBox card = new VBox(8);
-        card.getStyleClass().add("product-card");
-        card.setPrefSize(180, 180);
-
-        Label nameLabel = new Label(produit.getNom());
-        nameLabel.getStyleClass().add("product-name");
-
-        Label categoryLabel = new Label(
-                produit.getCategorie() != null ? produit.getCategorie().getNom() : "Sans categorie"
-        );
-        categoryLabel.getStyleClass().add("product-stock");
-
-        Label priceLabel = new Label(String.format("%.2f MAD", produit.getPrix()));
-        priceLabel.getStyleClass().add("product-price");
-
-        Label stockLabel = new Label("Stock: " + produit.getStock());
-        stockLabel.getStyleClass().add("product-stock");
-
-        HBox actionsBox = new HBox(8);
-        Button editButton = new Button("Modifier");
-        editButton.getStyleClass().add("secondary-btn");
-        editButton.setOnAction(event -> {
-            event.consume();
-            openForm(produit);
-        });
-
-        Button deleteButton = new Button("Supprimer");
-        deleteButton.getStyleClass().add("danger-btn");
-        deleteButton.setOnAction(event -> {
-            event.consume();
-            deleteProduct(produit);
-        });
-
-        actionsBox.getChildren().addAll(editButton, deleteButton);
-
-        card.getChildren().addAll(nameLabel, categoryLabel, priceLabel, stockLabel, actionsBox);
-        card.setOnMouseClicked(event -> openDetails(produit));
-        return card;
     }
 
     @SuppressWarnings("unchecked")

@@ -6,78 +6,114 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Line?>
 
-<AnchorPane prefHeight="620.0" prefWidth="780.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.ProduitFormView">
-   <children>
-      <VBox spacing="18.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="header-section">
-               <children>
-                  <Button onAction="#handleBackTop" styleClass="secondary-btn" text="Retour" />
-                  <Label fx:id="titleLabel" text="Ajouter un produit" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Label>
-               </children>
-               <padding>
-                  <Insets bottom="16.0" left="20.0" right="20.0" top="20.0" />
-               </padding>
-            </HBox>
+<VBox prefHeight="750.0" prefWidth="850.0" spacing="0.0" styleClass="app-shell" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.ProduitFormView">
+    <children>
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" prefHeight="90.0" styleClass="header-section">
+            <children>
+                <HBox alignment="CENTER" spacing="10.0" styleClass="brand-outline">
+                    <children>
+                        <Label styleClass="brand-mark" text="ChriOnline" />
+                    </children>
+                </HBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="titleLabel" text="CONFIGURATION PRODUIT" style="-fx-text-fill: #ff9fc7; -fx-font-weight: 900; -fx-font-size: 14px; -fx-letter-spacing: 2.5;" />
+            </children>
+            <padding>
+                <Insets left="42.0" right="42.0" />
+            </padding>
+        </HBox>
 
-            <VBox spacing="10.0" styleClass="form-box">
-               <children>
-                  <Label text="Nom" />
-                  <TextField fx:id="nomField" promptText="Nom du produit" />
-
-                  <Label text="Description" />
-                  <TextArea fx:id="descriptionArea" prefHeight="130.0" promptText="Description du produit" wrapText="true" />
-
-                  <HBox spacing="10.0">
-                     <children>
-                        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="Prix (MAD)" />
-                              <TextField fx:id="prixField" promptText="0.00" />
-                           </children>
+        <!-- Form Area -->
+        <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
+            <children>
+                <VBox maxWidth="650.0" spacing="30.0" styleClass="feature-card">
+                    <children>
+                        <VBox spacing="8">
+                            <children>
+                                <Label styleClass="section-kicker" text="EDITOR MODE" />
+                                <Label text="Détails de l'article" styleClass="showcase-title" />
+                                <Line endX="60.0" styleClass="section-divider" />
+                            </children>
                         </VBox>
-                        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="Stock" />
-                              <TextField fx:id="stockField" promptText="0" />
-                           </children>
+
+                        <GridPane hgap="25.0" vgap="25.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            </rowConstraints>
+                            <children>
+                                <VBox spacing="10.0" GridPane.columnSpan="2">
+                                    <children>
+                                        <Label styleClass="catalog-sidebar-label" text="DÉSIGNATION DU PRODUIT *" />
+                                        <TextField fx:id="nomField" promptText="ex: Carte Graphique RTX 5090" styleClass="text-field" prefHeight="45.0" />
+                                    </children>
+                                </VBox>
+                                <VBox spacing="10.0" GridPane.rowIndex="1">
+                                    <children>
+                                        <Label styleClass="catalog-sidebar-label" text="PRIX DE VENTE (MAD) *" />
+                                        <TextField fx:id="prixField" promptText="0.00" styleClass="text-field" prefHeight="45.0" />
+                                    </children>
+                                </VBox>
+                                <VBox spacing="10.0" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                                    <children>
+                                        <Label styleClass="catalog-sidebar-label" text="STOCK INITIAL *" />
+                                        <TextField fx:id="stockField" promptText="0" styleClass="text-field" prefHeight="45.0" />
+                                    </children>
+                                </VBox>
+                                <VBox spacing="10.0" GridPane.rowIndex="2" GridPane.columnSpan="2">
+                                    <children>
+                                        <Label styleClass="catalog-sidebar-label" text="CATÉGORIE *" />
+                                        <ComboBox fx:id="categorieComboBox" maxWidth="Infinity" promptText="Sélectionner la catégorie..." styleClass="combo-box" prefHeight="45.0" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </GridPane>
+
+                        <VBox spacing="10.0">
+                            <children>
+                                <Label styleClass="catalog-sidebar-label" text="DESCRIPTION DÉTAILLÉE" />
+                                <TextArea fx:id="descriptionArea" prefHeight="120.0" promptText="Décrivez les caractéristiques techniques du produit..." styleClass="text-area" wrapText="true" />
+                            </children>
                         </VBox>
-                     </children>
-                  </HBox>
 
-                  <Label text="Categorie" />
-                  <ComboBox fx:id="categorieComboBox" prefWidth="300.0" promptText="Selectionner une categorie" />
+                        <VBox spacing="10.0">
+                            <children>
+                                <Label styleClass="catalog-sidebar-label" text="MÉDIA / IMAGE" />
+                                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                    <children>
+                                        <Button onAction="#handleChooseImage" styleClass="outline-btn" text="CHOISIR UN FICHIER" />
+                                        <Label fx:id="imageNameLabel" styleClass="hero-subtitle" text="Aucune image sélectionnée" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
 
-                  <HBox alignment="CENTER_LEFT" spacing="10.0">
-                     <children>
-                        <Button onAction="#handleChooseImage" styleClass="secondary-btn" text="Choisir image" />
-                        <Label fx:id="imageNameLabel" text="Aucune image selectionnee" textFill="#6c7a89" />
-                     </children>
-                  </HBox>
-
-                  <HBox spacing="10.0">
-                     <children>
-                        <Button onAction="#handleSave" styleClass="primary-btn" text="Enregistrer" />
-                        <Button onAction="#handleCancel" styleClass="secondary-btn" text="Annuler" />
-                     </children>
-                  </HBox>
-
-                  <Label fx:id="statusLabel" text="Remplissez le formulaire" textFill="#2c3e50" />
-               </children>
-               <padding>
-                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-               </padding>
-            </VBox>
-         </children>
-      </VBox>
-   </children>
-</AnchorPane>
+                        <HBox alignment="CENTER_RIGHT" spacing="15.0">
+                            <children>
+                                <Label fx:id="statusLabel" styleClass="catalog-sidebar-label" text="Tous les champs marqués * sont requis." />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button onAction="#handleCancel" styleClass="outline-btn" text="ANNULER" />
+                                <Button onAction="#handleSave" styleClass="secondary-btn" text="ENREGISTRER" />
+                            </children>
+                            <padding>
+                                <Insets top="10.0" />
+                            </padding>
+                        </HBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="35.0" left="35.0" right="35.0" top="35.0" />
+                    </padding>
+                </VBox>
+            </children>
+        </VBox>
+    </children>
+</VBox>

@@ -1,62 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.shape.Line?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.ProduitsView">
-   <children>
-      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <top>
-            <VBox spacing="15.0" styleClass="header-section" BorderPane.alignment="CENTER">
-               <children>
-                   <HBox alignment="CENTER_LEFT" spacing="20.0">
-                      <children>
-                         <Label text="ChriOnline — Boutique" textFill="WHITE">
-                            <font>
-                               <Font name="System Bold" size="24.0" />
-                            </font>
-                         </Label>
-                         <AnchorPane HBox.hgrow="ALWAYS" />
-                         <ComboBox fx:id="categoryComboBox" onAction="#handleCategoryFilter" prefWidth="200.0" promptText="Filtrer par catégorie" styleClass="filter-combo" />
-                         <HBox spacing="10.0" alignment="CENTER_RIGHT">
+<VBox prefHeight="800.0" prefWidth="1280.0" spacing="0.0" styleClass="app-shell" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.ProduitsView">
+    <children>
+        <!-- Global Header -->
+        <HBox alignment="CENTER_LEFT" prefHeight="90.0" styleClass="header-section">
+            <children>
+                <HBox alignment="CENTER" spacing="10.0" styleClass="brand-outline">
+                    <children>
+                        <Label styleClass="brand-mark" text="ChriOnline" />
+                    </children>
+                </HBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox alignment="CENTER" spacing="25.0">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#refreshCatalog" styleClass="nav-link-btn, nav-link-btn-active" text="BOUTIQUE" />
+                        <Button mnemonicParsing="false" onAction="#goToOrders" styleClass="nav-link-btn" text="COMMANDES" />
+                        <Button mnemonicParsing="false" onAction="#goToPanier" styleClass="nav-link-btn" text="PANIER" />
+                        
+                        <Button mnemonicParsing="false" onAction="#goToProfil" onMouseEntered="#showProfileText" onMouseExited="#hideProfileText" styleClass="profile-bubble-btn">
+                            <graphic>
+                                <HBox alignment="CENTER" pickOnBounds="true" spacing="12.0" styleClass="profile-bubble">
+                                    <children>
+                                        <Label fx:id="profileHoverLabel" mouseTransparent="true" styleClass="profile-hover" text="MON COMPTE" visible="false" managed="false"/>
+                                        <Label fx:id="profileInitialLabel" mouseTransparent="true" styleClass="profile-initial" text="U" />
+                                    </children>
+                                </HBox>
+                            </graphic>
+                        </Button>
+
+                        <Button mnemonicParsing="false" onAction="#handleLogout" styleClass="logout-btn" text="DÉCONNEXION">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Button>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets left="42.0" right="42.0" />
+            </padding>
+        </HBox>
+
+        <!-- Main Content Area -->
+        <ScrollPane fitToWidth="true" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+            <content>
+                <VBox spacing="45.0" styleClass="catalog-wrap">
+                    <children>
+                        <!-- Catalog Title and Filter Area -->
+                        <HBox alignment="TOP_LEFT" spacing="20">
                             <children>
-                               <Label onMouseClicked="#goToCart" styleClass="nav-link" text="Panier" textFill="WHITE" />
-                               <Label onMouseClicked="#goToOrders" styleClass="nav-link" text="Mes Commandes" textFill="WHITE" />
-                               <Label onMouseClicked="#handleLogout" styleClass="nav-link, logout-link" text="Déconnexion" textFill="#e74c3c" />
+                                <VBox spacing="12" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label styleClass="section-kicker" text="NEW ARRIVALS 2026" />
+                                        <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                            <children>
+                                                <Label styleClass="section-title" text="NOTRE" />
+                                                <Label styleClass="section-title-accent" text="CATALOGUE" />
+                                            </children>
+                                        </HBox>
+                                        <Line endX="100.0" styleClass="section-divider" />
+                                        <Label styleClass="hero-subtitle" text="Explorez les technologies les plus innovantes et les composants premium." />
+                                    </children>
+                                </VBox>
+                                <VBox alignment="BOTTOM_RIGHT" spacing="10">
+                                    <children>
+                                        <Label text="FILTRER PAR CATÉGORIE" styleClass="catalog-sidebar-label" />
+                                        <ComboBox fx:id="categoryComboBox" onAction="#handleCategoryFilter" prefHeight="48.0" prefWidth="300.0" promptText="Séléctionner..." styleClass="combo-box" />
+                                    </children>
+                                </VBox>
                             </children>
-                         </HBox>
-                      </children>
-                   </HBox>
-                  <Label text="Découvrez nos meilleurs produits" textFill="#bdc3c7">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-               </children>
-               <padding>
-                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-               </padding>
-            </VBox>
-         </top>
-         <center>
-            <ScrollPane fitToWidth="true" styleClass="content-scroll" BorderPane.alignment="CENTER">
-               <content>
-                  <FlowPane fx:id="productsFlowPane" hgap="20.0" styleClass="products-grid" vgap="20.0">
-                     <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                     </padding>
-                  </FlowPane>
-               </content>
-            </ScrollPane>
-         </center>
-      </BorderPane>
-   </children>
-</AnchorPane>
+                        </HBox>
+
+                        <VBox spacing="35.0">
+                            <children>
+                                <HBox alignment="CENTER_LEFT">
+                                    <children>
+                                        <Label styleClass="catalog-sidebar-accent" text="LISTE DES PRODUITS" />
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Label fx:id="productCountLabel" text="CHARGEMENT..." styleClass="catalog-sidebar-label" />
+                                    </children>
+                                </HBox>
+                                <FlowPane fx:id="productsFlowPane" hgap="30.0" vgap="35.0">
+                                    <!-- Cards added programmatically -->
+                                </FlowPane>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
+</VBox>

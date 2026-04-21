@@ -8,6 +8,9 @@ public class Response implements Serializable {
     private boolean success;
     private String message;
     private Object data;
+    
+    // Token regénéré pour l'anti-hijacking
+    private String newToken;
 
     public Response() {}
 
@@ -32,6 +35,9 @@ public class Response implements Serializable {
 
     public Object getData() { return data; }
     public void setData(Object data) { this.data = data; }
+
+    public String getNewToken() { return newToken; }
+    public void setNewToken(String newToken) { this.newToken = newToken; }
 
     @Override
     public String toString() {

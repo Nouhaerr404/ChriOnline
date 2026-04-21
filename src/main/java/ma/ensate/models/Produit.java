@@ -12,6 +12,7 @@ public class Produit implements Serializable {
     private int stock;
     private String imageUrl;
     private Categorie categorie;
+    private boolean actif = true;
 
     public Produit() {}
 
@@ -43,6 +44,9 @@ public class Produit implements Serializable {
 
     public Categorie getCategorie() { return categorie; }
     public void setCategorie(Categorie categorie) { this.categorie = categorie; }
+
+    public boolean isActif() { return actif; }
+    public void setActif(boolean actif) { this.actif = actif; }
 
     @Override
     public String toString() {

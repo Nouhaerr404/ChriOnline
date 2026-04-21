@@ -8,6 +8,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ma.ensate.client.network.ClientTCP;
@@ -20,6 +21,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class ProduitFormView {
 
@@ -40,6 +42,48 @@ public class ProduitFormView {
     @FXML
     public void initialize() {
         loadCategories();
+        
+        categorieComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && newVal.getId() == -1) {
+                Platform.runLater(() -> handleAddCategory(oldVal));
+            }
+        });
+    }
+
+    private void handleAddCategory(Categorie oldSelection) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Nouvelle Catégorie");
+        dialog.setHeaderText("Ajouter une nouvelle catégorie");
+        dialog.setContentText("Nom de la catégorie:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent() && !result.get().trim().isEmpty()) {
+            String newCategoryName = result.get().trim();
+            setStatus("Création de la catégorie...");
+            new Thread(() -> {
+                try {
+                    Response response = ClientTCP.getInstance().envoyerRequeteSecurisee("CREATE_CATEGORY", newCategoryName);
+                    Platform.runLater(() -> {
+                        if (response.isSuccess() && response.getData() instanceof Categorie) {
+                            Categorie createdCat = (Categorie) response.getData();
+                            setStatus("Catégorie créée avec succès");
+                            categorieComboBox.getItems().add(categorieComboBox.getItems().size() - 1, createdCat);
+                            categorieComboBox.getSelectionModel().select(createdCat);
+                        } else {
+                            setStatus("Echec: " + response.getMessage());
+                            categorieComboBox.getSelectionModel().select(oldSelection);
+                        }
+                    });
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        setStatus("Erreur réseau: " + e.getMessage());
+                        categorieComboBox.getSelectionModel().select(oldSelection);
+                    });
+                }
+            }).start();
+        } else {
+            categorieComboBox.getSelectionModel().select(oldSelection);
+        }
     }
 
     public void setProduitToEdit(Produit produit) {
@@ -177,15 +221,16 @@ public class ProduitFormView {
             List<Categorie> categories = fetchCategoriesFromServer();
             Platform.runLater(() -> {
                 categorieComboBox.getItems().setAll(categories);
+                categorieComboBox.getItems().add(new Categorie(-1, "++ Ajouter une nouvelle catégorie ++"));
 
                 if (produitToEdit != null && produitToEdit.getCategorie() != null) {
                     categorieComboBox.getSelectionModel().select(
-                            categories.stream()
+                            categorieComboBox.getItems().stream()
                                     .filter(c -> c.getId() == produitToEdit.getCategorie().getId())
                                     .findFirst()
                                     .orElse(null)
                     );
-                } else if (!categories.isEmpty()) {
+                } else if (!categorieComboBox.getItems().isEmpty()) {
                     categorieComboBox.getSelectionModel().selectFirst();
                 }
             });

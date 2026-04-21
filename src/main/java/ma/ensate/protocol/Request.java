@@ -7,7 +7,7 @@ public class Request implements Serializable {
 
     private String action;
     private Object data;
-    private String token; // ← AJOUTER CE CHAMP
+    private String token;
 
     public Request() {}
 

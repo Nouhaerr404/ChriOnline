@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Line?>
+
+<VBox prefHeight="800.0" prefWidth="1280.0" spacing="0" styleClass="app-shell" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.ProfilView">
+   <children>
+      <!-- Global Header -->
+      <HBox alignment="CENTER_LEFT" prefHeight="90.0" styleClass="header-section">
+         <children>
+            <HBox alignment="CENTER" spacing="10.0" styleClass="brand-outline">
+                <children>
+                    <Label styleClass="brand-mark" text="ChriOnline" />
+                </children>
+            </HBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER" spacing="25.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#handleRetour" styleClass="nav-link-btn" text="BOUTIQUE" />
+                  <Button mnemonicParsing="false" onAction="#handleCommandes" styleClass="nav-link-btn" text="COMMANDES" />
+                  <Button mnemonicParsing="false" onAction="#goToPanier" styleClass="nav-link-btn" text="PANIER" />
+                  <HBox alignment="CENTER" mouseTransparent="true" pickOnBounds="true" spacing="12.0" styleClass="profile-bubble, profile-bubble-active">
+                      <children>
+                          <Label fx:id="profileHoverLabel" mouseTransparent="true" styleClass="profile-hover" text="MON COMPTE" visible="false" managed="false"/>
+                          <Label fx:id="profileInitialLabel" mouseTransparent="true" styleClass="profile-initial" text="U" />
+                      </children>
+                  </HBox>
+                  <Button mnemonicParsing="false" onAction="#handleDeconnexion" styleClass="logout-btn" text="DÉCONNEXION">
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets left="42.0" right="42.0" />
+         </padding>
+      </HBox>
+
+      <HBox VBox.vgrow="ALWAYS" styleClass="catalog-wrap">
+         <children>
+            <!-- Sidebar Navigation -->
+            <VBox minWidth="280.0" prefWidth="280.0" spacing="40.0" styleClass="catalog-sidebar">
+               <children>
+                  <VBox spacing="10.0">
+                      <children>
+                          <Label styleClass="catalog-sidebar-label" text="VOTRE ESPACE" />
+                          <Label styleClass="catalog-sidebar-accent" text="REGLAGES" />
+                      </children>
+                  </VBox>
+                  <VBox spacing="12.0">
+                     <children>
+                        <Button alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" styleClass="catalog-side-link, catalog-side-link-active" text="Informations Générales" />
+                        <Button alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" onAction="#handleCommandes" styleClass="catalog-side-link" text="Historique Commandes" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+
+            <!-- Main dashboard Area -->
+            <ScrollPane fitToWidth="true" styleClass="content-scroll" HBox.hgrow="ALWAYS">
+               <content>
+                  <VBox spacing="45.0" style="-fx-padding: 0 0 0 45;">
+                     <children>
+                        <VBox spacing="12.0">
+                            <children>
+                                <Label styleClass="section-kicker" text="VOS INFORMATIONS" />
+                                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                    <children>
+                                        <Label styleClass="section-title" text="NOTRE" />
+                                        <Label styleClass="section-title-accent" text="COMPTE" />
+                                    </children>
+                                </HBox>
+                                <Line endX="100.0" styleClass="section-divider" />
+                                <Label styleClass="hero-subtitle" text="Gérez vos données personnelles et renforcez la sécurité de votre compte." />
+                            </children>
+                        </VBox>
+
+                        <HBox spacing="40.0">
+                           <children>
+                              <!-- Personal Info Card -->
+                              <VBox spacing="30.0" styleClass="showcase-card" HBox.hgrow="ALWAYS" style="-fx-pref-height: -1;">
+                                 <children>
+                                    <VBox spacing="5.0">
+                                        <children>
+                                            <Label text="COORDONNÉES" styleClass="summary-title" />
+                                            <Label text="Utilisées pour vos livraisons et factures." styleClass="catalog-sidebar-label" />
+                                            <Label fx:id="statutLabel" text="Actif" styleClass="catalog-sidebar-accent" />
+                                        </children>
+                                    </VBox>
+                                    <VBox spacing="20.0">
+                                       <children>
+                                          <VBox spacing="8.0">
+                                             <Label text="NOM COMPLET" styleClass="catalog-sidebar-label" />
+                                             <TextField fx:id="nomField" promptText="Votre nom" styleClass="promo-field" />
+                                          </VBox>
+                                          <VBox spacing="8.0">
+                                             <Label text="EMAIL" styleClass="catalog-sidebar-label" />
+                                             <TextField fx:id="emailField" editable="false" styleClass="promo-field" style="-fx-opacity: 0.7; -fx-background-color: rgba(255,255,255,0.02);" />
+                                          </VBox>
+                                          <VBox spacing="8.0">
+                                             <Label text="ADRESSE DE LIVRAISON" styleClass="catalog-sidebar-label" />
+                                             <TextField fx:id="adresseField" promptText="Votre adresse" styleClass="promo-field" />
+                                          </VBox>
+                                          <VBox spacing="8.0">
+                                             <Label text="TÉLÉPHONE" styleClass="catalog-sidebar-label" />
+                                             <TextField fx:id="telField" promptText="Votre numéro" styleClass="promo-field" />
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                    <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleUpdateProfil" prefHeight="55.0" styleClass="secondary-btn" text="SAUVEGARDER LES MODIFICATIONS" />
+                                    <Label fx:id="messageLabel" text="" styleClass="catalog-sidebar-accent" />
+                                 </children>
+                              </VBox>
+
+                              <!-- Security Card -->
+                              <VBox prefWidth="420.0" spacing="25.0" styleClass="summary-card">
+                                 <children>
+                                     <VBox spacing="5.0">
+                                        <children>
+                                            <Label text="SÉCURITÉ" styleClass="summary-title" />
+                                            <Label text="Protégez votre espace client." styleClass="catalog-sidebar-label" />
+                                        </children>
+                                     </VBox>
+                                    
+                                    <VBox spacing="18.0">
+                                       <children>
+                                          <VBox spacing="8.0">
+                                             <Label text="MOT DE PASSE" styleClass="catalog-sidebar-label" />
+                                             <PasswordField fx:id="ancienPasswordField" promptText="Ancien mot de passe" styleClass="promo-field" />
+                                          </VBox>
+                                          <PasswordField fx:id="nouveauPasswordField" promptText="Nouveau mot de passe" styleClass="promo-field" />
+                                          <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleChangerPassword" styleClass="outline-btn" text="MODIFIER LE PASS" />
+                                          <Label fx:id="passwordMessageLabel" text="" styleClass="catalog-sidebar-label" />
+                                       </children>
+                                    </VBox>
+                                    
+                                    <Separator styleClass="summary-separator" />
+                                    
+                                    <VBox spacing="15.0" styleClass="shipping-card">
+                                       <children>
+                                          <Label text="DOUBLE AUTHENTIFICATION" styleClass="shipping-title" />
+                                          <CheckBox fx:id="twoFaCheckBox" onAction="#handleTwoFaToggle" text="Activer la protection par email" styleClass="nav-link" />
+                                          <Label fx:id="twoFaMessageLabel" text="Recommandé pour sécuriser vos transactions." styleClass="shipping-copy" wrapText="true" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+         </children>
+      </HBox>
+   </children>
+</VBox>

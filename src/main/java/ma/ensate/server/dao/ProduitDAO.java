@@ -18,7 +18,7 @@ public class ProduitDAO {
      * Décrémente le stock de la quantité achetée
      */
     public boolean mettreAJourStock(int produitId, int quantiteAchetee) throws SQLException {
-        String sql = "UPDATE produit SET stock = stock - ? WHERE id = ? AND stock >= ?";
+        String sql = "UPDATE produit SET stock = stock - ? WHERE id = ? AND stock >= ?"; //pour empêcher les ventes de produits qui ne sont pas disponibles.
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -37,7 +37,7 @@ public class ProduitDAO {
      */
     public List<Produit> findAll() throws SQLException {
         List<Produit> produits = new ArrayList<>();
-        String sql = "SELECT p.*, c.nom as cat_nom FROM produit p LEFT JOIN categorie c ON p.categorie_id = c.id";
+        String sql = "SELECT p.*, c.nom as cat_nom FROM produit p LEFT JOIN categorie c ON p.categorie_id = c.id WHERE p.actif = true";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -55,7 +55,7 @@ public class ProduitDAO {
      */
     public List<Produit> findByCategorie(int categoryId) throws SQLException {
         List<Produit> produits = new ArrayList<>();
-        String sql = "SELECT p.*, c.nom as cat_nom FROM produit p LEFT JOIN categorie c ON p.categorie_id = c.id WHERE p.categorie_id = ?";
+        String sql = "SELECT p.*, c.nom as cat_nom FROM produit p LEFT JOIN categorie c ON p.categorie_id = c.id WHERE p.categorie_id = ? AND p.actif = true";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -88,11 +88,25 @@ public class ProduitDAO {
         return categories;
     }
 
-    /**
-     * Récupère un produit par son ID
-     */
+  
+    public Categorie ajouterCategorie(String nom) throws SQLException {
+        String sql = "INSERT INTO categorie(nom) VALUES (?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, nom);
+            int rows = stmt.executeUpdate();
+            if (rows == 0) return null;
+            try (ResultSet keys = stmt.getGeneratedKeys()) {
+                if (keys.next()) {
+                    return new Categorie(keys.getInt(1), nom);
+                }
+            }
+        }
+        return null;
+    }
+
     public Produit findById(int id) throws SQLException {
-        String sql = "SELECT p.*, c.nom as cat_nom FROM produit p LEFT JOIN categorie c ON p.categorie_id = c.id WHERE p.id = ?";
+        String sql = "SELECT p.*, c.nom as cat_nom FROM produit p LEFT JOIN categorie c ON p.categorie_id = c.id WHERE p.id = ? AND p.actif = true";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -163,7 +177,7 @@ public class ProduitDAO {
      * Supprime un produit par identifiant.
      */
     public boolean supprimer(int id) throws SQLException {
-        String sql = "DELETE FROM produit WHERE id = ?";
+        String sql = "UPDATE produit SET actif = false WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -204,6 +218,7 @@ public class ProduitDAO {
         produit.setPrix(rs.getDouble("prix"));
         produit.setStock(rs.getInt("stock"));
         produit.setImageUrl(rs.getString("image_url"));
+        produit.setActif(rs.getBoolean("actif"));
         
         int catId = rs.getInt("categorie_id");
         String catNom = rs.getString("cat_nom");

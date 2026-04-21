@@ -11,6 +11,8 @@ public class Utilisateur implements Serializable {
     private String password;
     private String typeCompte;
     private String sessionToken;
+    private String statut;
+    private boolean twoFaEnabled;
 
     public Utilisateur() {}
 
@@ -40,8 +42,33 @@ public class Utilisateur implements Serializable {
     public String getSessionToken() { return sessionToken; }
     public void setSessionToken(String sessionToken) { this.sessionToken = sessionToken; }
 
+    public String getStatut() {
+        return statut;
+    }
+
+    public void setStatut(String statut) {
+        this.statut = statut;
+    }
+
+    public boolean isTwoFaEnabled() {
+        return twoFaEnabled;
+    }
+
+    public void setTwoFaEnabled(boolean twoFaEnabled) {
+        this.twoFaEnabled = twoFaEnabled;
+    }
+
     @Override
     public String toString() {
-        return "Utilisateur{id=" + id + ", nom=" + nom + ", email=" + email + "}";
+        return "Utilisateur{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", typeCompte='" + typeCompte + '\'' +
+                ", sessionToken='" + sessionToken + '\'' +
+                ", statut='" + statut + '\'' +
+                '}';
     }
+
 }

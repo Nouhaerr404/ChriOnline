@@ -11,6 +11,10 @@ public class SessionManager {
 
     private static SessionManager instance;
 
+    private int udpPort = 5001;
+
+    public int getUdpPort() { return udpPort; }
+    public void setUdpPort(int port) { this.udpPort = port; }
 
     private Utilisateur utilisateurConnecte;
 
@@ -35,6 +39,10 @@ public class SessionManager {
         return utilisateurConnecte;
     }
 
+    public int getUserId() {
+        return utilisateurConnecte != null ? utilisateurConnecte.getId() : -1;
+    }
+
     public String getToken() {
         if (utilisateurConnecte == null) return null;
         return utilisateurConnecte.getSessionToken();
@@ -52,6 +60,10 @@ public class SessionManager {
                     + utilisateurConnecte.getEmail());
         }
         this.utilisateurConnecte = null;
+    }
+
+    public void logout() {
+        clear();
     }
 
     public String getNomUtilisateur() {

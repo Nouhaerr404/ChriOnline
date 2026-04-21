@@ -14,7 +14,7 @@ public class ClientTCP {
     private static final Logger logger = LogManager.getLogger(ClientTCP.class);
 
     private static final String HOST = ConfigLoader.get("SERVER_HOST", "localhost");
-    private static final int    PORT = ConfigLoader.getInt("SERVER_PORT", 5001);
+    private static final int    PORT = ConfigLoader.getInt("SERVER_PORT", 5000);
 
     private static ClientTCP instance;
 

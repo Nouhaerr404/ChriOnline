@@ -12,6 +12,9 @@ import ma.ensate.server.services.PaymentService;
 import ma.ensate.server.services.ProductService;
 import ma.ensate.server.services.ServicePanier;
 import ma.ensate.server.services.UserService;
+import ma.ensate.server.services.PaymentRateLimiter;
+import ma.ensate.server.security.SYNFloodProtection;
+import ma.ensate.server.security.SYNCookieManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,6 +32,7 @@ public class ClientHandler implements Runnable {
     private static final Logger logger = LogManager.getLogger(ClientHandler.class);
 
     private final Socket socket;
+    private String clientIP;
 
     private final CommandeService commandeService;
     private final PaymentService  paymentService;
@@ -37,9 +41,11 @@ public class ClientHandler implements Runnable {
     private final ProduitDAO      produitDAO;
     private final UtilisateurDAO  utilisateurDAO;
     private final ProductService  productService;
+    private final SYNFloodProtection synFloodProtection;
+    private final SYNCookieManager synCookieManager;
 
     private static final Set<String> ACTIONS_PUBLIQUES =
-            new HashSet<>(Arrays.asList("LOGIN", "REGISTER"));
+            new HashSet<>(Arrays.asList("LOGIN", "REGISTER", "VERIFY_2FA", "GET_CAPTCHA"));
 
     public ClientHandler(Socket socket) {
         this.socket          = socket;
@@ -50,12 +56,31 @@ public class ClientHandler implements Runnable {
         this.produitDAO      = new ProduitDAO();
         this.utilisateurDAO  = new UtilisateurDAO();
         this.productService  = new ProductService();
+        this.synFloodProtection = null;
+        this.synCookieManager = null;
+    }
+
+    public ClientHandler(Socket socket, SYNFloodProtection synFloodProtection, SYNCookieManager synCookieManager) {
+        this.socket          = socket;
+        this.commandeService = new CommandeService();
+        this.paymentService  = new PaymentService();
+        this.servicePanier   = new ServicePanier();
+        this.clientDAO       = new ClientDAO();
+        this.produitDAO      = new ProduitDAO();
+        this.utilisateurDAO  = new UtilisateurDAO();
+        this.productService  = new ProductService();
+        this.synFloodProtection = synFloodProtection;
+        this.synCookieManager = synCookieManager;
     }
 
     @Override
     public void run() {
-        String clientIP = socket.getInetAddress().getHostAddress();
+        clientIP = socket.getInetAddress().getHostAddress();
         logger.info("Handler démarre pour : " + clientIP);
+
+        if (synFloodProtection != null) {
+            synFloodProtection.confirmConnection(socket.getInetAddress());
+        }
 
         try (
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
@@ -68,20 +93,38 @@ public class ClientHandler implements Runnable {
 
                 if (!ACTIONS_PUBLIQUES.contains(request.getAction())) {
                     String token = request.getToken();
-                    if (!UserService.verifierToken(token)) {
-                        logger.warn(" Accès refuse — token invalide"
+                    ma.ensate.server.services.SessionManager.SessionResult sResult =
+                        ma.ensate.server.services.SessionManager.evaluerEtRegenerer(token, clientIP);
+
+                    if (!sResult.isValid) {
+                        logger.warn(" Accès refusé : " + sResult.errorMessage
                                 + " | Action : " + request.getAction()
                                 + " | Client : " + clientIP);
-                        out.writeObject(new Response(false,
-                                "Non autorise. Veuillez vous connecter."));
+                        out.writeObject(new Response(false, sResult.errorMessage));
                         out.flush();
                         continue;
                     }
-                }
 
-                Response response = traiterRequete(request);
-                out.writeObject(response);
-                out.flush();
+                    Response response = traiterRequete(request);
+
+                    if (sResult.latestToken != null && !sResult.latestToken.equals(token)) {
+                        response.setNewToken(sResult.latestToken);
+                        try {
+                            Utilisateur u = utilisateurDAO.trouverParToken(token);
+                            if (u != null) {
+                                utilisateurDAO.sauvegarderToken(u.getId(), sResult.latestToken);
+                            }
+                        } catch (Exception e) {
+                            logger.error("Erreur sauvegarde du nouveau token: " + e.getMessage());
+                        }
+                    }
+                    out.writeObject(response);
+                    out.flush();
+                } else {
+                    Response response = traiterRequete(request);
+                    out.writeObject(response);
+                    out.flush();
+                }
             }
 
         } catch (EOFException e) {
@@ -97,15 +140,49 @@ public class ClientHandler implements Runnable {
             switch (action) {
 
                 case "LOGIN":
-                    return UserService.login(request.getData());
+                    return UserService.login(request.getData(), clientIP);
 
                 case "REGISTER":
                     return UserService.register(request.getData());
 
+                case "GET_CAPTCHA":
+                    return UserService.genererCaptcha();
+
+                case "REGISTER_UDP_PORT":
+                    Object[] portData = (Object[]) request.getData();
+                    int userId = (int) portData[0];
+                    int udpPort = (int) portData[1];
+                    ClientIPRegistry.registerPort(userId, udpPort);
+                    logger.info("Port UDP enregistré : userId="
+                            + userId + " port=" + udpPort);
+                    return new Response(true, "Port UDP enregistré");
+
                 case "LOGOUT":
+                    try {
+                        Utilisateur u = utilisateurDAO.trouverParToken(request.getToken());
+                        if (u != null) {
+                            ClientIPRegistry.unregister(u.getId());
+                            logger.info("IP supprimée du registry : userId=" + u.getId());
+                        }
+                    } catch (SQLException e) {
+                        logger.warn("Erreur nettoyage registry : " + e.getMessage());
+                    }
+                    ma.ensate.server.services.SessionManager.endSession(request.getToken());
                     return UserService.logout(request.getData());
+                case "GET_PROFIL":
+                    return UserService.getProfil(request.getData());
 
+                case "UPDATE_PROFIL":
+                    return UserService.updateProfil(request.getData());
 
+                case "CHANGER_PASSWORD":
+                    return UserService.changerMotDePasse(request.getData());
+
+                case "SET_2FA":
+                    return UserService.setTwoFa(request.getData());
+
+                case "VERIFY_2FA":
+                    return UserService.verifyOtp(request.getData(), clientIP);
                 case "GET_ALL_PRODUCTS":
                     return productService.getAllProducts();
 
@@ -117,6 +194,12 @@ public class ClientHandler implements Runnable {
 
                 case "GET_ALL_CATEGORIES":
                     return productService.getAllCategories();
+
+                case "CREATE_CATEGORY":
+                    if (!isAdmin(request.getToken())) {
+                        return new Response(false, "Action reservee aux administrateurs");
+                    }
+                    return productService.createCategory(request.getData());
 
                 case "CREATE_PRODUCT":
                     if (!isAdmin(request.getToken())) {
@@ -135,7 +218,14 @@ public class ClientHandler implements Runnable {
                         return new Response(false, "Action reservee aux administrateurs");
                     }
                     return productService.deleteProduct(request.getData());
+                case "LISTER_UTILISATEURS":
+                    return UserService.listerUtilisateurs();
 
+                case "SUSPENDRE_COMPTE":
+                    return UserService.suspendreCompte(request.getData());
+
+                case "REACTIVER_COMPTE":
+                    return UserService.reactiverCompte(request.getData());
                 case "AFFICHER_PANIER":
                     return servicePanier.obtenirPanierResponse(
                             Integer.parseInt(request.getData().toString()));
@@ -174,7 +264,13 @@ public class ClientHandler implements Runnable {
                     return validerCommande(request);
 
                 case "CHANGER_STATUT_COMMANDE":
-                    return changerStatutCommande(request);
+                    return changerStatutCommande(request, clientIP);
+
+                case "GET_ALL_COMMANDES":
+                    if (!isAdmin(request.getToken())) {
+                        return new Response(false, "Action reservee aux administrateurs");
+                    }
+                    return getAllCommandes(request);
 
                 case "GET_COMMANDE":
                 case "GET_ORDER_BY_ID":
@@ -240,7 +336,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private Response changerStatutCommande(Request request) {
+    private Response changerStatutCommande(Request request, String clientIP) {
         try {
             ChangerStatutRequest req = (ChangerStatutRequest) request.getData();
             if (req == null || req.getCommandeId() == null || req.getNouveauStatut() == null)
@@ -252,11 +348,43 @@ public class ClientHandler implements Runnable {
                 return new Response(false, "Statut invalide : " + req.getNouveauStatut());
             }
             boolean success = commandeService.changerStatutCommande(req.getCommandeId(), nouveauStatut);
-            return success
-                    ? new Response(true,  "Statut mis à jour avec succès")
-                    : new Response(false, "Echec de la mise à jour du statut");
+
+            if (success) {
+                Commande commande = commandeService.getCommandeById(req.getCommandeId());
+                String destinataireIP = null;
+
+                if (commande != null && commande.getClient() != null) {
+                    destinataireIP = ClientIPRegistry.getIP(
+                            commande.getClient().getId());
+                }
+
+                if (destinataireIP != null
+                        && nouveauStatut == StatutCommande.VALIDE) {
+                    int port = ClientIPRegistry.getPort(
+                            commande.getClient().getId()); // ← port unique
+                    UDPNotificationServer.notifierCommandeValidee(
+                            destinataireIP, port, req.getCommandeId());
+                }
+                else {
+                    logger.warn("Client non connecté, notification ignorée");
+                }
+
+                return new Response(true, "Statut mis à jour avec succès");
+            }
+            else {
+                return new Response(false, "Echec de la mise à jour du statut");
+            }
         } catch (IllegalArgumentException | IllegalStateException e) {
             return new Response(false, e.getMessage());
+        } catch (SQLException e) {
+            return new Response(false, "Erreur base de données : " + e.getMessage());
+        }
+    }
+
+    private Response getAllCommandes(Request request) {
+        try {
+            List<Commande> commandes = commandeService.getAllCommandes();
+            return new Response(true, "Commandes récupérées", (Serializable) commandes);
         } catch (SQLException e) {
             return new Response(false, "Erreur base de données : " + e.getMessage());
         }
@@ -306,10 +434,29 @@ public class ClientHandler implements Runnable {
             Commande commande = commandeService.getCommandeById(req.getCommandeId());
             if (commande == null)
                 return new Response(false, "Commande introuvable");
+
+            if (commande.getClient() != null) {
+                if (PaymentRateLimiter.isReplayAttack(String.valueOf(commande.getClient().getId()), commande.getPrixAPayer())) {
+                    logger.warn("Replay attack évité pour la commande: " + req.getCommandeId());
+                    return new Response(false, "Paiement en cours ou déjà effectué récemment (anti-rejeu). Veuillez patienter.");
+                }
+            }
             boolean success = paymentService.effectuerPaiement(commande, methode, req.getCardLast4());
             if (success) {
                 if (commande.getClient() != null) {
                     servicePanier.viderPanier(commande.getClient().getId());
+                }
+                if (commande.getClient() != null) {
+                    String destinataireIP = ClientIPRegistry.getIP(
+                            commande.getClient().getId());
+                    if (destinataireIP != null) {
+                        int port = ClientIPRegistry.getPort(
+                                commande.getClient().getId()); // ← port unique
+                        UDPNotificationServer.notifierCommandeValidee(
+                                destinataireIP, port, req.getCommandeId());
+                    } else {
+                        logger.warn("Client non connecté, notification ignorée");
+                    }
                 }
                 Paiement paiement = paymentService.getPaiementByCommandeId(req.getCommandeId());
                 logger.info("Paiement effectué : " + req.getCommandeId());

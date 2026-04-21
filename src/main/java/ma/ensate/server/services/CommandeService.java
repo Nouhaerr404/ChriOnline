@@ -200,4 +200,11 @@ public class CommandeService {
         }
         return commandeDAO.findById(commandeId);
     }
+
+    /**
+     * Récupère toutes les commandes (Admin)
+     */
+    public List<Commande> getAllCommandes() throws SQLException {
+        return commandeDAO.findAll();
+    }
 }
