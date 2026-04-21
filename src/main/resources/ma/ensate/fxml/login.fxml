@@ -63,5 +63,16 @@
                        style="-fx-text-fill: #1a73e8;"/>
         </HBox>
 
+        <Button fx:id="adminLoginButton"
+                text="🔐 Connexion Admin (RSA)"
+                onAction="#allerAdminLogin"
+                maxWidth="Infinity"
+                style="-fx-background-color: #667eea;
+                       -fx-text-fill: white;
+                       -fx-font-size: 12px;
+                       -fx-padding: 10;
+                       -fx-background-radius: 5;
+                       -fx-cursor: hand;"/>
+
     </VBox>
 </VBox>
