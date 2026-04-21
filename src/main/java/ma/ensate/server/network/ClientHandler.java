@@ -45,7 +45,7 @@ public class ClientHandler implements Runnable {
     private final SYNCookieManager synCookieManager;
 
     private static final Set<String> ACTIONS_PUBLIQUES =
-            new HashSet<>(Arrays.asList("LOGIN", "REGISTER", "VERIFY_2FA", "GET_CAPTCHA"));
+            new HashSet<>(Arrays.asList("LOGIN", "REGISTER", "VERIFY_2FA", "GET_CAPTCHA", "GET_SERVER_PUBLIC_KEY"));
 
     public ClientHandler(Socket socket) {
         this.socket          = socket;
@@ -148,14 +148,8 @@ public class ClientHandler implements Runnable {
                 case "GET_CAPTCHA":
                     return UserService.genererCaptcha();
 
-                case "REGISTER_UDP_PORT":
-                    Object[] portData = (Object[]) request.getData();
-                    int userId = (int) portData[0];
-                    int udpPort = (int) portData[1];
-                    ClientIPRegistry.registerPort(userId, udpPort);
-                    logger.info("Port UDP enregistré : userId="
-                            + userId + " port=" + udpPort);
-                    return new Response(true, "Port UDP enregistré");
+                case "GET_SERVER_PUBLIC_KEY":
+                    return UserService.getServerPublicKey();
 
                 case "LOGOUT":
                     try {
