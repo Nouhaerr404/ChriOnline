@@ -66,17 +66,16 @@
 
                         <Label fx:id="messageLabel" styleClass="catalog-sidebar-accent" text="" wrapText="true" />
 
-                        <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin" prefHeight="65" styleClass="secondary-btn" text="SE CONNECTER MAINTENANT" />
+        <Button fx:id="adminLoginButton"
+                text="🔐 Connexion Admin (RSA)"
+                onAction="#allerAdminLogin"
+                maxWidth="Infinity"
+                style="-fx-background-color: #667eea;
+                       -fx-text-fill: white;
+                       -fx-font-size: 12px;
+                       -fx-padding: 10;
+                       -fx-background-radius: 5;
+                       -fx-cursor: hand;"/>
 
-                        <VBox alignment="CENTER" spacing="10">
-                            <children>
-                                <Label text="Pas encore de compte ?" styleClass="footer-link" />
-                                <Hyperlink onAction="#allerInscription" styleClass="nav-link" text="S'INSCRIRE GRATUITEMENT" style="-fx-font-size: 14px; -fx-padding: 0;"/>
-                            </children>
-                        </VBox>
-                    </children>
-                </VBox>
-            </children>
-        </VBox>
-    </children>
+    </VBox>
 </VBox>

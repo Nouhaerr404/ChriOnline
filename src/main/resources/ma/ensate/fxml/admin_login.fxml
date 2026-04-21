@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ma.ensate.client.views.AdminLoginView"
+      alignment="CENTER"
+      spacing="15"
+      style="-fx-background-color: #f0f4f8; -fx-padding: 50;">
+
+    <Label text="ChriOnline — Admin"
+           style="-fx-font-size: 28px; -fx-font-weight: bold;
+                  -fx-text-fill: #1a73e8;"/>
+
+    <Label text="Authentification par Challenge-Response RSA"
+           style="-fx-font-size: 14px; -fx-text-fill: #666;"/>
+
+    <VBox spacing="15"
+          style="-fx-background-color: white;
+                 -fx-padding: 30;
+                 -fx-background-radius: 10;
+                 -fx-effect: dropshadow(gaussian, #ccc, 10, 0, 0, 2);"
+          maxWidth="450">
+
+        <Label text="Email Admin"
+               style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
+        <TextField fx:id="emailField"
+                   promptText="admin@example.com"
+                   style="-fx-padding: 10; -fx-background-radius: 5;
+                          -fx-border-color: #ddd; -fx-border-radius: 5;"/>
+
+        <Label text="Clé privée RSA"
+               style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
+        <HBox spacing="8" alignment="CENTER_LEFT">
+            <TextField fx:id="privateKeyPathField"
+                       promptText="Sélectionnez votre fichier .pem"
+                       editable="false"
+                       HBox.hgrow="ALWAYS"
+                       style="-fx-padding: 10; -fx-background-radius: 5;
+                              -fx-border-color: #ddd; -fx-border-radius: 5;
+                              -fx-background-color: #f9f9f9;"/>
+            <Button fx:id="browseButton"
+                    text="Parcourir"
+                    onAction="#handleBrowsePrivateKey"
+                    style="-fx-background-color: #e8f0fe;
+                           -fx-text-fill: #1a73e8;
+                           -fx-font-weight: bold;
+                           -fx-background-radius: 5;
+                           -fx-cursor: hand;"/>
+        </HBox>
+
+        <ProgressBar fx:id="progressBar"
+                     visible="false"
+                     maxWidth="Infinity"
+                     style="-fx-accent: #1a73e8;"/>
+
+        <Label fx:id="messageLabel"
+               text=""
+               style="-fx-text-fill: red; -fx-font-size: 12px;"
+               wrapText="true"/>
+
+        <Button fx:id="loginButton"
+                text="S'authentifier"
+                onAction="#handleAdminLogin"
+                maxWidth="Infinity"
+                style="-fx-background-color: #1a73e8;
+                       -fx-text-fill: white;
+                       -fx-font-size: 14px;
+                       -fx-padding: 12;
+                       -fx-background-radius: 5;
+                       -fx-cursor: hand;"/>
+
+        <Button fx:id="backToLoginButton"
+                text="← Retour à la connexion classique"
+                onAction="#handleBackToLogin"
+                maxWidth="Infinity"
+                style="-fx-background-color: transparent;
+                       -fx-text-fill: #666;
+                       -fx-font-size: 12px;
+                       -fx-padding: 8;
+                       -fx-cursor: hand;"/>
+
+    </VBox>
+
+    <VBox spacing="5" style="-fx-background-color: #fff3cd; -fx-padding: 15; -fx-background-radius: 5;">
+        <Label text="ℹ️ Comment ça marche ?"
+               style="-fx-font-weight: bold; -fx-text-fill: #856404;"/>
+        <Label text="1. Le serveur génère un challenge aléatoire"
+               style="-fx-text-fill: #856404; -fx-font-size: 12px;"/>
+        <Label text="2. Votre clé privée signe le challenge"
+               style="-fx-text-fill: #856404; -fx-font-size: 12px;"/>
+        <Label text="3. Le serveur vérifie avec votre clé publique"
+               style="-fx-text-fill: #856404; -fx-font-size: 12px;"/>
+        <Label text="4. Si valide → Accès admin autorisé"
+               style="-fx-text-fill: #856404; -fx-font-size: 12px;"/>
+    </VBox>
+
+</VBox>
