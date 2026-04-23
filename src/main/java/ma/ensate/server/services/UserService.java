@@ -3,6 +3,7 @@ package ma.ensate.server.services;
 import ma.ensate.models.Client;
 import ma.ensate.models.Utilisateur;
 import ma.ensate.protocol.Response;
+import ma.ensate.security.RSAKeyManager;
 import ma.ensate.server.dao.UtilisateurDAO;
 import ma.ensate.server.network.ClientIPRegistry;
 import ma.ensate.util.EmailService;
@@ -11,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +23,18 @@ public class UserService {
     private static final Logger logger = LogManager.getLogger(UserService.class);
     private static final UtilisateurDAO dao = new UtilisateurDAO();
     private static final EmailService emailService = new EmailService();
+    
+    // Singleton instance of RSA key manager for the server
+    private static RSAKeyManager rsaKeyManager;
+
+    static {
+        try {
+            rsaKeyManager = new RSAKeyManager();
+            logger.info("Clé RSA serveur générée avec succès");
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("Erreur génération clé RSA serveur : " + e.getMessage());
+        }
+    }
 
     public static Response genererCaptcha() {
         String[] result = CaptchaService.generer();
@@ -429,6 +443,26 @@ public class UserService {
                 || ip.equals("127.0.0.1")
                 || ip.equals("0:0:0:0:0:0:0:1")
                 || ip.equals("::1");
+    }
+
+    /**
+     * Récupère la clé publique RSA du serveur pour le handshake sécurisé
+     */
+    public static Response getServerPublicKey() {
+        try {
+            if (rsaKeyManager == null) {
+                logger.error("RSA key manager non initialisé");
+                return new Response(false, "Erreur serveur: clé RSA non disponible");
+            }
+
+            String publicKeyBase64 = rsaKeyManager.getServerPublicKeyBase64();
+            logger.info("Clé publique RSA serveur envoyée au client");
+            return new Response(true, "Clé publique RSA", publicKeyBase64);
+
+        } catch (Exception e) {
+            logger.error("Erreur getServerPublicKey : " + e.getMessage());
+            return new Response(false, "Erreur lors de la récupération de la clé publique");
+        }
     }
 }
 
