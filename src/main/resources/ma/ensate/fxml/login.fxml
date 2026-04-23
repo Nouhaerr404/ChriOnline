@@ -77,5 +77,17 @@
                        -fx-background-radius: 5;
                        -fx-cursor: hand;"/>
 
-    </VBox>
+                        <VBox alignment="CENTER" spacing="10">
+                            <children>
+                                <Label text="Pas encore de compte ?" styleClass="footer-link" />
+                                <Hyperlink onAction="#allerInscription" styleClass="nav-link" text="S'INSCRIRE GRATUITEMENT" style="-fx-font-size: 14px; -fx-padding: 0;"/>
+                            </children>
+                        </VBox>
+
+                        <Button fx:id="adminLoginButton" maxWidth="Infinity" onAction="#allerAdminLogin" prefHeight="50" styleClass="outline-btn" text="🔐 CONNEXION ADMIN (RSA)" />
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </children>
 </VBox>
