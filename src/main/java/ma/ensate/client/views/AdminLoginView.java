@@ -155,7 +155,7 @@ public class AdminLoginView {
                 getClass().getResource("/ma/ensate/fxml/login.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(root, 500, 600));
+            stage.getScene().setRoot(root);
             stage.setTitle("ChriOnline — Connexion");
         } catch (Exception e) {
             logger.error("Erreur retour login : " + e.getMessage());
@@ -179,7 +179,7 @@ public class AdminLoginView {
                 getClass().getResource("/ma/ensate/fxml/admin_produits.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(root, 900, 600));
+            stage.getScene().setRoot(root);
             stage.setTitle("ChriOnline — Dashboard Admin");
         } catch (Exception e) {
             logger.error("Erreur ouverture dashboard admin : " + e.getMessage());

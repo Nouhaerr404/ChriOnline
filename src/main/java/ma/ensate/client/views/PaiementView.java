@@ -77,7 +77,13 @@ public class PaiementView {
                 livraisonForm.setManaged(true);
             });
 
-            stage.setScene(new Scene(root, 1000, 700));
+            if (stage.getScene() == null) {
+                stage.setScene(new Scene(root, 1280, 800));
+            } else {
+                stage.getScene().setRoot(root);
+            }
+            stage.setMaximized(true);
+            stage.setTitle("ChriOnline — Paiement");
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();

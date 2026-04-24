@@ -49,8 +49,13 @@ public class HistoriqueView {
             loader.setController(this);
             Parent root = loader.load();
 
-            Scene scene = new Scene(root, 1000, 750);
-            stage.setScene(scene);
+            if (stage.getScene() == null) {
+                stage.setScene(new Scene(root, 1280, 800));
+            } else {
+                stage.getScene().setRoot(root);
+            }
+            stage.setMaximized(true);
+            stage.setTitle("ChriOnline — Historique");
             stage.show();
 
             if (profileInitialLabel != null) {

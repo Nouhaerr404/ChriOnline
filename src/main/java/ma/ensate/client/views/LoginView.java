@@ -20,6 +20,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.Node;
 
 public class LoginView {
 
@@ -155,7 +157,7 @@ public class LoginView {
                     getClass().getResource("/ma/ensate/fxml/admin_login.fxml"));
             Parent root  = loader.load();
             Stage  stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(root, 500, 600));
+            stage.getScene().setRoot(root);
             stage.setTitle("ChriOnline — Connexion Admin");
         } catch (Exception e) {
             logger.error("Erreur navigation vers admin login : "
@@ -164,13 +166,28 @@ public class LoginView {
     }
 
     @FXML
-    private void allerInscription() {
+    private void allerAccueil() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ma/ensate/fxml/landing.fxml"));
+            Parent root  = loader.load();
+            Stage  stage = (Stage) emailField.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setTitle("ChriOnline — Premium E-Commerce");
+        } catch (Exception e) {
+            logger.error("Erreur navigation vers accueil : "
+                    + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void allerInscription(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/ma/ensate/fxml/register.fxml"));
             Parent root  = loader.load();
-            Stage  stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(root, 500, 600));
+            Stage  stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(root);
             stage.setTitle("ChriOnline — Inscription");
         } catch (Exception e) {
             logger.error("Erreur navigation vers inscription : "
@@ -239,7 +256,7 @@ public class LoginView {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(target));
             Parent root  = loader.load();
             Stage  stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(root, 1280, 800));
+            stage.getScene().setRoot(root);
             stage.setTitle("ChriOnline — " + SessionManager.getInstance().getNomUtilisateur());
         } catch (Exception e) {
             logger.info("produits.fxml indisponible — ouverture PanierView (temp)");

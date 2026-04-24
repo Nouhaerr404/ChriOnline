@@ -12,37 +12,35 @@ import javafx.scene.input.MouseEvent;
 public class LandingView {
 
     @FXML
-    private void goToCatalog(MouseEvent event) {
-        switchScene(event, "/ma/ensate/fxml/produits.fxml", "ChriOnline - Catalogue");
-    }
-
-    @FXML
-    private void goToCatalogBtn(ActionEvent event) {
-        switchScene(event, "/ma/ensate/fxml/produits.fxml", "ChriOnline - Catalogue");
-    }
-
-    @FXML
     private void goToCart(MouseEvent event) {
         switchScene(event, "/ma/ensate/fxml/login.fxml", "Connexion requise");
     }
 
     @FXML
-    private void handleLogin(ActionEvent event) {
+    private void handleLogin(javafx.event.Event event) {
         switchScene(event, "/ma/ensate/fxml/login.fxml", "ChriOnline - Connexion");
+    }
+
+    @FXML
+    private void handleRegister(ActionEvent event) {
+        switchScene(event, "/ma/ensate/fxml/register.fxml", "ChriOnline - Inscription");
     }
 
     private void switchScene(Object event, String fxmlPath, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            Stage stage;
-            if (event instanceof ActionEvent) {
-                stage = (Stage) ((Node) ((ActionEvent) event).getSource()).getScene().getWindow();
-            } else {
-                stage = (Stage) ((Node) ((MouseEvent) event).getSource()).getScene().getWindow();
+            Stage stage = null;
+            if (event instanceof javafx.event.Event) {
+                Object source = ((javafx.event.Event) event).getSource();
+                if (source instanceof Node) {
+                    stage = (Stage) ((Node) source).getScene().getWindow();
+                }
             }
-            stage.getScene().setRoot(root);
-            stage.setTitle(title);
+            if (stage != null) {
+                stage.getScene().setRoot(root);
+                stage.setTitle(title);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

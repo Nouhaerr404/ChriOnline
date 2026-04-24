@@ -36,6 +36,7 @@ public class MainApp extends Application {
 
         primaryStage.setTitle("ChriOnline - Premium E-Commerce");
         primaryStage.setScene(new Scene(root, 1280, 800));
+        primaryStage.setMaximized(true);
         primaryStage.setResizable(true);
         primaryStage.show();
     }

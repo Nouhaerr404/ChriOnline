@@ -80,8 +80,13 @@ public class CommandeView {
 
             lblTotalPrix.setText(String.format("%.2f MAD", total));
 
-            Scene scene = new Scene(root, 1000, 700);
-            stage.setScene(scene);
+            if (stage.getScene() == null) {
+                stage.setScene(new Scene(root, 1280, 800));
+            } else {
+                stage.getScene().setRoot(root);
+            }
+            stage.setMaximized(true);
+            stage.setTitle("ChriOnline — Commande");
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
