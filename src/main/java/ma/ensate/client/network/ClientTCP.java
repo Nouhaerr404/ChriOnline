@@ -8,6 +8,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.*;
 import java.net.Socket;
 import ma.ensate.util.ConfigLoader;
+import ma.ensate.security.SecureHandshake;
+import ma.ensate.security.SecureChannel;
+import ma.ensate.protocol.dto.HandshakeRequest;
+import ma.ensate.protocol.dto.HandshakeResponse;
 
 public class ClientTCP {
 
@@ -21,6 +25,8 @@ public class ClientTCP {
     private Socket             socket;
     private ObjectOutputStream out;
     private ObjectInputStream  in;
+    private SecureHandshake handshake;
+    private SecureChannel secureChannel;
 
     private ClientTCP() {}
 
@@ -31,23 +37,66 @@ public class ClientTCP {
         return instance;
     }
 
-    public void connecter() throws IOException {
+    public void connecter() throws Exception {
         socket = new Socket(HOST, PORT);
         out    = new ObjectOutputStream(socket.getOutputStream());
         in     = new ObjectInputStream(socket.getInputStream());
         logger.info("Connecte au serveur " + HOST + ":" + PORT);
+
+        try {
+            System.out.println("[CLIENT] Initiation handshake...");
+
+            // 1. Créer handshake client
+            this.handshake = new SecureHandshake(true);  // true = client mode
+
+            // 2. Demander clé publique du serveur
+            HandshakeRequest req1 = handshake.initiateHandshake();
+            out.writeObject(req1);
+            out.flush();
+            System.out.println("[CLIENT] Demande clé publique envoyée");
+
+            // 3. Recevoir clé publique
+            HandshakeResponse resp = (HandshakeResponse) in.readObject();
+            System.out.println("[CLIENT] Clé publique reçue");
+
+            // 4. Envoyer clé AES chiffrée
+            HandshakeRequest req2 = handshake.sendEncryptedAESKey(resp, req1.getNonce());
+            out.writeObject(req2);
+            out.flush();
+            System.out.println("[CLIENT] Clé AES chiffrée envoyée");
+
+            // 5. Recevoir confirmation
+            HandshakeResponse okResp = (HandshakeResponse) in.readObject();
+            if (!"HANDSHAKE_COMPLETE".equals(okResp.getPhase())) {
+                throw new Exception("Handshake échoué!");
+            }
+            System.out.println("[CLIENT] Handshake confirmé par serveur");
+
+            // 6. Créer canal sécurisé
+            this.secureChannel = new SecureChannel(
+                    handshake.getNegotiatedAESKey(),
+                    in,
+                    out
+            );
+
+            System.out.println("[CLIENT] Canal sécurisé établi");
+
+        } catch (Exception e) {
+            logger.error("Erreur handshake: " + e.getMessage());
+            socket.close();
+            throw new Exception("Handshake échoué", e);
+        }
     }
 
     public synchronized Response envoyerRequete(Request request) throws Exception {
-        // Reconnexion automatique si besoin
         if (socket == null || socket.isClosed()) {
             connecter();
         }
 
-        out.writeObject(request);
-        out.flush();
+        // Utiliser SecureChannel pour chiffrer/déchiffrer
+        secureChannel.writeSecureRequest(request);
 
-        Response response = (Response) in.readObject();
+        Response response = secureChannel.readSecureResponse();
         logger.info(" Reponse recue : " + response.getMessage());
         return response;
     }

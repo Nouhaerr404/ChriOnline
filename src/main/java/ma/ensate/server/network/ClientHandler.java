@@ -27,6 +27,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import ma.ensate.security.SecureHandshake;
+import ma.ensate.security.SecureChannel;
+import ma.ensate.protocol.dto.HandshakeRequest;
+import ma.ensate.protocol.dto.HandshakeResponse;
+
 public class ClientHandler implements Runnable {
 
     private static final Logger logger = LogManager.getLogger(ClientHandler.class);
@@ -43,6 +48,8 @@ public class ClientHandler implements Runnable {
     private final ProductService  productService;
     private final SYNFloodProtection synFloodProtection;
     private final SYNCookieManager synCookieManager;
+    private SecureHandshake handshake;
+    private SecureChannel secureChannel;
 
     private static final Set<String> ACTIONS_PUBLIQUES =
             new HashSet<>(Arrays.asList("LOGIN", "REGISTER", "VERIFY_2FA", "GET_CAPTCHA", "GET_SERVER_PUBLIC_KEY", "GENERATE_CHALLENGE_ADMIN", "VERIFY_SIGNATURE_ADMIN"));
@@ -86,8 +93,55 @@ public class ClientHandler implements Runnable {
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 ObjectInputStream  in  = new ObjectInputStream(socket.getInputStream())
         ) {
+            // ════════════════════════════════════════════════════════════
+            // PHASE 1: HANDSHAKE SÉCURISÉ RSA/AES
+            // ════════════════════════════════════════════════════════════
+
+            System.out.println("[SERVEUR] Attente handshake client...");
+
+            try {
+                // 1. Recevoir demande clé publique
+                HandshakeRequest clientReq1 = (HandshakeRequest) in.readObject();
+                logger.info("Handshake phase 1 reçue");
+
+                // 2. Initialiser handshake et envoyer clé publique
+                this.handshake = new SecureHandshake();
+                HandshakeResponse response = handshake.sendPublicKey(clientReq1);
+                out.writeObject(response);
+                out.flush();
+                logger.info("Clé publique RSA envoyée au client");
+
+                // 3. Recevoir clé AES chiffrée
+                HandshakeRequest clientReq2 = (HandshakeRequest) in.readObject();
+                logger.info("Handshake phase 2 reçue");
+
+                // 4. Déchiffrer et établir clé AES partagée
+                handshake.receiveEncryptedAESKey(clientReq2);
+                HandshakeResponse okResponse = new HandshakeResponse(clientReq2.getNonce(), "HANDSHAKE_COMPLETE");
+                out.writeObject(okResponse);
+                out.flush();
+                logger.info("Handshake complété, AES key établie");
+
+                // 5. Créer canal sécurisé pour requêtes suivantes
+                this.secureChannel = new SecureChannel(
+                        handshake.getNegotiatedAESKey(),
+                        in,
+                        out
+                );
+
+                System.out.println("[SERVEUR] Canal sécurisé établi");
+
+            } catch (Exception e) {
+                logger.error("Erreur handshake: " + e.getMessage());
+                return;  // Fermer connexion si handshake échoue
+            }
+
+            // ════════════════════════════════════════════════════════════
+            // PHASE 2: COMMUNICATION SÉCURISÉE
+            // ════════════════════════════════════════════════════════════
+
             while (true) {
-                Request request = (Request) in.readObject();
+                Request request = secureChannel.readSecureRequest();
                 logger.info(" Action reçue : " + request.getAction()
                         + " | Client : " + clientIP);
 
@@ -100,8 +154,7 @@ public class ClientHandler implements Runnable {
                         logger.warn(" Accès refusé : " + sResult.errorMessage
                                 + " | Action : " + request.getAction()
                                 + " | Client : " + clientIP);
-                        out.writeObject(new Response(false, sResult.errorMessage));
-                        out.flush();
+                        secureChannel.writeSecureResponse(new Response(false, sResult.errorMessage));
                         continue;
                     }
 
@@ -118,12 +171,10 @@ public class ClientHandler implements Runnable {
                             logger.error("Erreur sauvegarde du nouveau token: " + e.getMessage());
                         }
                     }
-                    out.writeObject(response);
-                    out.flush();
+                    secureChannel.writeSecureResponse(response);
                 } else {
                     Response response = traiterRequete(request);
-                    out.writeObject(response);
-                    out.flush();
+                    secureChannel.writeSecureResponse(response);
                 }
             }
 
