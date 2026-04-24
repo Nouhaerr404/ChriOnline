@@ -474,4 +474,36 @@ public class UtilisateurDAO {
         logger.info("Mot de passe changé pour userId : " + id);
         return true;
     }
+    public String getPublicKeyByEmail(String email) throws SQLException {
+        String sql = "SELECT public_key FROM utilisateur WHERE email = ? AND type_compte = 'ADMINISTRATEUR'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("public_key");
+            }
+        }
+        return null;
+    }
+
+    public Utilisateur trouverAdminParEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM utilisateur WHERE email = ? AND type_compte = 'ADMINISTRATEUR'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Utilisateur u = new Administrateur();
+                u.setId(rs.getInt("id"));
+                u.setNom(rs.getString("nom"));
+                u.setEmail(rs.getString("email"));
+                u.setTypeCompte(rs.getString("type_compte"));
+                u.setStatut(rs.getString("statut"));
+                u.setTwoFaEnabled(rs.getBoolean("two_fa_enabled"));
+                return u;
+            }
+        }
+        return null;
+    }
 }

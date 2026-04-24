@@ -96,7 +96,7 @@ public class RSAEncryptorTest {
     @Test
     @DisplayName("Test canEncrypt - données trop grandes")
     public void testCanEncryptInvalid() {
-        byte[] largeData = new byte[300);
+        byte[] largeData = new byte[300];
         assertFalse(RSAEncryptor.canEncrypt(largeData, 2048));
     }
 
@@ -146,14 +146,14 @@ public class RSAEncryptorTest {
     @Test
     @DisplayName("Test sérialisation/désérialisation de clés")
     public void testKeySerialization() throws Exception {
-        String publicKeyBase64 = RSAKeyManager.serializePublicKey(publicKey);
-        String privateKeyBase64 = RSAKeyManager.serializePrivateKey(privateKey);
+        String publicKeyBase64 = KeySerializer.serializePublicKey(publicKey);
+        String privateKeyBase64 = KeySerializer.serializePrivateKey(privateKey);
 
         assertNotNull(publicKeyBase64);
         assertNotNull(privateKeyBase64);
 
-        PublicKey deserializedPublicKey = RSAKeyManager.deserializePublicKey(publicKeyBase64);
-        PrivateKey deserializedPrivateKey = RSAKeyManager.deserializePrivateKey(privateKeyBase64);
+        PublicKey deserializedPublicKey = KeySerializer.deserializePublicKey(publicKeyBase64);
+        PrivateKey deserializedPrivateKey = KeySerializer.deserializePrivateKey(privateKeyBase64);
 
         assertNotNull(deserializedPublicKey);
         assertNotNull(deserializedPrivateKey);

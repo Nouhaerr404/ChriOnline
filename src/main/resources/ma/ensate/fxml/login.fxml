@@ -66,16 +66,12 @@
 
                         <Label fx:id="messageLabel" styleClass="catalog-sidebar-accent" text="" wrapText="true" />
 
-        <Button fx:id="adminLoginButton"
-                text="🔐 Connexion Admin (RSA)"
-                onAction="#allerAdminLogin"
+        <Button fx:id="loginButton"
+                text="CONNEXION"
+                onAction="#handleLogin"
                 maxWidth="Infinity"
-                style="-fx-background-color: #667eea;
-                       -fx-text-fill: white;
-                       -fx-font-size: 12px;
-                       -fx-padding: 10;
-                       -fx-background-radius: 5;
-                       -fx-cursor: hand;"/>
+                prefHeight="55"
+                styleClass="primary-btn"/>
 
                         <VBox alignment="CENTER" spacing="10">
                             <children>
