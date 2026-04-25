@@ -97,6 +97,7 @@ public class ClientTCP {
         secureChannel.writeSecureRequest(request);
 
         Response response = secureChannel.readSecureResponse();
+        SessionManager.getInstance().updateToken(response.getNewToken());
         logger.info(" Reponse recue : " + response.getMessage());
         return response;
     }

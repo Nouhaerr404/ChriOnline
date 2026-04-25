@@ -12,7 +12,6 @@ import ma.ensate.server.services.PaymentService;
 import ma.ensate.server.services.ProductService;
 import ma.ensate.server.services.ServicePanier;
 import ma.ensate.server.services.UserService;
-import ma.ensate.server.services.PaymentRateLimiter;
 import ma.ensate.server.security.SYNFloodProtection;
 import ma.ensate.server.security.SYNCookieManager;
 import org.apache.logging.log4j.LogManager;
@@ -468,58 +467,8 @@ public class ClientHandler implements Runnable {
     }
 
     private Response effectuerPaiement(Request request) {
-        try {
-            PaiementRequest req = (PaiementRequest) request.getData();
-            if (req == null || req.getCommandeId() == null || req.getMethodePaiement() == null)
-                return new Response(false, "Requête de paiement invalide");
-            MethodePaiement methode;
-            try {
-                methode = MethodePaiement.valueOf(req.getMethodePaiement());
-            } catch (IllegalArgumentException e) {
-                return new Response(false, "Méthode de paiement invalide : " + req.getMethodePaiement());
-            }
-            if (methode == MethodePaiement.CARTE_BANCAIRE) {
-                if (req.getCardLast4() == null || req.getCardLast4().length() != 4)
-                    return new Response(false, "Les 4 derniers chiffres de la carte sont requis");
-            }
-            Commande commande = commandeService.getCommandeById(req.getCommandeId());
-            if (commande == null)
-                return new Response(false, "Commande introuvable");
-
-            if (commande.getClient() != null) {
-                if (PaymentRateLimiter.isReplayAttack(String.valueOf(commande.getClient().getId()), commande.getPrixAPayer())) {
-                    logger.warn("Replay attack évité pour la commande: " + req.getCommandeId());
-                    return new Response(false, "Paiement en cours ou déjà effectué récemment (anti-rejeu). Veuillez patienter.");
-                }
-            }
-            boolean success = paymentService.effectuerPaiement(commande, methode, req.getCardLast4());
-            if (success) {
-                if (commande.getClient() != null) {
-                    servicePanier.viderPanier(commande.getClient().getId());
-                }
-                if (commande.getClient() != null) {
-                    String destinataireIP = ClientIPRegistry.getIP(
-                            commande.getClient().getId());
-                    if (destinataireIP != null) {
-                        int port = ClientIPRegistry.getPort(
-                                commande.getClient().getId()); // ← port unique
-                        UDPNotificationServer.notifierCommandeValidee(
-                                destinataireIP, port, req.getCommandeId());
-                    } else {
-                        logger.warn("Client non connecté, notification ignorée");
-                    }
-                }
-                Paiement paiement = paymentService.getPaiementByCommandeId(req.getCommandeId());
-                logger.info("Paiement effectué : " + req.getCommandeId());
-                return new Response(true, "Paiement effectué avec succès", paiement);
-            } else {
-                return new Response(false, "Échec du paiement");
-            }
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            return new Response(false, e.getMessage());
-        } catch (SQLException e) {
-            return new Response(false, "Erreur base de données : " + e.getMessage());
-        }
+        PaiementRequest req = (PaiementRequest) request.getData();
+        return paymentService.traiterPaiement(req);
     }
 
     private Response getPaiement(Request request) {

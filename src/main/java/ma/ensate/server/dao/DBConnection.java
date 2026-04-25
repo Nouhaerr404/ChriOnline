@@ -7,29 +7,39 @@ import ma.ensate.util.ConfigLoader;
 
 public class DBConnection {
 
-    private static final String URL      = ConfigLoader.get("DB_URL", "jdbc:mysql://localhost:3306/chrionline");
+    private static final String URL      = ConfigLoader.get(
+            "DB_URL",
+            "jdbc:mysql://127.0.0.1:8889/chrionline"
+                    + "?useSSL=false"
+                    + "&allowPublicKeyRetrieval=true"
+                    + "&serverTimezone=UTC"
+                    + "&connectTimeout=5000"
+                    + "&socketTimeout=5000"
+                    + "&tcpKeepAlive=true");
     private static final String USER     = ConfigLoader.get("DB_USER", "root");
-    private static final String PASSWORD = ConfigLoader.get("DB_PASSWORD", "");
-
-    private static Connection instance = null;
+    private static final String PASSWORD = ConfigLoader.get("DB_PASSWORD", "root");
 
     public static Connection getConnection() throws SQLException {
-        if (instance == null || instance.isClosed()) {
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                instance = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("Connexion MySQL reussie !");
-            } catch (ClassNotFoundException e) {
-                System.out.println("Driver MySQL introuvable !");
-                throw new SQLException(e);
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (ClassNotFoundException e) {
+            System.out.println("Driver MySQL introuvable !");
+            throw new SQLException(e);
+        } catch (SQLException e) {
+            System.err.println("[DBConnection] URL = " + URL);
+            System.err.println("[DBConnection] SQLState = " + e.getSQLState());
+            System.err.println("[DBConnection] ErrorCode = " + e.getErrorCode());
+            if (e.getCause() != null) {
+                System.err.println("[DBConnection] Cause = " + e.getCause().getClass().getName()
+                        + " : " + e.getCause().getMessage());
             }
+            throw e;
         }
-        return instance;
     }
 
     public static void main(String[] args) {
-        try {
-            Connection conn = getConnection();
+        try (Connection conn = getConnection()) {
             if (conn != null) {
                 System.out.println("Base de données connectee !");
             }

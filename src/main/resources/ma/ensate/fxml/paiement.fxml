@@ -143,14 +143,14 @@
 
                                         <VBox spacing="15" styleClass="shipping-card">
                                             <children>
-                                                <Label text="SÉCURITÉ SSL" styleClass="shipping-title" />
-                                                <Label text="Vos données sont chiffrées de bout en bout pour garantir la confidentialité de vos paiements." styleClass="shipping-copy" wrapText="true" />
+                                                <Label fx:id="tlsStatusLabel" text="TLS ACTIF" styleClass="shipping-title" style="-fx-text-fill: #5cff90;" />
+                                                <Label fx:id="tlsDetailsLabel" text="Votre paiement sera envoyé via une connexion TLS chiffrée vers le serveur sécurisé sur le port 9999." styleClass="shipping-copy" wrapText="true" />
                                             </children>
                                         </VBox>
 
                                         <Region VBox.vgrow="ALWAYS" />
 
-                                        <Button fx:id="btnPay" onAction="#handlePayment" maxWidth="Infinity" prefHeight="65" styleClass="secondary-btn" text="CONFIRMER ET PAYER" />
+                                        <Button fx:id="btnPay" onAction="#handlePayment" maxWidth="Infinity" prefHeight="65" styleClass="secondary-btn" text="CONFIRMER ET PAYER VIA TLS" />
                                         <Button onAction="#handleRetour" maxWidth="Infinity" prefHeight="55" styleClass="outline-btn" text="RETOUR AU PANIER" />
                                     </children>
                                 </VBox>
