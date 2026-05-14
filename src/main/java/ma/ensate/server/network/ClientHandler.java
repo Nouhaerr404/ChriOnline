@@ -45,7 +45,7 @@ public class ClientHandler implements Runnable {
     private final SYNCookieManager synCookieManager;
 
     private static final Set<String> ACTIONS_PUBLIQUES =
-            new HashSet<>(Arrays.asList("LOGIN", "REGISTER", "VERIFY_2FA", "GET_CAPTCHA", "GET_SERVER_PUBLIC_KEY"));
+            new HashSet<>(Arrays.asList("LOGIN", "REGISTER", "VERIFY_2FA", "GET_CAPTCHA", "GET_SERVER_PUBLIC_KEY", "GENERATE_CHALLENGE_ADMIN", "VERIFY_SIGNATURE_ADMIN"));
 
     public ClientHandler(Socket socket) {
         this.socket          = socket;
@@ -141,6 +141,12 @@ public class ClientHandler implements Runnable {
 
                 case "LOGIN":
                     return UserService.login(request.getData(), clientIP);
+
+                case "GENERATE_CHALLENGE_ADMIN":
+                    return UserService.genererChallengeAdmin(request.getData());
+
+                case "VERIFY_SIGNATURE_ADMIN":
+                    return UserService.loginAdminChallenge(request.getData(), clientIP);
 
                 case "REGISTER":
                     return UserService.register(request.getData());

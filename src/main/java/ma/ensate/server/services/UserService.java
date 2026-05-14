@@ -162,6 +162,74 @@ public class UserService {
         }
     }
 
+    private static final java.util.Map<String, String> adminChallenges = new java.util.concurrent.ConcurrentHashMap<>();
+
+    public static Response genererChallengeAdmin(Object data) {
+        try {
+            String email = (String) data;
+            Utilisateur u = dao.trouverAdminParEmail(email);
+            if (u == null) {
+                return new Response(false, "Administrateur introuvable ou accès refusé.");
+            }
+            String challenge = java.util.UUID.randomUUID().toString();
+            adminChallenges.put(email, challenge);
+            logger.info("Challenge généré pour l'admin: " + email);
+            return new Response(true, "Challenge généré", challenge);
+        } catch (Exception e) {
+            logger.error("Erreur genererChallengeAdmin : " + e.getMessage());
+            return new Response(false, "Erreur serveur.");
+        }
+    }
+
+    public static Response loginAdminChallenge(Object data, String clientIP) {
+        try {
+            Object[] payload = (Object[]) data;
+            String email = (String) payload[0];
+            String challenge = (String) payload[1];
+            String signatureBase64 = (String) payload[2];
+
+            String storedChallenge = adminChallenges.remove(email);
+            if (storedChallenge == null || !storedChallenge.equals(challenge)) {
+                return new Response(false, "Challenge invalide ou expiré.");
+            }
+
+            Utilisateur u = dao.trouverAdminParEmail(email);
+            if (u == null) {
+                return new Response(false, "Administrateur introuvable.");
+            }
+
+            String publicKeyBase64 = dao.getPublicKeyByEmail(email);
+            if (publicKeyBase64 == null || publicKeyBase64.isEmpty()) {
+                return new Response(false, "Clé publique introuvable pour cet administrateur.");
+            }
+
+            java.security.PublicKey publicKey = ma.ensate.security.KeySerializer.deserializePublicKey(publicKeyBase64);
+            boolean isSignatureValid = ma.ensate.security.RSAVerifier.verifyBase64(challenge, signatureBase64, publicKey);
+
+            if (!isSignatureValid) {
+                logger.warn("Échec de la vérification de signature RSA pour admin : " + email);
+                return new Response(false, "Signature invalide.");
+            }
+
+            Response ipCheck = verifierAccesIPAdmin(u, clientIP, email);
+            if (ipCheck != null) return ipCheck;
+
+            // Generate session
+            String token = java.util.UUID.randomUUID().toString();
+            dao.sauvegarderToken(u.getId(), token);
+            u.setSessionToken(token);
+            ClientIPRegistry.register(u.getId(), clientIP);
+            SessionManager.startSession(token, u.getId(), clientIP);
+
+            logger.info("Login Admin RSA réussi : " + email);
+            return new Response(true, "Connexion réussie !", u);
+
+        } catch (Exception e) {
+            logger.error("Erreur loginAdminChallenge : " + e.getMessage());
+            return new Response(false, "Erreur lors de l'authentification.");
+        }
+    }
+
     public static Response logout(Object data) {
         try {
             int userId = (int) data;
