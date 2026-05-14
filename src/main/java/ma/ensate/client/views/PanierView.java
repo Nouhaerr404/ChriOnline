@@ -76,10 +76,17 @@ public class PanierView {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/panier.fxml"));
             Parent root = loader.load();
             
-            Scene scene = new Scene(root, 1280, 800);
+            if (stage.getScene() == null) {
+                stage.setScene(new Scene(root, 1280, 800));
+            } else {
+                stage.getScene().setRoot(root);
+            }
+            stage.setMaximized(true);
             stage.setTitle("ChriOnline — Mon Panier");
-            stage.setScene(scene);
             stage.show();
+            
+            // Re-charger les données du panier après affichage
+            chargerPanier();
         } catch (Exception e) {
             e.printStackTrace();
         }

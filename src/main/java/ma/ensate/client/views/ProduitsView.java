@@ -138,7 +138,7 @@ public class ProduitsView {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/login.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) productsFlowPane.getScene().getWindow();
-            stage.setScene(new Scene(root, 500, 600));
+            stage.getScene().setRoot(root);
             stage.setTitle("ChriOnline - Connexion");
         } catch (Exception e) {
             e.printStackTrace();

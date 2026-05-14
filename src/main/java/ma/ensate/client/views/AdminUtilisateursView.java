@@ -326,7 +326,7 @@ public class AdminUtilisateursView {
             Parent root = loader.load();
 
             Stage stage = (Stage) usersTable.getScene().getWindow();
-            stage.setScene(new Scene(root, 500, 600));
+            stage.getScene().setRoot(root);
             stage.setTitle("ChriOnline - Connexion");
         } catch (Exception e) {
             setStatus("Erreur logout : " + e.getMessage());
@@ -355,3 +355,4 @@ public class AdminUtilisateursView {
         statusLabel.setText(text);
     }
 }
+

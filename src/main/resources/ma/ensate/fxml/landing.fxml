@@ -27,8 +27,9 @@
                         <HBox alignment="CENTER" spacing="35.0">
                            <children>
                               <Label styleClass="nav-link" text="ACCUEIL" />
-                              <Label onMouseClicked="#goToCatalog" styleClass="nav-link" text="BOUTIQUE" />
+                              <Label onMouseClicked="#handleLogin" styleClass="nav-link" text="BOUTIQUE" />
                               <Label onMouseClicked="#goToCart" styleClass="nav-link" text="PANIER" />
+                              <Button mnemonicParsing="false" onAction="#handleRegister" styleClass="outline-btn" text="S'INSCRIRE" style="-fx-padding: 10 20;" />
                               <Button mnemonicParsing="false" onAction="#handleLogin" styleClass="logout-btn" text="CONNEXION" />
                            </children>
                         </HBox>
@@ -52,8 +53,8 @@
                                       <Label styleClass="hero-subtitle" text="Découvrez notre sélection exclusive de produits premium au meilleur prix." textAlignment="CENTER" maxWidth="700" />
                                       <HBox alignment="CENTER" spacing="25.0">
                                          <children>
-                                            <Button mnemonicParsing="false" onAction="#goToCatalogBtn" styleClass="secondary-btn" text="EXPLORER MAINTENANT" />
-                                            <Button mnemonicParsing="false" onAction="#goToCatalogBtn" styleClass="outline-btn" text="VOIR LE CATALOGUE" />
+                                            <Button mnemonicParsing="false" onAction="#handleLogin" styleClass="secondary-btn" text="EXPLORER MAINTENANT" />
+                                            <Button mnemonicParsing="false" onAction="#handleLogin" styleClass="outline-btn" text="VOIR LE CATALOGUE" />
                                          </children>
                                          <VBox.margin>
                                             <Insets top="15.0" />
@@ -98,7 +99,7 @@
                                     <Label text="LIVRAISON RAPIDE" styleClass="feature-heading" />
                                     <Label text="Recevez vos produits en un temps record partout au Maroc avec une traçabilité complète." styleClass="feature-copy" wrapText="true" />
                                     <Region VBox.vgrow="ALWAYS" />
-                                    <Label text="EN SAVOIR PLUS →" styleClass="feature-link" />
+                                    <Label onMouseClicked="#handleLogin" text="EN SAVOIR PLUS →" styleClass="feature-link" style="-fx-cursor: hand;" />
                                  </children>
                               </VBox>
                               <VBox spacing="25.0" styleClass="feature-card" GridPane.columnIndex="1">
@@ -107,7 +108,7 @@
                                     <Label text="PAIEMENT SÉCURISÉ" styleClass="feature-heading" />
                                     <Label text="Transactions ultra-sécurisées par carte ou à la livraison pour une tranquillité totale." styleClass="feature-copy" wrapText="true" />
                                     <Region VBox.vgrow="ALWAYS" />
-                                    <Label text="DÉTAILS SÉCURITÉ →" styleClass="feature-link" />
+                                    <Label onMouseClicked="#handleLogin" text="DÉTAILS SÉCURITÉ →" styleClass="feature-link" style="-fx-cursor: hand;" />
                                  </children>
                               </VBox>
                               <VBox spacing="25.0" styleClass="feature-card" GridPane.columnIndex="2">
@@ -116,7 +117,7 @@
                                     <Label text="ASSISTANCE DÉDIÉE" styleClass="feature-heading" />
                                     <Label text="Une équipe d'experts à votre écoute jour et nuit pour répondre à toutes vos questions." styleClass="feature-copy" wrapText="true" />
                                     <Region VBox.vgrow="ALWAYS" />
-                                    <Label text="CONTACTER L'AIDE →" styleClass="feature-link" />
+                                    <Label onMouseClicked="#handleLogin" text="CONTACTER L'AIDE →" styleClass="feature-link" style="-fx-cursor: hand;" />
                                  </children>
                               </VBox>
                            </children>

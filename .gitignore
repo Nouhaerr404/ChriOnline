@@ -42,5 +42,7 @@ build/
 ### Project Logs ###
 logs/
 *.log
+tls/*.jks
+tls/*.crt
 
 .env

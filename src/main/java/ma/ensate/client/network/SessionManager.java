@@ -48,6 +48,14 @@ public class SessionManager {
         return utilisateurConnecte.getSessionToken();
     }
 
+    public void updateToken(String newToken) {
+        if (utilisateurConnecte == null || newToken == null || newToken.isBlank()) {
+            return;
+        }
+        utilisateurConnecte.setSessionToken(newToken);
+        logger.info("Token de session mis a jour.");
+    }
+
 
     public boolean estConnecte() {
         return utilisateurConnecte != null

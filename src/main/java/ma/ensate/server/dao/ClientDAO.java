@@ -1,6 +1,7 @@
 package ma.ensate.server.dao;
 
 import ma.ensate.models.Client;
+import ma.ensate.security.SensitiveDataCipher;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,18 +30,21 @@ public class ClientDAO {
                 if (rs.next()) {
                     Client client = new Client();
                     client.setId(rs.getInt("id"));
-                    client.setNom(rs.getString("nom"));
-                    client.setEmail(rs.getString("email"));
+                    client.setNom(decryptSensitive(rs.getString("nom")));
+                    client.setEmail(decryptSensitive(rs.getString("email")));
                     client.setPassword(rs.getString("password"));
                     client.setTypeCompte(rs.getString("type_compte"));
                     client.setSessionToken(rs.getString("session_token"));
-                    client.setAdresse(rs.getString("adresse"));
-                    client.setTel(rs.getString("tel"));
+                    client.setAdresse(decryptSensitive(rs.getString("adresse")));
+                    client.setTel(decryptSensitive(rs.getString("tel")));
                     return client;
                 }
             }
         }
         return null;
     }
-}
 
+    private String decryptSensitive(String value) {
+        return SensitiveDataCipher.decrypt(value);
+    }
+}

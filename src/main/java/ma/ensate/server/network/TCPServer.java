@@ -20,6 +20,8 @@ public class TCPServer {
 
     private ServerSocket serverSocket;
     private boolean running = false;
+    private TLSPaymentServer tlsPaymentServer;
+    private Thread tlsPaymentThread;
     
     private final SYNFloodProtection synFloodProtection = new SYNFloodProtection();
     private final SYNCookieManager synCookieManager = new SYNCookieManager();
@@ -31,6 +33,7 @@ public class TCPServer {
             running = true;
 
             startCleanupScheduler();
+            startTlsPaymentServer();
 
             logger.info("     SERVEUR CHRIONLINE DÉMARRÉ        ");
             logger.info("     Port : " + port + "                         ");
@@ -76,8 +79,18 @@ public class TCPServer {
         }, 30, 30, TimeUnit.SECONDS);
     }
 
+    private void startTlsPaymentServer() {
+        tlsPaymentServer = new TLSPaymentServer();
+        tlsPaymentThread = new Thread(tlsPaymentServer, "tls-payment-server");
+        tlsPaymentThread.setDaemon(true);
+        tlsPaymentThread.start();
+    }
+
     public void stop() {
         running = false;
+        if (tlsPaymentServer != null) {
+            tlsPaymentServer.stop();
+        }
         cleanupExecutor.shutdown();
         
         try {

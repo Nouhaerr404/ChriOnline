@@ -12,7 +12,6 @@ import ma.ensate.server.services.PaymentService;
 import ma.ensate.server.services.ProductService;
 import ma.ensate.server.services.ServicePanier;
 import ma.ensate.server.services.UserService;
-import ma.ensate.server.services.PaymentRateLimiter;
 import ma.ensate.server.security.SYNFloodProtection;
 import ma.ensate.server.security.SYNCookieManager;
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +25,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import ma.ensate.security.SecureHandshake;
+import ma.ensate.security.SecureChannel;
+import ma.ensate.protocol.dto.HandshakeRequest;
+import ma.ensate.protocol.dto.HandshakeResponse;
 
 public class ClientHandler implements Runnable {
 
@@ -43,6 +47,8 @@ public class ClientHandler implements Runnable {
     private final ProductService  productService;
     private final SYNFloodProtection synFloodProtection;
     private final SYNCookieManager synCookieManager;
+    private SecureHandshake handshake;
+    private SecureChannel secureChannel;
 
     private static final Set<String> ACTIONS_PUBLIQUES =
             new HashSet<>(Arrays.asList("LOGIN", "REGISTER", "VERIFY_2FA", "GET_CAPTCHA", "GET_SERVER_PUBLIC_KEY", "GENERATE_CHALLENGE_ADMIN", "VERIFY_SIGNATURE_ADMIN"));
@@ -86,8 +92,55 @@ public class ClientHandler implements Runnable {
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 ObjectInputStream  in  = new ObjectInputStream(socket.getInputStream())
         ) {
+            // ════════════════════════════════════════════════════════════
+            // PHASE 1: HANDSHAKE SÉCURISÉ RSA/AES
+            // ════════════════════════════════════════════════════════════
+
+            System.out.println("[SERVEUR] Attente handshake client...");
+
+            try {
+                // 1. Recevoir demande clé publique
+                HandshakeRequest clientReq1 = (HandshakeRequest) in.readObject();
+                logger.info("Handshake phase 1 reçue");
+
+                // 2. Initialiser handshake et envoyer clé publique
+                this.handshake = new SecureHandshake();
+                HandshakeResponse response = handshake.sendPublicKey(clientReq1);
+                out.writeObject(response);
+                out.flush();
+                logger.info("Clé publique RSA envoyée au client");
+
+                // 3. Recevoir clé AES chiffrée
+                HandshakeRequest clientReq2 = (HandshakeRequest) in.readObject();
+                logger.info("Handshake phase 2 reçue");
+
+                // 4. Déchiffrer et établir clé AES partagée
+                handshake.receiveEncryptedAESKey(clientReq2);
+                HandshakeResponse okResponse = new HandshakeResponse(clientReq2.getNonce(), "HANDSHAKE_COMPLETE");
+                out.writeObject(okResponse);
+                out.flush();
+                logger.info("Handshake complété, AES key établie");
+
+                // 5. Créer canal sécurisé pour requêtes suivantes
+                this.secureChannel = new SecureChannel(
+                        handshake.getNegotiatedAESKey(),
+                        in,
+                        out
+                );
+
+                System.out.println("[SERVEUR] Canal sécurisé établi");
+
+            } catch (Exception e) {
+                logger.error("Erreur handshake: " + e.getMessage());
+                return;  // Fermer connexion si handshake échoue
+            }
+
+            // ════════════════════════════════════════════════════════════
+            // PHASE 2: COMMUNICATION SÉCURISÉE
+            // ════════════════════════════════════════════════════════════
+
             while (true) {
-                Request request = (Request) in.readObject();
+                Request request = secureChannel.readSecureRequest();
                 logger.info(" Action reçue : " + request.getAction()
                         + " | Client : " + clientIP);
 
@@ -100,8 +153,7 @@ public class ClientHandler implements Runnable {
                         logger.warn(" Accès refusé : " + sResult.errorMessage
                                 + " | Action : " + request.getAction()
                                 + " | Client : " + clientIP);
-                        out.writeObject(new Response(false, sResult.errorMessage));
-                        out.flush();
+                        secureChannel.writeSecureResponse(new Response(false, sResult.errorMessage));
                         continue;
                     }
 
@@ -118,12 +170,10 @@ public class ClientHandler implements Runnable {
                             logger.error("Erreur sauvegarde du nouveau token: " + e.getMessage());
                         }
                     }
-                    out.writeObject(response);
-                    out.flush();
+                    secureChannel.writeSecureResponse(response);
                 } else {
                     Response response = traiterRequete(request);
-                    out.writeObject(response);
-                    out.flush();
+                    secureChannel.writeSecureResponse(response);
                 }
             }
 
@@ -417,58 +467,8 @@ public class ClientHandler implements Runnable {
     }
 
     private Response effectuerPaiement(Request request) {
-        try {
-            PaiementRequest req = (PaiementRequest) request.getData();
-            if (req == null || req.getCommandeId() == null || req.getMethodePaiement() == null)
-                return new Response(false, "Requête de paiement invalide");
-            MethodePaiement methode;
-            try {
-                methode = MethodePaiement.valueOf(req.getMethodePaiement());
-            } catch (IllegalArgumentException e) {
-                return new Response(false, "Méthode de paiement invalide : " + req.getMethodePaiement());
-            }
-            if (methode == MethodePaiement.CARTE_BANCAIRE) {
-                if (req.getCardLast4() == null || req.getCardLast4().length() != 4)
-                    return new Response(false, "Les 4 derniers chiffres de la carte sont requis");
-            }
-            Commande commande = commandeService.getCommandeById(req.getCommandeId());
-            if (commande == null)
-                return new Response(false, "Commande introuvable");
-
-            if (commande.getClient() != null) {
-                if (PaymentRateLimiter.isReplayAttack(String.valueOf(commande.getClient().getId()), commande.getPrixAPayer())) {
-                    logger.warn("Replay attack évité pour la commande: " + req.getCommandeId());
-                    return new Response(false, "Paiement en cours ou déjà effectué récemment (anti-rejeu). Veuillez patienter.");
-                }
-            }
-            boolean success = paymentService.effectuerPaiement(commande, methode, req.getCardLast4());
-            if (success) {
-                if (commande.getClient() != null) {
-                    servicePanier.viderPanier(commande.getClient().getId());
-                }
-                if (commande.getClient() != null) {
-                    String destinataireIP = ClientIPRegistry.getIP(
-                            commande.getClient().getId());
-                    if (destinataireIP != null) {
-                        int port = ClientIPRegistry.getPort(
-                                commande.getClient().getId()); // ← port unique
-                        UDPNotificationServer.notifierCommandeValidee(
-                                destinataireIP, port, req.getCommandeId());
-                    } else {
-                        logger.warn("Client non connecté, notification ignorée");
-                    }
-                }
-                Paiement paiement = paymentService.getPaiementByCommandeId(req.getCommandeId());
-                logger.info("Paiement effectué : " + req.getCommandeId());
-                return new Response(true, "Paiement effectué avec succès", paiement);
-            } else {
-                return new Response(false, "Échec du paiement");
-            }
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            return new Response(false, e.getMessage());
-        } catch (SQLException e) {
-            return new Response(false, "Erreur base de données : " + e.getMessage());
-        }
+        PaiementRequest req = (PaiementRequest) request.getData();
+        return paymentService.traiterPaiement(req);
     }
 
     private Response getPaiement(Request request) {

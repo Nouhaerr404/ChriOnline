@@ -9,12 +9,15 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import ma.ensate.client.network.ClientTCP;
+import ma.ensate.client.network.SessionManager;
+import ma.ensate.client.network.TLSPaymentClient;
 import ma.ensate.models.Commande;
-import ma.ensate.models.MethodePaiement;
-import ma.ensate.protocol.Request;
 import ma.ensate.protocol.Response;
 import ma.ensate.protocol.dto.PaiementRequest;
 import javafx.scene.paint.Color;
+
+import java.io.File;
+import ma.ensate.util.ConfigLoader;
 
 public class PaiementView {
 
@@ -30,6 +33,8 @@ public class PaiementView {
     @FXML private RadioButton rbLivraisonCash;
     @FXML private RadioButton rbLivraisonCard;
     @FXML private Label profileInitialLabel;
+    @FXML private Label tlsStatusLabel;
+    @FXML private Label tlsDetailsLabel;
 
     private final Stage stage;
     private final ClientTCP clientTCP;
@@ -60,6 +65,8 @@ public class PaiementView {
                 profileInitialLabel.setText(buildUserInitial());
             }
 
+            updateTlsBadge();
+
             // Gestion de l'affichage du formulaire carte
             cardForm.setVisible(true);
 
@@ -77,7 +84,13 @@ public class PaiementView {
                 livraisonForm.setManaged(true);
             });
 
-            stage.setScene(new Scene(root, 1000, 700));
+            if (stage.getScene() == null) {
+                stage.setScene(new Scene(root, 1280, 800));
+            } else {
+                stage.getScene().setRoot(root);
+            }
+            stage.setMaximized(true);
+            stage.setTitle("ChriOnline — Paiement");
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,28 +152,45 @@ public class PaiementView {
 
         new Thread(() -> {
             try {
-                Response res = clientTCP.envoyerRequete(new Request("EFFECTUER_PAIEMENT", dt, token));
+                Response res = TLSPaymentClient.effectuerPaiement(
+                        dt,
+                        SessionManager.getInstance().getToken());
 
                 Platform.runLater(() -> {
                     if (res.isSuccess()) {
-                        viderPanier();
                         showAlert("Paiement Réussi", "Félicitations ! Votre paiement a été accepté. Votre commande est en préparation.", true);
                     } else {
                         showAlert("Échec du paiement", res.getMessage(), false);
                     }
                 });
             } catch (Exception e) {
-                Platform.runLater(() -> showAlert("Erreur réseau", "Impossible de joindre le serveur de paiement.", false));
+                Platform.runLater(() -> showAlert("Erreur réseau", "Impossible de joindre le serveur TLS de paiement : " + e.getMessage(), false));
             }
         }).start();
     }
 
-    private void viderPanier() {
-        new Thread(() -> {
-            try {
-                clientTCP.envoyerRequete(new Request("VIDER_PANIER", String.valueOf(clientId), token));
-            } catch (Exception ignored) {}
-        }).start();
+    private void updateTlsBadge() {
+        if (tlsStatusLabel == null || tlsDetailsLabel == null) {
+            return;
+        }
+
+        String trustStorePath = ConfigLoader.get("TLS_TRUSTSTORE_PATH", "tls/client-truststore.jks");
+        int tlsPort = ConfigLoader.getInt("TLS_PAYMENT_PORT", 9999);
+        File trustStore = new File(trustStorePath);
+
+        if (trustStore.exists()) {
+            tlsStatusLabel.setText("TLS ACTIF");
+            tlsStatusLabel.setStyle("-fx-text-fill: #5cff90; -fx-font-weight: bold;");
+            tlsDetailsLabel.setText(
+                    "Votre paiement sera envoye via une connexion TLS chiffree vers le serveur securise sur le port "
+                            + tlsPort + ".");
+            return;
+        }
+
+        tlsStatusLabel.setText("TLS NON CONFIGURE");
+        tlsStatusLabel.setStyle("-fx-text-fill: #ff7ea8; -fx-font-weight: bold;");
+        tlsDetailsLabel.setText(
+                "Le truststore TLS est introuvable. Le paiement securise n'est pas correctement configure sur cette machine.");
     }
 
     private void showAlert(String titre, String msg, boolean isSuccess) {
@@ -200,7 +230,7 @@ public class PaiementView {
     }
 
     private String buildUserInitial() {
-        String nom = ma.ensate.client.network.SessionManager.getInstance().getNomUtilisateur();
+        String nom = SessionManager.getInstance().getNomUtilisateur();
         return (nom != null && !nom.isBlank()) ? nom.trim().substring(0, 1).toUpperCase() : "U";
     }
 
@@ -228,7 +258,7 @@ public class PaiementView {
     }
 
     @FXML private void handleLogout() {
-        ma.ensate.client.network.SessionManager.getInstance().logout();
+        SessionManager.getInstance().logout();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/login.fxml"));
             Parent root = loader.load();

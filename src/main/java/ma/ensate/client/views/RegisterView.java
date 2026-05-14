@@ -25,6 +25,7 @@ public class RegisterView {
     @FXML private TextField     nomField;
     @FXML private TextField     emailField;
     @FXML private PasswordField passwordField;
+    @FXML private PasswordField confirmMdpField;
     @FXML private TextField     passwordVisibleField;
     @FXML private TextField     adresseField;
     @FXML private TextField     telField;
@@ -113,13 +114,14 @@ public class RegisterView {
     }
 
     @FXML
-    private void allerLogin() {
+
+    public void allerLogin() {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/ma/ensate/fxml/login.fxml"));
             Parent root  = loader.load();
             Stage  stage = (Stage) nomField.getScene().getWindow();
-            stage.setScene(new Scene(root, 500, 500));
+            stage.getScene().setRoot(root);
             stage.setTitle("ChriOnline — Connexion");
         } catch (Exception e) {
             logger.error("Erreur navigation vers login : " + e.getMessage());
