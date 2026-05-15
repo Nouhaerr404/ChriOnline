@@ -2,98 +2,84 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Line?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ma.ensate.client.views.AdminLoginView"
-      alignment="CENTER"
-      spacing="15"
-      style="-fx-background-color: #f0f4f8; -fx-padding: 50;">
+<VBox alignment="CENTER" spacing="0" styleClass="app-shell" stylesheets="@../css/style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17" fx:controller="ma.ensate.client.views.AdminLoginView">
+    <children>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;" styleClass="content-scroll">
+            <content>
+                <VBox alignment="CENTER" spacing="20.0" style="-fx-padding: 40 0;">
+                    <children>
+                        <VBox alignment="CENTER" spacing="25" maxWidth="500" styleClass="summary-card" style="-fx-padding: 40;">
+                            <children>
+                                <VBox alignment="CENTER" spacing="10">
+                                    <children>
+                                        <HBox alignment="CENTER" spacing="10.0" styleClass="brand-outline">
+                                            <children>
+                                                <Label styleClass="brand-mark" text="ChriOnline Admin" />
+                                            </children>
+                                        </HBox>
+                                        <Label styleClass="section-kicker" text="AUTHENTIFICATION RSA" />
+                                        <Line endX="60" styleClass="section-divider" />
+                                    </children>
+                                </VBox>
 
-    <Label text="ChriOnline — Admin"
-           style="-fx-font-size: 28px; -fx-font-weight: bold;
-                  -fx-text-fill: #1a73e8;"/>
+                                <VBox spacing="20" fillWidth="true">
+                                    <children>
+                                        <!-- Email Field -->
+                                        <VBox spacing="8">
+                                            <children>
+                                                <Label text="EMAIL ADMINISTRATEUR" styleClass="catalog-sidebar-label" />
+                                                <TextField fx:id="emailField" promptText="admin@chrionline.ma" prefHeight="50" styleClass="promo-field" />
+                                            </children>
+                                        </VBox>
 
-    <Label text="Authentification par Challenge-Response RSA"
-           style="-fx-font-size: 14px; -fx-text-fill: #666;"/>
+                                        <!-- Private Key Field -->
+                                        <VBox spacing="8">
+                                            <children>
+                                                <Label text="CLÉ PRIVÉE (.pem)" styleClass="catalog-sidebar-label" />
+                                                <HBox alignment="CENTER_LEFT" spacing="10">
+                                                    <children>
+                                                        <TextField fx:id="privateKeyPathField" editable="false" promptText="Sélectionnez votre fichier .pem" prefHeight="50" styleClass="promo-field" HBox.hgrow="ALWAYS" />
+                                                        <Button fx:id="browseButton" onAction="#handleBrowsePrivateKey" prefHeight="50" prefWidth="120" styleClass="outline-btn" text="PARCOURIR" style="-fx-padding: 0 10; -fx-font-size: 11px;" />
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                        
+                                        <!-- Information section -->
+                                        <VBox spacing="8" styleClass="shipping-card" style="-fx-padding: 15;">
+                                            <children>
+                                                <Label text="Challenge-Response" styleClass="shipping-title" style="-fx-font-size: 14px;" />
+                                                <Label text="Le serveur génère un challenge aléatoire que vous signez localement avec votre clé privée. Votre clé n'est jamais transmise." wrapText="true" styleClass="shipping-copy" style="-fx-font-size: 12px;"/>
+                                            </children>
+                                        </VBox>
 
-    <VBox spacing="15"
-          style="-fx-background-color: white;
-                 -fx-padding: 30;
-                 -fx-background-radius: 10;
-                 -fx-effect: dropshadow(gaussian, #ccc, 10, 0, 0, 2);"
-          maxWidth="450">
+                                        <ProgressBar fx:id="progressBar" visible="false" maxWidth="Infinity" style="-fx-accent: #ff5da9;"/>
 
-        <Label text="Email Admin"
-               style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
-        <TextField fx:id="emailField"
-                   promptText="admin@example.com"
-                   style="-fx-padding: 10; -fx-background-radius: 5;
-                          -fx-border-color: #ddd; -fx-border-radius: 5;"/>
+                                        <Label fx:id="messageLabel" styleClass="catalog-sidebar-accent" text="" wrapText="true" alignment="CENTER" maxWidth="Infinity" />
 
-        <Label text="Clé privée RSA"
-               style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
-        <HBox spacing="8" alignment="CENTER_LEFT">
-            <TextField fx:id="privateKeyPathField"
-                       promptText="Sélectionnez votre fichier .pem"
-                       editable="false"
-                       HBox.hgrow="ALWAYS"
-                       style="-fx-padding: 10; -fx-background-radius: 5;
-                              -fx-border-color: #ddd; -fx-border-radius: 5;
-                              -fx-background-color: #f9f9f9;"/>
-            <Button fx:id="browseButton"
-                    text="Parcourir"
-                    onAction="#handleBrowsePrivateKey"
-                    style="-fx-background-color: #e8f0fe;
-                           -fx-text-fill: #1a73e8;
-                           -fx-font-weight: bold;
-                           -fx-background-radius: 5;
-                           -fx-cursor: hand;"/>
-        </HBox>
+                                        <Button fx:id="loginButton"
+                                                text="S'AUTHENTIFIER"
+                                                onAction="#handleAdminLogin"
+                                                maxWidth="Infinity"
+                                                prefHeight="50"
+                                                styleClass="secondary-btn"/>
 
-        <ProgressBar fx:id="progressBar"
-                     visible="false"
-                     maxWidth="Infinity"
-                     style="-fx-accent: #1a73e8;"/>
-
-        <Label fx:id="messageLabel"
-               text=""
-               style="-fx-text-fill: red; -fx-font-size: 12px;"
-               wrapText="true"/>
-
-        <Button fx:id="loginButton"
-                text="S'authentifier"
-                onAction="#handleAdminLogin"
-                maxWidth="Infinity"
-                style="-fx-background-color: #1a73e8;
-                       -fx-text-fill: white;
-                       -fx-font-size: 14px;
-                       -fx-padding: 12;
-                       -fx-background-radius: 5;
-                       -fx-cursor: hand;"/>
-
-        <Button fx:id="backToLoginButton"
-                text="← Retour à la connexion classique"
-                onAction="#handleBackToLogin"
-                maxWidth="Infinity"
-                style="-fx-background-color: transparent;
-                       -fx-text-fill: #666;
-                       -fx-font-size: 12px;
-                       -fx-padding: 8;
-                       -fx-cursor: hand;"/>
-
-    </VBox>
-
-    <VBox spacing="5" style="-fx-background-color: #fff3cd; -fx-padding: 15; -fx-background-radius: 5;">
-        <Label text="ℹ️ Comment ça marche ?"
-               style="-fx-font-weight: bold; -fx-text-fill: #856404;"/>
-        <Label text="1. Le serveur génère un challenge aléatoire"
-               style="-fx-text-fill: #856404; -fx-font-size: 12px;"/>
-        <Label text="2. Votre clé privée signe le challenge"
-               style="-fx-text-fill: #856404; -fx-font-size: 12px;"/>
-        <Label text="3. Le serveur vérifie avec votre clé publique"
-               style="-fx-text-fill: #856404; -fx-font-size: 12px;"/>
-        <Label text="4. Si valide → Accès admin autorisé"
-               style="-fx-text-fill: #856404; -fx-font-size: 12px;"/>
-    </VBox>
-
+                                        <VBox spacing="10">
+                                            <children>
+                                                <Button fx:id="backToLoginButton" maxWidth="Infinity" onAction="#handleBackToLogin" prefHeight="45" styleClass="outline-btn" text="← RETOUR À LA CONNEXION" style="-fx-font-size: 12px;" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
 </VBox>
