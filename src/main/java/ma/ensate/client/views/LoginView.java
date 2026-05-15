@@ -152,17 +152,8 @@ public class LoginView {
 
     @FXML
     private void allerAdminLogin() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/ma/ensate/fxml/admin_login.fxml"));
-            Parent root  = loader.load();
-            Stage  stage = (Stage) emailField.getScene().getWindow();
-            stage.getScene().setRoot(root);
-            stage.setTitle("ChriOnline — Connexion Admin");
-        } catch (Exception e) {
-            logger.error("Erreur navigation vers admin login : "
-                    + e.getMessage());
-        }
+        // Dans l'exécutable Client, l'accès admin n'est pas disponible
+        afficherErreur("L'accès administrateur nécessite l'application Admin dédiée.");
     }
 
     @FXML
@@ -248,12 +239,17 @@ public class LoginView {
         }).start();
     }
 
-    private void ouvrirPagePrincipale() {        try {
-            String target = SessionManager.getInstance().estAdmin()
-                ? "/ma/ensate/fxml/admin_produits.fxml"
-                : "/ma/ensate/fxml/produits.fxml";
+    private void ouvrirPagePrincipale() {
+        try {
+            // Dans l'application Client, seuls les comptes client sont autorisés
+            if (SessionManager.getInstance().estAdmin()) {
+                SessionManager.getInstance().clear();
+                afficherErreur("Les administrateurs doivent utiliser l'application Admin dédiée.");
+                return;
+            }
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(target));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ma/ensate/fxml/produits.fxml"));
             Parent root  = loader.load();
             Stage  stage = (Stage) emailField.getScene().getWindow();
             stage.getScene().setRoot(root);

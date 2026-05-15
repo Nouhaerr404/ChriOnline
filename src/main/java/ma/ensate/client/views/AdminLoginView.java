@@ -150,16 +150,9 @@ public class AdminLoginView {
 
     @FXML
     private void handleBackToLogin() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/ma/ensate/fxml/login.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) emailField.getScene().getWindow();
-            stage.getScene().setRoot(root);
-            stage.setTitle("ChriOnline — Connexion");
-        } catch (Exception e) {
-            logger.error("Erreur retour login : " + e.getMessage());
-        }
+        // Dans l'exécutable Admin, fermer l'application au lieu de retourner vers le login client
+        Stage stage = (Stage) emailField.getScene().getWindow();
+        stage.close();
     }
 
     private PrivateKey loadPrivateKey(File file) throws Exception {

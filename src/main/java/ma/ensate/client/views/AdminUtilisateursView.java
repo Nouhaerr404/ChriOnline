@@ -322,12 +322,12 @@ public class AdminUtilisateursView {
             SessionManager.getInstance().clear();
 
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/ma/ensate/fxml/login.fxml"));
+                    getClass().getResource("/ma/ensate/fxml/admin_login.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) usersTable.getScene().getWindow();
             stage.getScene().setRoot(root);
-            stage.setTitle("ChriOnline - Connexion");
+            stage.setTitle("ChriOnline — Connexion Admin");
         } catch (Exception e) {
             setStatus("Erreur logout : " + e.getMessage());
         }

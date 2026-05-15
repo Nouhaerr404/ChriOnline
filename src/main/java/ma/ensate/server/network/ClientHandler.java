@@ -337,6 +337,15 @@ public class ClientHandler implements Runnable {
                 case "GET_PAIEMENT":
                     return getPaiement(request);
 
+                case "REGISTER_UDP_PORT": {
+                    Object[] udpData = (Object[]) request.getData();
+                    int userId = (int) udpData[0];
+                    int udpPort = (int) udpData[1];
+                    ClientIPRegistry.registerPort(userId, udpPort);
+                    logger.info("Port UDP enregistré : userId=" + userId + " port=" + udpPort);
+                    return new Response(true, "Port UDP enregistré.");
+                }
+
                 default:
                     logger.warn(" Action inconnue : " + action);
                     return new Response(false, "Action inconnue : " + action);
