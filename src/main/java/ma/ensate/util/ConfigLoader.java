@@ -70,10 +70,18 @@ public class ConfigLoader {
     }
 
     public static String get(String key, String defaultValue) {
-        // Priorité : variable d'environnement système > .env
+        // Priorité : .env local > variable d'environnement système (pour éviter les conflits locaux)
+        String prop = properties.getProperty(key);
+        if (prop != null) {
+            return prop;
+        }
+        
         String env = System.getenv(key);
-        if (env != null && !env.isBlank()) return env;
-        return properties.getProperty(key, defaultValue);
+        if (env != null && !env.isBlank()) {
+            return env;
+        }
+        
+        return defaultValue;
     }
 
     public static int getInt(String key, int defaultValue) {

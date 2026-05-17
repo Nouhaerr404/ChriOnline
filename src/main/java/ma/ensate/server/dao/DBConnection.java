@@ -17,7 +17,7 @@ public class DBConnection {
                     + "&socketTimeout=5000"
                     + "&tcpKeepAlive=true");
     private static final String USER     = ConfigLoader.get("DB_USER", "root");
-    private static final String PASSWORD = ConfigLoader.get("DB_PASSWORD", "root");
+    private static final String PASSWORD = ConfigLoader.get("DB_PASSWORD", "");
 
     public static Connection getConnection() throws SQLException {
         try {
