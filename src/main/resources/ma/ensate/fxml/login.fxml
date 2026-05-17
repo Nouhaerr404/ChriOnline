@@ -54,20 +54,6 @@
                                             </children>
                                         </VBox>
 
-                                        <!-- Captcha Section -->
-                                        <VBox spacing="12" styleClass="shipping-card" style="-fx-padding: 15;">
-                                            <children>
-                                                <Label text="SÉCURITÉ ANTI-BOT" styleClass="shipping-title" style="-fx-font-size: 14px;" />
-                                                <HBox alignment="CENTER" spacing="15">
-                                                    <children>
-                                                        <ImageView fx:id="captchaImageView" fitHeight="50" fitWidth="150" pickOnBounds="true" preserveRatio="true" />
-                                                        <Button fx:id="refreshCaptchaBtn" onAction="#handleRefreshCaptcha" prefHeight="45" styleClass="outline-btn" text="↻" />
-                                                    </children>
-                                                </HBox>
-                                                <TextField fx:id="captchaField" prefHeight="45" promptText="Saisissez le code" styleClass="promo-field" />
-                                            </children>
-                                        </VBox>
-
                                         <Label fx:id="messageLabel" styleClass="catalog-sidebar-accent" text="" wrapText="true" alignment="CENTER" maxWidth="Infinity" />
 
                                         <Button fx:id="loginButton"

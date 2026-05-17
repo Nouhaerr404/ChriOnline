@@ -3,7 +3,6 @@ package ma.ensate.server.dao;
 import ma.ensate.models.Administrateur;
 import ma.ensate.models.Client;
 import ma.ensate.models.Utilisateur;
-import ma.ensate.security.SensitiveDataCipher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -154,17 +153,14 @@ public class UtilisateurDAO {
     }
 
     public boolean emailExiste(String email) throws SQLException {
-        String sql = "SELECT email FROM utilisateur";
+        String sql = "SELECT id FROM utilisateur WHERE email = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                if (email.equalsIgnoreCase(decryptSensitive(rs.getString("email")))) {
-                    return true;
-                }
+            ps.setString(1, email.trim().toLowerCase());
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
             }
         }
-        return false;
     }
 
     public boolean inscrire(Client client) throws SQLException {
@@ -176,8 +172,8 @@ public class UtilisateurDAO {
             PreparedStatement ps = conn.prepareStatement(sqlUser,
                      Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setString(1, encryptSensitive(client.getNom()));
-            ps.setString(2, encryptSensitive(client.getEmail()));
+            ps.setString(1, client.getNom().trim());
+            ps.setString(2, client.getEmail().trim().toLowerCase());
             ps.setString(3, hasherMotDePasse(client.getPassword()));
             ps.executeUpdate();
 
@@ -190,8 +186,8 @@ public class UtilisateurDAO {
                 String sqlClient = "INSERT INTO client (id, adresse, tel) VALUES (?, ?, ?)";
                 try (PreparedStatement ps2 = conn.prepareStatement(sqlClient)) {
                     ps2.setInt(1, idGenere);
-                    ps2.setString(2, encryptSensitive(client.getAdresse()));
-                    ps2.setString(3, encryptSensitive(client.getTel()));
+                    ps2.setString(2, client.getAdresse().trim());
+                    ps2.setString(3, client.getTel().trim());
                     ps2.executeUpdate();
                 }
 
@@ -207,55 +203,50 @@ public class UtilisateurDAO {
 
         String sql = "SELECT u.*, c.adresse, c.tel " +
                 "FROM utilisateur u " +
-                "LEFT JOIN client c ON c.id = u.id";
+                "LEFT JOIN client c ON c.id = u.id " +
+                "WHERE u.email = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ResultSet rs = ps.executeQuery();
+            ps.setString(1, email.trim().toLowerCase());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String hashStocke = rs.getString("password");
+                    if (!verifierMotDePasse(password, hashStocke)) {
+                        return null;
+                    }
 
-            while (rs.next()) {
-                String emailDb = decryptSensitive(rs.getString("email"));
-                if (!email.equalsIgnoreCase(emailDb)) {
-                    continue;
+                    int    id      = rs.getInt("id");
+                    String type    = rs.getString("type_compte");
+                    String nom     = rs.getString("nom");
+                    String statut  = rs.getString("statut");
+                    boolean twoFa  = rs.getBoolean("two_fa_enabled");
+                    String adresse = rs.getString("adresse");
+                    String tel     = rs.getString("tel");
+
+                    if (!hashStocke.startsWith("$2")) {
+                        mettreAJourHashMotDePasse(id, hasherMotDePasse(password));
+                        logger.info("Migration SHA-256 -> BCrypt effectuee pour {}", email);
+                    }
+
+                    Utilisateur u;
+                    if ("CLIENT".equals(type)) {
+                        Client c = new Client();
+                        c.setAdresse(adresse);
+                        c.setTel(tel);
+                        u = c;
+                    } else {
+                        u = new Utilisateur();
+                    }
+
+                    u.setId(id);
+                    u.setNom(nom);
+                    u.setEmail(email.trim().toLowerCase());
+                    u.setTypeCompte(type);
+                    u.setStatut(statut);
+                    u.setTwoFaEnabled(twoFa);
+                    return u;
                 }
-
-                String hashStocke = rs.getString("password");
-                if (!verifierMotDePasse(password, hashStocke)) {
-                    return null;
-                }
-
-                // Lire TOUTES les colonnes avant tout appel DB
-                // (sinon mettreAJourHashMotDePasse ferme le ResultSet)
-                int    id      = rs.getInt("id");
-                String type    = rs.getString("type_compte");
-                String nom     = decryptSensitive(rs.getString("nom"));
-                String statut  = rs.getString("statut");
-                boolean twoFa  = rs.getBoolean("two_fa_enabled");
-                String adresse = decryptSensitive(rs.getString("adresse"));
-                String tel     = decryptSensitive(rs.getString("tel"));
-
-                if (!hashStocke.startsWith("$2")) {
-                    mettreAJourHashMotDePasse(id, hasherMotDePasse(password));
-                    logger.info("Migration SHA-256 -> BCrypt effectuee pour {}", email);
-                }
-
-                Utilisateur u;
-                if ("CLIENT".equals(type)) {
-                    Client c = new Client();
-                    c.setAdresse(adresse);
-                    c.setTel(tel);
-                    u = c;
-                } else {
-                    u = new Utilisateur();
-                }
-
-                u.setId(id);
-                u.setNom(nom);
-                u.setEmail(emailDb);
-                u.setTypeCompte(type);
-                u.setStatut(statut);
-                u.setTwoFaEnabled(twoFa);
-                return u;
             }
         }
         return null;
@@ -293,8 +284,8 @@ public class UtilisateurDAO {
             if (rs.next()) {
                 Utilisateur u = new Utilisateur();
                 u.setId(rs.getInt("id"));
-                u.setNom(decryptSensitive(rs.getString("nom")));
-                u.setEmail(decryptSensitive(rs.getString("email")));
+                u.setNom(rs.getString("nom"));
+                u.setEmail(rs.getString("email"));
                 u.setTypeCompte(rs.getString("type_compte"));
                 u.setSessionToken(token);
                 u.setTwoFaEnabled(rs.getBoolean("two_fa_enabled"));
@@ -334,12 +325,12 @@ public class UtilisateurDAO {
             while (rs.next()) {
                 Client c = new Client();
                 c.setId(rs.getInt("id"));
-                c.setNom(decryptSensitive(rs.getString("nom")));
-                c.setEmail(decryptSensitive(rs.getString("email")));
+                c.setNom(rs.getString("nom"));
+                c.setEmail(rs.getString("email"));
                 c.setTypeCompte(rs.getString("type_compte"));
                 c.setStatut(rs.getString("statut"));
-                c.setAdresse(decryptSensitive(rs.getString("adresse")));
-                c.setTel(decryptSensitive(rs.getString("tel")));
+                c.setAdresse(rs.getString("adresse"));
+                c.setTel(rs.getString("tel"));
                 liste.add(c);
             }
         }
@@ -362,15 +353,15 @@ public class UtilisateurDAO {
                 Utilisateur u ;
                 if ("CLIENT".equals(type)) {
                     Client c = new Client();
-                    c.setAdresse(decryptSensitive(rs.getString("adresse")));
-                    c.setTel(decryptSensitive(rs.getString("tel")));
+                    c.setAdresse(rs.getString("adresse"));
+                    c.setTel(rs.getString("tel"));
                     u = c;
                 } else {
                     u = new Utilisateur();
                 }
                 u.setId(rs.getInt("id"));
-                u.setNom(decryptSensitive(rs.getString("nom")));
-                u.setEmail(decryptSensitive(rs.getString("email")));
+                u.setNom(rs.getString("nom"));
+                u.setEmail(rs.getString("email"));
                 u.setTypeCompte(type);
                 u.setStatut(rs.getString("statut"));
                 return u;
@@ -417,14 +408,14 @@ public class UtilisateurDAO {
                     u = new Administrateur();
                 } else {
                     Client c = new Client();
-                    c.setAdresse(decryptSensitive(rs.getString("adresse")));
-                    c.setTel(decryptSensitive(rs.getString("tel")));
+                    c.setAdresse(rs.getString("adresse"));
+                    c.setTel(rs.getString("tel"));
                     u = c;
                 }
                 
                 u.setId(rs.getInt("id"));
-                u.setNom(decryptSensitive(rs.getString("nom")));
-                u.setEmail(decryptSensitive(rs.getString("email")));
+                u.setNom(rs.getString("nom"));
+                u.setEmail(rs.getString("email"));
                 u.setTypeCompte(type);
                 u.setStatut(rs.getString("statut"));
                 u.setTwoFaEnabled(rs.getBoolean("two_fa_enabled"));
@@ -441,7 +432,7 @@ public class UtilisateurDAO {
         String sqlUser = "UPDATE utilisateur SET nom = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sqlUser)) {
-            ps.setString(1, encryptSensitive(nom));
+            ps.setString(1, nom.trim());
             ps.setInt(2, id);
             ps.executeUpdate();
         }
@@ -449,8 +440,8 @@ public class UtilisateurDAO {
         String sqlClient = "UPDATE client SET adresse = ?, tel = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sqlClient)) {
-            ps.setString(1, encryptSensitive(adresse));
-            ps.setString(2, encryptSensitive(tel));
+            ps.setString(1, adresse.trim());
+            ps.setString(2, tel.trim());
             ps.setInt(3, id);
             ps.executeUpdate();
         }
@@ -479,12 +470,12 @@ public class UtilisateurDAO {
         return true;
     }
     public String getPublicKeyByEmail(String email) throws SQLException {
-        String sql = "SELECT email, public_key FROM utilisateur WHERE type_compte = 'ADMINISTRATEUR'";
+        String sql = "SELECT public_key FROM utilisateur WHERE type_compte = 'ADMINISTRATEUR' AND email = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                if (email.equalsIgnoreCase(decryptSensitive(rs.getString("email")))) {
+            ps.setString(1, email.trim().toLowerCase());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
                     return rs.getString("public_key");
                 }
             }
@@ -493,33 +484,23 @@ public class UtilisateurDAO {
     }
 
     public Utilisateur trouverAdminParEmail(String email) throws SQLException {
-        String sql = "SELECT * FROM utilisateur WHERE type_compte = 'ADMINISTRATEUR'";
+        String sql = "SELECT * FROM utilisateur WHERE type_compte = 'ADMINISTRATEUR' AND email = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String emailDb = decryptSensitive(rs.getString("email"));
-                if (!email.equalsIgnoreCase(emailDb)) {
-                    continue;
+            ps.setString(1, email.trim().toLowerCase());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Utilisateur u = new Administrateur();
+                    u.setId(rs.getInt("id"));
+                    u.setNom(rs.getString("nom"));
+                    u.setEmail(rs.getString("email"));
+                    u.setTypeCompte(rs.getString("type_compte"));
+                    u.setStatut(rs.getString("statut"));
+                    u.setTwoFaEnabled(rs.getBoolean("two_fa_enabled"));
+                    return u;
                 }
-                Utilisateur u = new Administrateur();
-                u.setId(rs.getInt("id"));
-                u.setNom(decryptSensitive(rs.getString("nom")));
-                u.setEmail(emailDb);
-                u.setTypeCompte(rs.getString("type_compte"));
-                u.setStatut(rs.getString("statut"));
-                u.setTwoFaEnabled(rs.getBoolean("two_fa_enabled"));
-                return u;
             }
         }
         return null;
-    }
-
-    private String encryptSensitive(String value) {
-        return SensitiveDataCipher.encrypt(value);
-    }
-
-    private String decryptSensitive(String value) {
-        return SensitiveDataCipher.decrypt(value);
     }
 }

@@ -12,10 +12,6 @@ import ma.ensate.client.network.SessionManager;
 import ma.ensate.models.Utilisateur;
 import ma.ensate.protocol.Request;
 import ma.ensate.protocol.Response;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import java.io.ByteArrayInputStream;
-import java.util.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,6 +19,10 @@ import java.util.Optional;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.Node;
 
+/**
+ * Vue de connexion client de ChriOnline.
+ * Utilise Google reCAPTCHA v2 modal pour la sécurité anti-bot.
+ */
 public class LoginView {
 
     private static final Logger logger = LogManager.getLogger(LoginView.class);
@@ -30,124 +30,76 @@ public class LoginView {
     @FXML private TextField     emailField;
     @FXML private PasswordField passwordField;
     @FXML private TextField     passwordVisibleField;
-    @FXML private TextField     captchaField;
-    @FXML private ImageView     captchaImageView;
     @FXML private Label         messageLabel;
     @FXML private Button        loginButton;
     @FXML private Button        togglePasswordBtn;
-    @FXML private Button        refreshCaptchaBtn;
 
     private boolean passwordVisible = false;
-    private String captchaId;
 
     @FXML
     public void initialize() {
-        chargerCaptcha();
+        // reCAPTCHA est modal, aucune initialisation nécessaire au démarrage de la vue
     }
 
     @FXML
     private void handleLogin() {
         String email    = emailField.getText().trim();
         String password = getPasswordValue();
-        String captchaAnswer = captchaField.getText().trim();
 
-        if (email.isEmpty() || password.isEmpty() || captchaAnswer.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty()) {
             afficherErreur("Veuillez remplir tous les champs !");
             return;
         }
-        if (captchaId == null || captchaId.isBlank()) {
-            afficherErreur("Captcha indisponible. Rafraichissez puis reessayez.");
-            return;
-        }
+
+        Stage owner = (Stage) emailField.getScene().getWindow();
+        
+        java.util.concurrent.atomic.AtomicReference<Response> successResponse = new java.util.concurrent.atomic.AtomicReference<>();
+
+        CustomCaptchaDialog dialog = new CustomCaptchaDialog((captchaId, captchaInput, captchaSessionToken) -> {
+            Object[] payload = {email, password, captchaId, captchaInput, captchaSessionToken};
+            Request request = new Request("LOGIN", payload);
+            Response response = ClientTCP.getInstance().envoyerRequete(request);
+            if (response.isSuccess()) {
+                successResponse.set(response);
+            }
+            return response;
+        });
 
         loginButton.setDisable(true);
-        refreshCaptchaBtn.setDisable(true);
-        messageLabel.setText("Connexion en cours...");
+        messageLabel.setText("Attente de validation CAPTCHA...");
         messageLabel.setStyle("-fx-text-fill: #1E293B;");
 
-        new Thread(() -> {
-            try {
+        boolean ok = dialog.showAndWait(owner);
 
-                Object[] payload = {email, password, captchaId, captchaAnswer};
-                Request request = new Request("LOGIN", payload);
+        loginButton.setDisable(false);
 
-                Response response = ClientTCP.getInstance()
-                        .envoyerRequete(request);
+        if (ok) {
+            Response response = successResponse.get();
+            if (response != null) {
+                if ("REQUIRES_2FA".equals(response.getMessage())) {
+                    Object[] twoFaPayload = (Object[]) response.getData();
+                    int    userId    = (int)    twoFaPayload[0];
+                    String userEmail = (String) twoFaPayload[1];
+                    afficherDialogOtp(userId, userEmail);
+                    return;
+                }
 
-                Platform.runLater(() -> {
-                    loginButton.setDisable(false);
-                    refreshCaptchaBtn.setDisable(false);
-
-                    if (response.isSuccess()) {
-
-                        if ("REQUIRES_2FA".equals(response.getMessage())) {
-                            Object[] twoFaPayload = (Object[]) response.getData();
-                            int    userId    = (int)    twoFaPayload[0];
-                            String userEmail = (String) twoFaPayload[1];
-                            afficherDialogOtp(userId, userEmail);
-                            return;
-                        }
-
-                        Utilisateur u = (Utilisateur) response.getData();
-                        SessionManager.getInstance().setUtilisateur(u);
-                        int udpPort = SessionManager.getInstance().getUdpPort();
-                        try {
-                            ClientTCP.getInstance().envoyerRequeteSecurisee(
-                                    "REGISTER_UDP_PORT",
-                                    new Object[]{u.getId(), udpPort});
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                        logger.info(" Login réussi : " + email);
-
-                        ouvrirPagePrincipale();
-
-                    } else {
-                        afficherErreur(response.getMessage());
-                        chargerCaptcha();
-                        captchaField.clear();
-                        if (response.getMessage().contains("bloqué")) {
-                            emailField.setDisable(true);
-                            setPasswordInputsDisabled(true);
-                            captchaField.setDisable(true);
-                            refreshCaptchaBtn.setDisable(true);
-                            loginButton.setDisable(true);
-                            messageLabel.setText(
-                                    " Réessayez après 5 minutes.");
-                            messageLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
-
-                            new Thread(() -> {
-                                try {
-                                    Thread.sleep(5 * 60 * 1000);
-                                    Platform.runLater(() -> {
-                                        emailField.setDisable(false);
-                                        setPasswordInputsDisabled(false);
-                                        captchaField.setDisable(false);
-                                        refreshCaptchaBtn.setDisable(false);
-                                        loginButton.setDisable(false);
-                                        emailField.clear();
-                                        clearPasswordFields();
-                                        captchaField.clear();
-                                        chargerCaptcha();
-                                        messageLabel.setText(
-                                                "Vous pouvez réessayer maintenant.");
-                                        messageLabel.setStyle("-fx-text-fill: green;");
-                                    });
-                                } catch (InterruptedException ignored) {}
-                            }).start();
-                        }
-                    }
-                });
-
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    loginButton.setDisable(false);
-                    refreshCaptchaBtn.setDisable(false);
-                    afficherErreur("Impossible de contacter le serveur.");
-                    logger.error("Erreur login : " + e.getMessage());
-                });
+                Utilisateur u = (Utilisateur) response.getData();
+                SessionManager.getInstance().setUtilisateur(u);
+                int udpPort = SessionManager.getInstance().getUdpPort();
+                try {
+                    ClientTCP.getInstance().envoyerRequeteSecurisee(
+                            "REGISTER_UDP_PORT",
+                            new Object[]{u.getId(), udpPort});
+                } catch (Exception e) {
+                    logger.error("Erreur enregistrement port UDP : " + e.getMessage());
+                }
+                logger.info("Login réussi : " + email);
+                ouvrirPagePrincipale();
             }
-        }).start();
+        } else {
+            messageLabel.setText("");
+        }
     }
 
     @FXML
@@ -160,8 +112,7 @@ public class LoginView {
             stage.getScene().setRoot(root);
             stage.setTitle("ChriOnline — Connexion Admin");
         } catch (Exception e) {
-            logger.error("Erreur navigation vers admin login : "
-                    + e.getMessage());
+            logger.error("Erreur navigation vers admin login : " + e.getMessage());
         }
     }
 
@@ -175,8 +126,7 @@ public class LoginView {
             stage.getScene().setRoot(root);
             stage.setTitle("ChriOnline — Premium E-Commerce");
         } catch (Exception e) {
-            logger.error("Erreur navigation vers accueil : "
-                    + e.getMessage());
+            logger.error("Erreur navigation vers accueil : " + e.getMessage());
         }
     }
 
@@ -190,8 +140,7 @@ public class LoginView {
             stage.getScene().setRoot(root);
             stage.setTitle("ChriOnline — Inscription");
         } catch (Exception e) {
-            logger.error("Erreur navigation vers inscription : "
-                    + e.getMessage());
+            logger.error("Erreur navigation vers inscription : " + e.getMessage());
         }
     }
 
@@ -248,7 +197,8 @@ public class LoginView {
         }).start();
     }
 
-    private void ouvrirPagePrincipale() {        try {
+    private void ouvrirPagePrincipale() {
+        try {
             String target = SessionManager.getInstance().estAdmin()
                 ? "/ma/ensate/fxml/admin_produits.fxml"
                 : "/ma/ensate/fxml/produits.fxml";
@@ -306,55 +256,5 @@ public class LoginView {
         passwordField.setDisable(disabled);
         passwordVisibleField.setDisable(disabled);
         togglePasswordBtn.setDisable(disabled);
-    }
-
-    @FXML
-    private void handleRefreshCaptcha() {
-        chargerCaptcha();
-    }
-
-    private void chargerCaptcha() {
-        if (refreshCaptchaBtn != null) refreshCaptchaBtn.setDisable(true);
-        new Thread(() -> {
-            try {
-                Response response = ClientTCP.getInstance().envoyerRequete(new Request("GET_CAPTCHA"));
-                Platform.runLater(() -> {
-                    if (refreshCaptchaBtn != null) refreshCaptchaBtn.setDisable(false);
-                    if (!response.isSuccess() || !(response.getData() instanceof String[] data) || data.length < 2) {
-                        captchaId = null;
-                        logger.error("Echec chargement captcha : response.isSuccess=" + response.isSuccess());
-                        afficherErreur("Impossible de charger le captcha.");
-                        return;
-                    }
-                    captchaId = data[0];
-                    logger.info("Captcha recu - ID: " + captchaId + " | Base64 Length: " + (data[1] != null ? data[1].length() : 0));
-
-                    if (data[1] == null || data[1].isBlank()) {
-                        logger.error("Données image captcha vides !");
-                        afficherErreur("Erreur image captcha.");
-                        return;
-                    }
-
-                    // Décoder le base64 → Image JavaFX
-                    try {
-                        byte[] imageBytes = Base64.getDecoder().decode(data[1].trim());
-                        Image fxImage = new Image(new ByteArrayInputStream(imageBytes));
-                        if (fxImage.isError()) {
-                            logger.error("Erreur chargement Image FX: " + fxImage.getException());
-                        }
-                        captchaImageView.setImage(fxImage);
-                    } catch (Exception e) {
-                        logger.error("Erreur decodage captcha image : " + e.getMessage());
-                        afficherErreur("Erreur affichage captcha.");
-                    }
-                });
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    captchaId = null;
-                    if (refreshCaptchaBtn != null) refreshCaptchaBtn.setDisable(false);
-                    afficherErreur("Impossible de charger le captcha.");
-                });
-            }
-        }).start();
     }
 }
