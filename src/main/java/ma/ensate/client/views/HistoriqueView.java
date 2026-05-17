@@ -78,7 +78,7 @@ public class HistoriqueView {
 
         new Thread(() -> {
             try {
-                Response resp = clientTCP.envoyerRequete(new Request("GET_HISTORIQUE", clientId, token));
+                Response resp = clientTCP.envoyerRequeteSecurisee("GET_HISTORIQUE", clientId);
                 Platform.runLater(() -> {
                     container.getChildren().clear();
                     if (resp.isSuccess()) {

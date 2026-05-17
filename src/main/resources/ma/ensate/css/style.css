@@ -745,8 +745,10 @@
 }
 
 .summary-card {
-    -fx-padding: 30;
-    -fx-pref-width: 380;
+    -fx-padding: 16;
+    -fx-pref-width: 420;
+    -fx-min-width: 420;
+    -fx-max-width: 420;
 }
 
 .summary-title {
@@ -772,7 +774,7 @@
 
 .summary-total-accent {
     -fx-text-fill: #ff9fc7;
-    -fx-font-size: 54px;
+    -fx-font-size: 36px;
     -fx-font-weight: 900;
 }
 
@@ -797,7 +799,7 @@
 }
 
 .shipping-card {
-    -fx-padding: 24;
+    -fx-padding: 12;
 }
 
 .shipping-title {
@@ -913,3 +915,35 @@
     -fx-padding: 20;
     -fx-background-color: transparent;
 }
+
+/* =========================================================================
+   CART CHECKOUT & TOTAL HIGH VISIBILITY STYLES
+   ========================================================================= */
+
+.total-highlight-box {
+    -fx-background-color: linear-gradient(to bottom, rgba(255, 93, 169, 0.05), rgba(255, 255, 255, 0.01));
+    -fx-border-color: rgba(255, 93, 169, 0.24);
+    -fx-border-width: 1.5;
+    -fx-border-radius: 16;
+    -fx-background-radius: 16;
+    -fx-padding: 12;
+}
+
+.checkout-btn {
+    -fx-background-color: linear-gradient(to right, #00c6ff 0%, #0072ff 100%);
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-padding: 14 26;
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+    -fx-letter-spacing: 1.5px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 114, 255, 0.45), 18, 0.4, 0, 5);
+}
+
+.checkout-btn:hover {
+    -fx-background-color: linear-gradient(to right, #00d2ff 0%, #0081ff 100%);
+    -fx-effect: dropshadow(gaussian, rgba(0, 114, 255, 0.65), 24, 0.5, 0, 7);
+}
+

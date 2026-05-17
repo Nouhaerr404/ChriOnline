@@ -29,11 +29,11 @@ public class SecureChannelTest {
         SecureChannel clientChannel = new SecureChannel(aesKey, clientInput, clientOutput);
         SecureChannel serverChannel = new SecureChannel(aesKey, serverInput, serverOutput);
 
-        Request request = new Request("GET_CAPTCHA");
+        Request request = new Request("GET_SERVER_PUBLIC_KEY");
         clientChannel.writeSecureRequest(request);
 
         Request decryptedRequest = serverChannel.readSecureRequest();
-        assertEquals("GET_CAPTCHA", decryptedRequest.getAction());
+        assertEquals("GET_SERVER_PUBLIC_KEY", decryptedRequest.getAction());
 
         Response response = new Response(true, "OK");
         serverChannel.writeSecureResponse(response);
