@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Line?>
+
+<VBox prefHeight="800.0" prefWidth="1280.0" spacing="0.0" styleClass="app-shell" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ma.ensate.client.views.AdminSecurityView">
+    <children>
+        <!-- Global Header -->
+        <HBox alignment="CENTER_LEFT" prefHeight="90.0" styleClass="header-section">
+            <children>
+                <HBox alignment="CENTER" spacing="10.0" styleClass="brand-outline">
+                    <children>
+                        <Label styleClass="brand-mark" text="ChriOnline" />
+                    </children>
+                </HBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox alignment="CENTER" spacing="25.0">
+                    <children>
+                        <Button onAction="#handleProduits" mnemonicParsing="false" styleClass="nav-link-btn" text="PRODUITS" />
+                        <Button onAction="#handleCommandesPlaceholder" mnemonicParsing="false" styleClass="nav-link-btn" text="COMMANDES" />
+                        <Button onAction="#handleUtilisateurs" mnemonicParsing="false" styleClass="nav-link-btn" text="UTILISATEURS" />
+                        <Button mnemonicParsing="false" styleClass="nav-link-btn, nav-link-btn-active" text="SÉCURITÉ" />
+                        
+                        <Region prefWidth="15.0" />
+                        <VBox alignment="CENTER_RIGHT" spacing="2.0">
+                            <children>
+                                <Label text="ADMINISTRATEUR" style="-fx-text-fill: #ff9fc7; -fx-font-size: 11px; -fx-font-weight: 900; -fx-letter-spacing: 1.2px;" />
+                                <Label text="SUPERVISION SOC" style="-fx-text-fill: #6b7898; -fx-font-size: 10px; -fx-font-weight: 700;" />
+                            </children>
+                        </VBox>
+
+                        <Button mnemonicParsing="false" onAction="#handleLogout" styleClass="logout-btn" text="DÉCONNEXION">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Button>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets left="42.0" right="42.0" />
+            </padding>
+        </HBox>
+
+        <!-- Main Content Area -->
+        <ScrollPane fitToWidth="true" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+            <content>
+                <VBox spacing="35.0" styleClass="catalog-wrap">
+                    <children>
+                        <!-- Title and Quick Actions -->
+                        <HBox alignment="TOP_LEFT" spacing="20">
+                            <children>
+                                <VBox spacing="10" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label styleClass="section-kicker" text="SECURITY OPERATIONS CENTER" />
+                                        <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                            <children>
+                                                <Label styleClass="section-title" text="SURVEILLANCE" />
+                                                <Label styleClass="section-title-accent" text="IDS / IPS" />
+                                            </children>
+                                        </HBox>
+                                        <Line endX="100.0" styleClass="section-divider" />
+                                        <Label styleClass="hero-subtitle" text="Surveillez les menaces en temps réel, gérez les IP bloquées et analysez l'historique de sécurité." />
+                                    </children>
+                                </VBox>
+                                <HBox alignment="BOTTOM_RIGHT" spacing="15">
+                                    <children>
+                                        <Button onAction="#refreshAll" styleClass="secondary-btn" text="🔄 RAFRAÎCHIR" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </HBox>
+
+                        <!-- Security Tabs Box -->
+                        <VBox spacing="25.0" styleClass="feature-card">
+                            <children>
+                                <TabPane VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE" styleClass="security-tab-pane" minHeight="500.0">
+                                    
+                                    <!-- Onglet 1 : Alertes IDS (Attaques en cours) -->
+                                    <Tab text="🚨 Alertes IDS">
+                                        <VBox spacing="15" style="-fx-padding: 20;">
+                                            <Label text="Attaques détectées par l'Intrusion Detection System :" styleClass="catalog-sidebar-label" />
+                                            <TableView fx:id="alertsTable" VBox.vgrow="ALWAYS">
+                                                <columns>
+                                                    <TableColumn fx:id="alertIdCol" text="ID" prefWidth="50" />
+                                                    <TableColumn fx:id="alertTimeCol" text="DATE &amp; HEURE" prefWidth="180" />
+                                                    <TableColumn fx:id="alertTypeCol" text="TYPE D'ALERTE" prefWidth="200" />
+                                                    <TableColumn fx:id="alertSeverityCol" text="SÉVÉRITÉ" prefWidth="120" />
+                                                    <TableColumn fx:id="alertIpCol" text="IP SOURCE" prefWidth="150" />
+                                                    <TableColumn fx:id="alertDescCol" text="DESCRIPTION" prefWidth="450" />
+                                                </columns>
+                                            </TableView>
+                                        </VBox>
+                                    </Tab>
+
+                                    <!-- Onglet 2 : IPs Bloquées (IPS) -->
+                                    <Tab text="🛑 IPs Bloquées (IPS)">
+                                        <VBox spacing="15" style="-fx-padding: 20;">
+                                            <Label text="Adresses IP actuellement bloquées par l'Intrusion Prevention System :" styleClass="catalog-sidebar-label" />
+                                            <TableView fx:id="blockedIpsTable" VBox.vgrow="ALWAYS">
+                                                <columns>
+                                                    <TableColumn fx:id="blockedIpCol" text="ADRESSE IP" prefWidth="200" />
+                                                    <TableColumn fx:id="blockedUntilCol" text="BLOQUÉ JUSQU'À" prefWidth="200" />
+                                                    <TableColumn fx:id="blockedReasonCol" text="RAISON" prefWidth="550" />
+                                                    <TableColumn fx:id="blockedActionsCol" text="ACTIONS" prefWidth="150" />
+                                                </columns>
+                                            </TableView>
+                                        </VBox>
+                                    </Tab>
+
+                                    <!-- Onglet 3 : Logs de Sécurité (Audit complet) -->
+                                    <Tab text="📋 Audit Logs">
+                                        <VBox spacing="15" style="-fx-padding: 20;">
+                                            <Label text="Historique complet de tous les événements de sécurité (Journalisation) :" styleClass="catalog-sidebar-label" />
+                                            <TableView fx:id="logsTable" VBox.vgrow="ALWAYS">
+                                                <columns>
+                                                    <TableColumn fx:id="logIdCol" text="ID" prefWidth="50" />
+                                                    <TableColumn fx:id="logTimeCol" text="DATE &amp; HEURE" prefWidth="180" />
+                                                    <TableColumn fx:id="logIpCol" text="IP SOURCE" prefWidth="150" />
+                                                    <TableColumn fx:id="logUserCol" text="UTILISATEUR" prefWidth="150" />
+                                                    <TableColumn fx:id="logActionCol" text="ACTION" prefWidth="180" />
+                                                    <TableColumn fx:id="logStatusCol" text="STATUT" prefWidth="100" />
+                                                    <TableColumn fx:id="logDetailsCol" text="DÉTAILS" prefWidth="350" />
+                                                </columns>
+                                            </TableView>
+                                        </VBox>
+                                    </Tab>
+
+                                </TabPane>
+                                
+                                <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                    <children>
+                                        <Label fx:id="statusLabel" styleClass="catalog-sidebar-label" text="Prêt." />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
+</VBox>

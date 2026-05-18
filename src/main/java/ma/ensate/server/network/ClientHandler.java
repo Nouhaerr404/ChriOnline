@@ -84,6 +84,8 @@ public class ClientHandler implements Runnable {
         clientIP = socket.getInetAddress().getHostAddress();
         logger.info("Handler démarre pour : " + clientIP);
 
+        ma.ensate.server.security.ids.RequestFloodDetector.recordRequest(clientIP);
+
         if (synFloodProtection != null) {
             synFloodProtection.confirmConnection(socket.getInetAddress());
         }
@@ -143,6 +145,19 @@ public class ClientHandler implements Runnable {
                 Request request = secureChannel.readSecureRequest();
                 logger.info(" Action reçue : " + request.getAction()
                         + " | Client : " + clientIP);
+
+                if (ma.ensate.server.security.ips.IPSManager.isIPBlocked(clientIP)) {
+                    boolean isAdminAction = "GENERATE_CHALLENGE_ADMIN".equals(request.getAction()) || 
+                                            "VERIFY_SIGNATURE_ADMIN".equals(request.getAction()) ||
+                                            isAdmin(request.getToken());
+                    
+                    if (!isAdminAction) {
+                        logger.warn("🛑 IPS: Action rejetée car l'IP est bloquée " + clientIP);
+                        secureChannel.writeSecureResponse(new Response(false, "Votre adresse IP a été bloquée par le système de sécurité."));
+                        try { socket.close(); } catch (Exception ignored) {}
+                        return; // Fermeture du socket et fin du thread
+                    }
+                }
 
                 if (!ACTIONS_PUBLIQUES.contains(request.getAction())) {
                     String token = request.getToken();
@@ -239,6 +254,18 @@ public class ClientHandler implements Runnable {
                 case "GET_PRODUCT_BY_ID":
                     return productService.getProductById(request.getData());
 
+                case "GET_SECURITY_LOGS":
+                    return ma.ensate.server.services.SecurityService.getSecurityLogs();
+
+                case "GET_IDS_ALERTS":
+                    return ma.ensate.server.services.SecurityService.getSecurityAlerts();
+
+                case "GET_BLOCKED_IPS":
+                    return ma.ensate.server.services.SecurityService.getBlockedIPs();
+
+                case "UNBLOCK_IP":
+                    return ma.ensate.server.services.SecurityService.unblockIP(request.getData());
+
                 case "GET_BY_CATEGORY":
                     return productService.getProductsByCategory(request.getData());
 
@@ -269,6 +296,14 @@ public class ClientHandler implements Runnable {
                     }
                     return productService.deleteProduct(request.getData());
                 case "LISTER_UTILISATEURS":
+                    if (isAdmin(request.getToken())) {
+                        try {
+                            Utilisateur u = utilisateurDAO.trouverParToken(request.getToken());
+                            if (u != null) {
+                                ma.ensate.server.security.ids.AdminAnomalyDetector.recordSensitiveDataAccess(u.getId(), clientIP);
+                            }
+                        } catch (Exception e) {}
+                    }
                     return UserService.listerUtilisateurs();
 
                 case "SUSPENDRE_COMPTE":

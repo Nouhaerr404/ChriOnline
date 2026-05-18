@@ -119,6 +119,19 @@ public class AdminProduitsView {
         }
     }
 
+    @FXML
+    private void handleSecurity() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/admin_security.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) productsTable.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setTitle("ChriOnline - Supervision de Sécurité");
+        } catch (Exception e) {
+            setStatus("Erreur navigation sécurité: " + e.getMessage());
+        }
+    }
+
     private void openDetails(Produit selected) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/admin_produit_details.fxml"));

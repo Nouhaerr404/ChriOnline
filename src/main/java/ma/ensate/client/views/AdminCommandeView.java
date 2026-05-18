@@ -196,6 +196,11 @@ public class AdminCommandeView {
         }
     }
 
+    @FXML
+    public void handleSecurity() {
+        naviguer("/ma/ensate/fxml/admin_security.fxml", "ChriOnline — Supervision Sécurité (IDS/IPS)");
+    }
+
     private void setStatus(String text) {
         statusLabel.setText(text);
     }

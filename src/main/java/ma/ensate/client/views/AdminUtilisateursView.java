@@ -295,6 +295,19 @@ public class AdminUtilisateursView {
     }
 
     @FXML
+    private void handleSecurity() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/admin_security.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) usersTable.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setTitle("ChriOnline - Supervision de Sécurité");
+        } catch (Exception e) {
+            setStatus("Erreur navigation sécurité: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleCommandesPlaceholder() {
         try {
             FXMLLoader loader = new FXMLLoader(

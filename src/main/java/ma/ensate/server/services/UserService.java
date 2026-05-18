@@ -91,6 +91,8 @@ public class UserService {
             String captchaId = (String) loginPayload[2];
             String captchaReponse = ((String) loginPayload[3]).trim();
 
+            ma.ensate.server.security.logs.SecurityLogger.logEvent(clientIP, email, ma.ensate.server.security.logs.SecurityLogger.ActionType.LOGIN_ATTEMPT, ma.ensate.server.security.logs.SecurityLogger.Status.WARNING, "Tentative de connexion");
+
             if (!CaptchaService.verifier(captchaId, captchaReponse)) {
                 return new Response(false, "Captcha invalide ou expiré.");
             }
@@ -101,8 +103,10 @@ public class UserService {
 
             Utilisateur u = dao.trouverParEmailPassword(email, password);
 
-
             if (u == null) {
+                ma.ensate.server.security.ids.BruteForceDetector.recordFailedLogin(clientIP);
+                ma.ensate.server.security.logs.SecurityLogger.logEvent(clientIP, email, ma.ensate.server.security.logs.SecurityLogger.ActionType.LOGIN_FAILED, ma.ensate.server.security.logs.SecurityLogger.Status.FAILURE, "Mauvais email ou mot de passe");
+                
                 long dureeBlocageMs = dao.enregistrerEchec(email);
                 if (dureeBlocageMs > 0) {
                     return new Response(false, dao.getMessageBlocage(email));
@@ -115,7 +119,10 @@ public class UserService {
             }
 
             Response ipCheck = verifierAccesIPAdmin(u, clientIP, email);
-            if (ipCheck != null) return ipCheck;
+            if (ipCheck != null) {
+                ma.ensate.server.security.logs.SecurityLogger.logEvent(clientIP, email, ma.ensate.server.security.logs.SecurityLogger.ActionType.ADMIN_ACCESS, ma.ensate.server.security.logs.SecurityLogger.Status.FAILURE, "Rejet IP : " + clientIP);
+                return ipCheck;
+            }
 
             if (dao.estBloque(email)) {
                 return new Response(false, dao.getMessageBlocage(email));
@@ -137,6 +144,13 @@ public class UserService {
                 }
                 return new Response(true, "REQUIRES_2FA",
                         new Object[]{u.getId(), u.getEmail()});
+            }
+
+            ma.ensate.server.security.logs.SecurityLogger.logEvent(clientIP, email, ma.ensate.server.security.logs.SecurityLogger.ActionType.LOGIN_SUCCESS, ma.ensate.server.security.logs.SecurityLogger.Status.SUCCESS, "Connexion réussie");
+            
+            // Si c'est un admin, vérifier l'heure (Anomaly)
+            if ("ADMINISTRATEUR".equals(u.getTypeCompte())) {
+                ma.ensate.server.security.ids.AdminAnomalyDetector.checkAdminAccessTime(u.getId(), clientIP);
             }
 
             String token = UUID.randomUUID().toString();
@@ -437,9 +451,14 @@ public class UserService {
             String code     = (String) params[1];
 
             if (!OtpStore.validate(userId, code)) {
+                ma.ensate.server.security.ids.OtpAbuseDetector.recordFailedOtp(userId, clientIP);
+                ma.ensate.server.security.logs.SecurityLogger.logEvent(clientIP, String.valueOf(userId), ma.ensate.server.security.logs.SecurityLogger.ActionType.OTP_VALIDATION_FAILED, ma.ensate.server.security.logs.SecurityLogger.Status.FAILURE, "Code OTP invalide ou expiré");
                 logger.warn("Code OTP invalide ou expiré pour userId=" + userId);
                 return new Response(false, "Code invalide ou expiré.");
             }
+
+            ma.ensate.server.security.ids.OtpAbuseDetector.recordSuccessfulOtp(userId);
+            ma.ensate.server.security.logs.SecurityLogger.logEvent(clientIP, String.valueOf(userId), ma.ensate.server.security.logs.SecurityLogger.ActionType.OTP_VALIDATION_SUCCESS, ma.ensate.server.security.logs.SecurityLogger.Status.SUCCESS, "OTP Validé avec succès");
 
             Utilisateur u = dao.trouverParId(userId);
             if (u == null) {
@@ -447,13 +466,22 @@ public class UserService {
             }
 
             Response ipCheck = verifierAccesIPAdmin(u, clientIP, String.valueOf(userId));
-            if (ipCheck != null) return ipCheck;
+            if (ipCheck != null) {
+                ma.ensate.server.security.logs.SecurityLogger.logEvent(clientIP, String.valueOf(userId), ma.ensate.server.security.logs.SecurityLogger.ActionType.ADMIN_ACCESS, ma.ensate.server.security.logs.SecurityLogger.Status.FAILURE, "Rejet IP pour accès admin");
+                return ipCheck;
+            }
 
             String token = UUID.randomUUID().toString();
             dao.sauvegarderToken(u.getId(), token);
             u.setSessionToken(token);
             ClientIPRegistry.register(u.getId(), clientIP);
             SessionManager.startSession(token, u.getId(), clientIP);
+            
+            // Anomalie admin
+            if ("ADMINISTRATEUR".equals(u.getTypeCompte())) {
+                ma.ensate.server.security.ids.AdminAnomalyDetector.checkAdminAccessTime(u.getId(), clientIP);
+            }
+
             logger.info("Vérification 2FA réussie pour userId=" + userId);
             return new Response(true, "Connexion réussie !", u);
 

@@ -27,6 +27,7 @@
                         <Button mnemonicParsing="false" styleClass="nav-link-btn, nav-link-btn-active" text="PRODUITS" />
                         <Button mnemonicParsing="false" onAction="#handleCommandesPlaceholder" styleClass="nav-link-btn" text="COMMANDES" />
                         <Button mnemonicParsing="false" onAction="#handleUtilisateurs" styleClass="nav-link-btn" text="UTILISATEURS" />
+                        <Button mnemonicParsing="false" onAction="#handleSecurity" styleClass="nav-link-btn" text="SÉCURITÉ" />
                         
                         <Region prefWidth="15.0" />
                         <VBox alignment="CENTER_RIGHT" spacing="2.0">
