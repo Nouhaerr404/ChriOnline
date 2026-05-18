@@ -36,20 +36,16 @@ public class UserService {
         }
     }
 
-    public static Response genererCaptcha() {
-        String[] result = CaptchaService.generer();
-        return new Response(true, "Captcha genere", result);
-    }
-
     public static Response register(Object data) {
         try {
             Object[] payload = (Object[]) data;
             Client client = (Client) payload[0];
             String captchaId = (String) payload[1];
-            String captchaAnswer = (String) payload[2];
+            String captchaInput = (String) payload[2];
+            String captchaSessionToken = (String) payload[3];
 
-            if (!CaptchaService.verifier(captchaId, captchaAnswer)) {
-                return new Response(false, "Captcha invalide ou expiré.");
+            if (!CaptchaService.verifyCaptcha(captchaId, captchaInput, captchaSessionToken)) {
+                return new Response(false, "Code CAPTCHA incorrect ou expiré. Veuillez réessayer.");
             }
 
             String erreur = validerDonnees(client);
@@ -89,12 +85,11 @@ public class UserService {
             String email = ((String) loginPayload[0]).trim();
             String password = (String) loginPayload[1];
             String captchaId = (String) loginPayload[2];
-            String captchaReponse = ((String) loginPayload[3]).trim();
+            String captchaInput = (String) loginPayload[3];
+            String captchaSessionToken = (String) loginPayload[4];
 
-            ma.ensate.server.security.logs.SecurityLogger.logEvent(clientIP, email, ma.ensate.server.security.logs.SecurityLogger.ActionType.LOGIN_ATTEMPT, ma.ensate.server.security.logs.SecurityLogger.Status.WARNING, "Tentative de connexion");
-
-            if (!CaptchaService.verifier(captchaId, captchaReponse)) {
-                return new Response(false, "Captcha invalide ou expiré.");
+            if (!CaptchaService.verifyCaptcha(captchaId, captchaInput, captchaSessionToken)) {
+                return new Response(false, "Code CAPTCHA incorrect ou expiré. Veuillez réessayer.");
             }
 
             if (dao.estBloque(email)) {

@@ -4,20 +4,19 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import ma.ensate.client.network.ClientTCP;
 import ma.ensate.models.Client;
 import ma.ensate.protocol.Request;
 import ma.ensate.protocol.Response;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import java.io.ByteArrayInputStream;
-import java.util.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Vue d'inscription client de ChriOnline.
+ * Utilise Google reCAPTCHA v2 modal pour la sécurité anti-bot.
+ */
 public class RegisterView {
 
     private static final Logger logger = LogManager.getLogger(RegisterView.class);
@@ -32,16 +31,12 @@ public class RegisterView {
     @FXML private Label         messageLabel;
     @FXML private Button        registerButton;
     @FXML private Button        togglePasswordBtn;
-    @FXML private ImageView     captchaImageView;
-    @FXML private TextField     captchaField;
-    @FXML private Button        refreshCaptchaBtn;
 
     private boolean passwordVisible = false;
-    private String captchaId;
 
     @FXML
     public void initialize() {
-        chargerCaptcha();
+        // reCAPTCHA est modal, aucune initialisation nécessaire au démarrage de la vue
     }
 
     @FXML
@@ -51,70 +46,69 @@ public class RegisterView {
         String password = getPasswordValue();
         String adresse  = adresseField.getText().trim();
         String tel      = telField.getText().trim();
-        String captchaAnswer = captchaField.getText().trim();
 
-        if (nom.isEmpty() || email.isEmpty() || password.isEmpty() || captchaAnswer.isEmpty()) {
-            afficherErreur("Nom, email, mot de passe et captcha sont obligatoires !");
+        if (nom.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            afficherErreur("Nom, email et mot de passe sont obligatoires !");
             return;
         }
 
-        if (captchaId == null || captchaId.isEmpty()) {
-            afficherErreur("Captcha indisponible. Rafraichissez.");
+        if (password.length() < 6 || !password.matches(".*[A-Z].*") || !password.matches(".*[a-z].*") || !password.matches(".*[0-9].*") || !password.matches(".*[@&#%!].*")) {
+            afficherErreur("Le mot de passe doit contenir au moins 6 caractères, une lettre majuscule, une minuscule, un chiffre et un caractère spécial (@, &, #, %, !).");
             return;
         }
 
-        if (password.length() < 6 || !password.matches(".*[A-Z].*") || !password.matches(".*[a-z].*") || !password.matches(".*[1-9].*") || !password.matches(".*[@&#%!].*")) {
-            afficherErreur("Le mot de passe doit contenir au moins 6 caracteres et il doit contenir au moins une lettre majuscule, une lettre miniscule, une chiffre  et des caracteres speciaux comme ( @ & # % !) ");
+        String confirmPassword = confirmMdpField.getText();
+        if (!password.equals(confirmPassword)) {
+            afficherErreur("Les mots de passe ne correspondent pas !");
             return;
         }
+
+        if (!tel.isEmpty() && !tel.matches("^[0-9+]{8,15}$")) {
+            afficherErreur("Numéro de téléphone invalide (8 à 15 chiffres, chiffres et '+' uniquement).");
+            return;
+        }
+
+        Stage owner = (Stage) nomField.getScene().getWindow();
+
+        java.util.concurrent.atomic.AtomicReference<Response> successResponse = new java.util.concurrent.atomic.AtomicReference<>();
+
+        CustomCaptchaDialog dialog = new CustomCaptchaDialog((captchaId, captchaInput, captchaSessionToken) -> {
+            ma.ensate.models.Client client = new ma.ensate.models.Client(nom, email, password, adresse, tel);
+            Object[] payload = {client, captchaId, captchaInput, captchaSessionToken};
+            Request request = new Request("REGISTER", payload);
+            Response response = ClientTCP.getInstance().envoyerRequete(request);
+            if (response.isSuccess()) {
+                successResponse.set(response);
+            }
+            return response;
+        });
 
         registerButton.setDisable(true);
-        refreshCaptchaBtn.setDisable(true);
-        afficherInfo("Inscription en cours...");
+        afficherInfo("Attente de validation CAPTCHA...");
 
-        new Thread(() -> {
-            try {
-                Client client = new Client(nom, email, password, adresse, tel);
-                Object[] payload = {client, captchaId, captchaAnswer};
-                Request request = new Request("REGISTER", payload);
+        boolean ok = dialog.showAndWait(owner);
 
-                Response response = ClientTCP.getInstance()
-                        .envoyerRequete(request);
+        registerButton.setDisable(false);
 
-                Platform.runLater(() -> {
-                    registerButton.setDisable(false);
-                    refreshCaptchaBtn.setDisable(false);
-
-                    if (response.isSuccess()) {
-                        afficherSucces(" Inscription reussie ! Redirection...");
-                        logger.info(" Inscription reussie : " + email);
-                        
-                        new Thread(() -> {
-                            try {
-                                Thread.sleep(1000);
-                                Platform.runLater(this::allerLogin);
-                            } catch (InterruptedException ignored) {}
-                        }).start();
-
-                    } else {
-                        afficherErreur(response.getMessage());
-                        chargerCaptcha();
-                        captchaField.clear();
-                    }
-                });
-
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    registerButton.setDisable(false);
-                    afficherErreur("Impossible de contacter le serveur.");
-                    logger.error("Erreur register : " + e.getMessage());
-                });
+        if (ok) {
+            Response response = successResponse.get();
+            if (response != null) {
+                afficherSucces("Inscription réussie ! Redirection...");
+                logger.info("Inscription réussie : " + email);
+                
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(1000);
+                        Platform.runLater(this::allerLogin);
+                    } catch (InterruptedException ignored) {}
+                }).start();
             }
-        }).start();
+        } else {
+            afficherInfo("Tous les champs sont obligatoires");
+        }
     }
 
     @FXML
-
     public void allerLogin() {
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -167,55 +161,5 @@ public class RegisterView {
 
     private String getPasswordValue() {
         return passwordVisible ? passwordVisibleField.getText() : passwordField.getText();
-    }
-
-    @FXML
-    private void handleRefreshCaptcha() {
-        chargerCaptcha();
-    }
-
-    private void chargerCaptcha() {
-        if (refreshCaptchaBtn != null) refreshCaptchaBtn.setDisable(true);
-        new Thread(() -> {
-            try {
-                Response response = ClientTCP.getInstance().envoyerRequete(new Request("GET_CAPTCHA"));
-                Platform.runLater(() -> {
-                    if (refreshCaptchaBtn != null) refreshCaptchaBtn.setDisable(false);
-                    if (!response.isSuccess() || !(response.getData() instanceof String[] data) || data.length < 2) {
-                        captchaId = null;
-                        logger.error("Echec chargement captcha : response.isSuccess=" + response.isSuccess());
-                        afficherErreur("Impossible de charger le captcha.");
-                        return;
-                    }
-                    captchaId = data[0];
-                    logger.info("Captcha recu - ID: " + captchaId + " | Base64 Length: " + (data[1] != null ? data[1].length() : 0));
-
-                    if (data[1] == null || data[1].isBlank()) {
-                        logger.error("Données image captcha vides !");
-                        afficherErreur("Erreur image captcha.");
-                        return;
-                    }
-
-                    // Décoder le base64 → Image JavaFX
-                    try {
-                        byte[] imageBytes = Base64.getDecoder().decode(data[1].trim());
-                        Image fxImage = new Image(new ByteArrayInputStream(imageBytes));
-                        if (fxImage.isError()) {
-                            logger.error("Erreur chargement Image FX: " + fxImage.getException());
-                        }
-                        captchaImageView.setImage(fxImage);
-                    } catch (Exception e) {
-                        logger.error("Erreur decodage captcha image : " + e.getMessage());
-                        afficherErreur("Erreur affichage captcha.");
-                    }
-                });
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    captchaId = null;
-                    if (refreshCaptchaBtn != null) refreshCaptchaBtn.setDisable(false);
-                    afficherErreur("Impossible de charger le captcha.");
-                });
-            }
-        }).start();
     }
 }

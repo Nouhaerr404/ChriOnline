@@ -40,6 +40,11 @@
             <version>17.0.10</version>
         </dependency>
         <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>17.0.10</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>2.23.1</version>
@@ -84,6 +89,11 @@
             <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20240303</version>
+        </dependency>
 
     </dependencies>
 
@@ -95,7 +105,13 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>ma.ensate.client.views.ClientLauncher</mainClass>
+                    <mainClass>ma.ensate.client.views.Launcher</mainClass>
+                    <options>
+                        <option>--add-exports</option>
+                        <option>javafx.graphics/com.sun.javafx.sg.prism=ALL-UNNAMED</option>
+                        <option>--add-exports</option>
+                        <option>javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED</option>
+                    </options>
                 </configuration>
             </plugin>
 

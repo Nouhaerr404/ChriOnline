@@ -51,7 +51,7 @@ public class ClientHandler implements Runnable {
     private SecureChannel secureChannel;
 
     private static final Set<String> ACTIONS_PUBLIQUES =
-            new HashSet<>(Arrays.asList("LOGIN", "REGISTER", "VERIFY_2FA", "GET_CAPTCHA", "GET_SERVER_PUBLIC_KEY", "GENERATE_CHALLENGE_ADMIN", "VERIFY_SIGNATURE_ADMIN"));
+            new HashSet<>(Arrays.asList("LOGIN", "REGISTER", "VERIFY_2FA", "GET_SERVER_PUBLIC_KEY", "GENERATE_CHALLENGE_ADMIN", "VERIFY_SIGNATURE_ADMIN", "GET_CAPTCHA_NEW"));
 
     public ClientHandler(Socket socket) {
         this.socket          = socket;
@@ -172,6 +172,10 @@ public class ClientHandler implements Runnable {
                         continue;
                     }
 
+                    if (sResult.latestToken != null) {
+                        request.setToken(sResult.latestToken);
+                    }
+
                     Response response = traiterRequete(request);
 
                     if (sResult.latestToken != null && !sResult.latestToken.equals(token)) {
@@ -207,6 +211,19 @@ public class ClientHandler implements Runnable {
                 case "LOGIN":
                     return UserService.login(request.getData(), clientIP);
 
+                case "GET_CAPTCHA_NEW": {
+                    if (!ma.ensate.server.services.CaptchaService.allowRequest(clientIP)) {
+                        return new Response(false, "Limite de requêtes CAPTCHA dépassée. Veuillez patienter 10 secondes.");
+                    }
+                    ma.ensate.server.services.CaptchaService.CaptchaResult res =
+                            ma.ensate.server.services.CaptchaService.generateCaptcha();
+                    return new Response(true, "CAPTCHA généré", new Object[]{
+                            res.captchaId,
+                            res.imageBase64,
+                            res.captchaSessionToken
+                    });
+                }
+
                 case "GENERATE_CHALLENGE_ADMIN":
                     return UserService.genererChallengeAdmin(request.getData());
 
@@ -215,9 +232,6 @@ public class ClientHandler implements Runnable {
 
                 case "REGISTER":
                     return UserService.register(request.getData());
-
-                case "GET_CAPTCHA":
-                    return UserService.genererCaptcha();
 
                 case "GET_SERVER_PUBLIC_KEY":
                     return UserService.getServerPublicKey();
@@ -234,17 +248,44 @@ public class ClientHandler implements Runnable {
                     }
                     ma.ensate.server.services.SessionManager.endSession(request.getToken());
                     return UserService.logout(request.getData());
-                case "GET_PROFIL":
+                case "GET_PROFIL": {
+                    int targetUserId = (int) request.getData();
+                    Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+                    if (sessionUserId == null || !sessionUserId.equals(targetUserId)) {
+                        return new Response(false, "Accès non autorisé à ce profil.");
+                    }
                     return UserService.getProfil(request.getData());
+                }
 
-                case "UPDATE_PROFIL":
+                case "UPDATE_PROFIL": {
+                    Object[] params = (Object[]) request.getData();
+                    int targetUserId = (int) params[0];
+                    Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+                    if (sessionUserId == null || !sessionUserId.equals(targetUserId)) {
+                        return new Response(false, "Accès non autorisé pour modifier ce profil.");
+                    }
                     return UserService.updateProfil(request.getData());
+                }
 
-                case "CHANGER_PASSWORD":
+                case "CHANGER_PASSWORD": {
+                    Object[] params = (Object[]) request.getData();
+                    int targetUserId = (int) params[0];
+                    Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+                    if (sessionUserId == null || !sessionUserId.equals(targetUserId)) {
+                        return new Response(false, "Accès non autorisé.");
+                    }
                     return UserService.changerMotDePasse(request.getData());
+                }
 
-                case "SET_2FA":
+                case "SET_2FA": {
+                    Object[] params = (Object[]) request.getData();
+                    int targetUserId = (int) params[0];
+                    Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+                    if (sessionUserId == null || !sessionUserId.equals(targetUserId)) {
+                        return new Response(false, "Accès non autorisé.");
+                    }
                     return UserService.setTwoFa(request.getData());
+                }
 
                 case "VERIFY_2FA":
                     return UserService.verifyOtp(request.getData(), clientIP);
@@ -307,40 +348,71 @@ public class ClientHandler implements Runnable {
                     return UserService.listerUtilisateurs();
 
                 case "SUSPENDRE_COMPTE":
+                    if (!isAdmin(request.getToken())) {
+                        return new Response(false, "Action réservée aux administrateurs");
+                    }
                     return UserService.suspendreCompte(request.getData());
 
                 case "REACTIVER_COMPTE":
+                    if (!isAdmin(request.getToken())) {
+                        return new Response(false, "Action réservée aux administrateurs");
+                    }
                     return UserService.reactiverCompte(request.getData());
-                case "AFFICHER_PANIER":
-                    return servicePanier.obtenirPanierResponse(
-                            Integer.parseInt(request.getData().toString()));
+                case "AFFICHER_PANIER": {
+                    int targetClientId = Integer.parseInt(request.getData().toString());
+                    Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+                    if (sessionUserId == null || !sessionUserId.equals(targetClientId)) {
+                        return new Response(false, "Accès non autorisé à ce panier.");
+                    }
+                    return servicePanier.obtenirPanierResponse(targetClientId);
+                }
 
                 case "AJOUTER_AU_PANIER": {
                     String[] parts = request.getData().toString().split(",");
+                    int targetClientId = Integer.parseInt(parts[0]);
+                    Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+                    if (sessionUserId == null || !sessionUserId.equals(targetClientId)) {
+                        return new Response(false, "Accès non autorisé.");
+                    }
                     return servicePanier.ajouterProduitResponse(
-                            Integer.parseInt(parts[0]),
+                            targetClientId,
                             Integer.parseInt(parts[1]),
                             Integer.parseInt(parts[2]));
                 }
 
                 case "SUPPRIMER_DU_PANIER": {
                     String[] parts = request.getData().toString().split(",");
+                    int targetClientId = Integer.parseInt(parts[0]);
+                    Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+                    if (sessionUserId == null || !sessionUserId.equals(targetClientId)) {
+                        return new Response(false, "Accès non autorisé.");
+                    }
                     return servicePanier.supprimerProduitResponse(
-                            Integer.parseInt(parts[0]),
+                            targetClientId,
                             Integer.parseInt(parts[1]));
                 }
 
                 case "MODIFIER_QUANTITE_PANIER": {
                     String[] parts = request.getData().toString().split(",");
+                    int targetClientId = Integer.parseInt(parts[0]);
+                    Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+                    if (sessionUserId == null || !sessionUserId.equals(targetClientId)) {
+                        return new Response(false, "Accès non autorisé.");
+                    }
                     return servicePanier.modifierQuantiteResponse(
-                            Integer.parseInt(parts[0]),
+                            targetClientId,
                             Integer.parseInt(parts[1]),
                             Integer.parseInt(parts[2]));
                 }
 
-                case "VIDER_PANIER":
-                    return servicePanier.viderPanierResponse(
-                            Integer.parseInt(request.getData().toString()));
+                case "VIDER_PANIER": {
+                    int targetClientId = Integer.parseInt(request.getData().toString());
+                    Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+                    if (sessionUserId == null || !sessionUserId.equals(targetClientId)) {
+                        return new Response(false, "Accès non autorisé.");
+                    }
+                    return servicePanier.viderPanierResponse(targetClientId);
+                }
 
                 case "CREER_COMMANDE":
                     return creerCommande(request);
@@ -398,6 +470,13 @@ public class ClientHandler implements Runnable {
                 return new Response(false, "La requete doit contenir des lignes de commande");
             if (req.getClientId() <= 0)
                 return new Response(false, "ID client invalide");
+
+            // BOLA/IDOR protection
+            Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+            if (sessionUserId == null || !sessionUserId.equals(req.getClientId())) {
+                return new Response(false, "Accès non autorisé pour créer cette commande.");
+            }
+
             Client client = clientDAO.findById(req.getClientId());
             if (client == null)
                 return new Response(false, "Client introuvable : " + req.getClientId());
@@ -419,6 +498,17 @@ public class ClientHandler implements Runnable {
             String commandeId = (String) request.getData();
             if (commandeId == null || commandeId.trim().isEmpty())
                 return new Response(false, "ID de commande requis");
+            Commande commande = commandeService.getCommandeById(commandeId);
+            if (commande == null) {
+                return new Response(false, "Commande introuvable");
+            }
+
+            // BOLA/IDOR protection
+            Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+            if (sessionUserId == null || !sessionUserId.equals(commande.getClient().getId())) {
+                return new Response(false, "Accès non autorisé.");
+            }
+
             boolean success = commandeService.validerCommande(commandeId);
             return success
                     ? new Response(true,  "Commande validee avec succès")
@@ -432,6 +522,11 @@ public class ClientHandler implements Runnable {
 
     private Response changerStatutCommande(Request request, String clientIP) {
         try {
+            // BFLA Protection - Only admins can change order status
+            if (!isAdmin(request.getToken())) {
+                return new Response(false, "Action réservée aux administrateurs");
+            }
+
             ChangerStatutRequest req = (ChangerStatutRequest) request.getData();
             if (req == null || req.getCommandeId() == null || req.getNouveauStatut() == null)
                 return new Response(false, "Requete invalide");
@@ -490,9 +585,18 @@ public class ClientHandler implements Runnable {
             if (commandeId == null || commandeId.trim().isEmpty())
                 return new Response(false, "ID de commande requis");
             Commande commande = commandeService.getCommandeById(commandeId);
-            return commande != null
-                    ? new Response(true,  "Commande trouvée", commande)
-                    : new Response(false, "Commande introuvable");
+            if (commande == null) {
+                return new Response(false, "Commande introuvable");
+            }
+
+            // BOLA/IDOR protection (Only owner or admin can view order)
+            Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+            boolean isAdminUser = isAdmin(request.getToken());
+            if (!isAdminUser && (sessionUserId == null || !sessionUserId.equals(commande.getClient().getId()))) {
+                return new Response(false, "Accès non autorisé à cette commande.");
+            }
+
+            return new Response(true,  "Commande trouvée", commande);
         } catch (SQLException e) {
             return new Response(false, "Erreur base de données : " + e.getMessage());
         }
@@ -503,6 +607,14 @@ public class ClientHandler implements Runnable {
             Integer clientId = (Integer) request.getData();
             if (clientId == null || clientId <= 0)
                 return new Response(false, "ID client invalide");
+
+            // BOLA/IDOR protection
+            Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+            logger.info("[DEBUG HISTORIQUE] Token=" + request.getToken() + " | clientId=" + clientId + " | sessionUserId=" + sessionUserId);
+            if (sessionUserId == null || !sessionUserId.equals(clientId)) {
+                return new Response(false, "Accès non autorisé à cet historique.");
+            }
+
             List<Commande> historique = commandeService.getHistorique(clientId);
             return new Response(true, "Historique récupéré", historique);
         } catch (SQLException e) {
@@ -512,7 +624,25 @@ public class ClientHandler implements Runnable {
 
     private Response effectuerPaiement(Request request) {
         PaiementRequest req = (PaiementRequest) request.getData();
-        return paymentService.traiterPaiement(req);
+        if (req == null || req.getCommandeId() == null) {
+            return new Response(false, "Requête de paiement invalide");
+        }
+        try {
+            Commande commande = commandeService.getCommandeById(req.getCommandeId());
+            if (commande == null) {
+                return new Response(false, "Commande introuvable");
+            }
+
+            // BOLA/IDOR protection
+            Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+            if (sessionUserId == null || !sessionUserId.equals(commande.getClient().getId())) {
+                return new Response(false, "Accès non autorisé : vous ne pouvez payer que vos propres commandes.");
+            }
+
+            return paymentService.traiterPaiement(req);
+        } catch (SQLException e) {
+            return new Response(false, "Erreur base de données : " + e.getMessage());
+        }
     }
 
     private Response getPaiement(Request request) {
@@ -520,6 +650,18 @@ public class ClientHandler implements Runnable {
             String commandeId = (String) request.getData();
             if (commandeId == null || commandeId.trim().isEmpty())
                 return new Response(false, "ID de commande requis");
+            Commande commande = commandeService.getCommandeById(commandeId);
+            if (commande == null) {
+                return new Response(false, "Commande introuvable");
+            }
+
+            // BOLA/IDOR protection
+            Integer sessionUserId = ma.ensate.server.services.SessionManager.getUserId(request.getToken());
+            boolean isAdminUser = isAdmin(request.getToken());
+            if (!isAdminUser && (sessionUserId == null || !sessionUserId.equals(commande.getClient().getId()))) {
+                return new Response(false, "Accès non autorisé.");
+            }
+
             Paiement paiement = paymentService.getPaiementByCommandeId(commandeId);
             return paiement != null
                     ? new Response(true,  "Paiement trouvé", paiement)

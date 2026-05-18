@@ -34,6 +34,12 @@ public class SessionManager {
         activeSessions.put(token, new SessionDetails(userId, clientIP));
     }
 
+    public static Integer getUserId(String token) {
+        if (token == null || token.isEmpty()) return null;
+        SessionDetails details = activeSessions.get(token);
+        return details != null ? details.userId : null;
+    }
+
     public static SessionResult evaluerEtRegenerer(String currentToken, String currentIP) {
         if (currentToken == null || currentToken.isEmpty()) {
             return new SessionResult(false, null, "Non autorisé. Veuillez vous connecter.");

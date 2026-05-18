@@ -84,14 +84,6 @@
 
                                  <VBox spacing="15.0">
                                      <children>
-                                         <!-- Bloc Captcha -->
-                                         <HBox spacing="10.0" alignment="CENTER_LEFT">
-                                             <children>
-                                                 <ImageView fx:id="captchaImageView" fitHeight="48.0" fitWidth="120.0" />
-                                                 <Button fx:id="refreshCaptchaBtn" onAction="#handleRefreshCaptcha" text="↻" prefHeight="48.0" styleClass="outline-btn" />
-                                                 <TextField fx:id="captchaField" promptText="Captcha" prefHeight="48.0" styleClass="promo-field" HBox.hgrow="ALWAYS" />
-                                             </children>
-                                         </HBox>
                                          <Button fx:id="registerButton" maxWidth="Infinity" onAction="#handleRegister" prefHeight="55.0" styleClass="secondary-btn" text="CRÉER MON COMPTE" />
                                          <Button maxWidth="Infinity" onAction="#allerLogin" prefHeight="55.0" styleClass="outline-btn" text="RETOUR À LA CONNEXION" />
                                      </children>
