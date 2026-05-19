@@ -21,7 +21,7 @@
                                                 <Label styleClass="brand-mark" text="ChriOnline Admin" />
                                             </children>
                                         </HBox>
-                                        <Label styleClass="section-kicker" text="AUTHENTIFICATION RSA" />
+                                        <Label styleClass="section-kicker" text="AUTHENTIFICATION RSA (PKCS12)" />
                                         <Line endX="60" styleClass="section-divider" />
                                     </children>
                                 </VBox>
@@ -36,24 +36,32 @@
                                             </children>
                                         </VBox>
 
-                                        <!-- Private Key Field -->
+                                        <!-- Keystore File Field -->
                                         <VBox spacing="8">
                                             <children>
-                                                <Label text="CLÉ PRIVÉE (.pem)" styleClass="catalog-sidebar-label" />
+                                                <Label text="COFFRE-FORT KEYSTORE (.p12)" styleClass="catalog-sidebar-label" />
                                                 <HBox alignment="CENTER_LEFT" spacing="10">
                                                     <children>
-                                                        <TextField fx:id="privateKeyPathField" editable="false" promptText="Sélectionnez votre fichier .pem" prefHeight="50" styleClass="promo-field" HBox.hgrow="ALWAYS" />
+                                                        <TextField fx:id="privateKeyPathField" editable="false" promptText="Sélectionnez votre fichier .p12" prefHeight="50" styleClass="promo-field" HBox.hgrow="ALWAYS" />
                                                         <Button fx:id="browseButton" onAction="#handleBrowsePrivateKey" prefHeight="50" prefWidth="120" styleClass="outline-btn" text="PARCOURIR" style="-fx-padding: 0 10; -fx-font-size: 11px;" />
                                                     </children>
                                                 </HBox>
                                             </children>
                                         </VBox>
-                                        
+
+                                        <!-- Keystore Password Field -->
+                                        <VBox spacing="8">
+                                            <children>
+                                                <Label text="MOT DE PASSE DU KEYSTORE" styleClass="catalog-sidebar-label" />
+                                                <PasswordField fx:id="keystorePasswordField" promptText="••••••••" prefHeight="50" styleClass="promo-field" />
+                                            </children>
+                                        </VBox>
+
                                         <!-- Information section -->
                                         <VBox spacing="8" styleClass="shipping-card" style="-fx-padding: 15;">
                                             <children>
-                                                <Label text="Challenge-Response" styleClass="shipping-title" style="-fx-font-size: 14px;" />
-                                                <Label text="Le serveur génère un challenge aléatoire que vous signez localement avec votre clé privée. Votre clé n'est jamais transmise." wrapText="true" styleClass="shipping-copy" style="-fx-font-size: 12px;"/>
+                                                <Label text="Challenge-Response (PKCS12)" styleClass="shipping-title" style="-fx-font-size: 14px;" />
+                                                <Label text="Votre clé privée est protégée dans un coffre-fort PKCS12 chiffré. Le serveur vérifie votre identité via un certificat X.509 stocké dans son TrustStore. Votre clé privée ne quitte jamais votre machine." wrapText="true" styleClass="shipping-copy" style="-fx-font-size: 12px;"/>
                                             </children>
                                         </VBox>
 
@@ -67,7 +75,6 @@
                                                 maxWidth="Infinity"
                                                 prefHeight="50"
                                                 styleClass="secondary-btn"/>
-
 
                                     </children>
                                 </VBox>

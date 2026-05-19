@@ -32,6 +32,20 @@ public class KeyStoreManager {
     }
 
     /**
+     * Loads a PKCS12 keystore from a file on the filesystem.
+     *
+     * @param file The keystore file
+     * @param password Keystore password
+     * @throws Exception If loading fails
+     */
+    public KeyStoreManager(java.io.File file, String password) throws Exception {
+        this.keyStore = KeyStore.getInstance("PKCS12");
+        try (InputStream is = new java.io.FileInputStream(file)) {
+            keyStore.load(is, password.toCharArray());
+        }
+    }
+
+    /**
      * Retrieves a private key from the keystore.
      * 
      * @param alias Key alias

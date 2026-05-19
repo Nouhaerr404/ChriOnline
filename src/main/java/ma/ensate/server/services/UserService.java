@@ -4,6 +4,7 @@ import ma.ensate.models.Client;
 import ma.ensate.models.Utilisateur;
 import ma.ensate.protocol.Response;
 import ma.ensate.security.RSAKeyManager;
+import ma.ensate.security.KeyStoreManager;
 import ma.ensate.server.dao.UtilisateurDAO;
 import ma.ensate.server.network.ClientIPRegistry;
 import ma.ensate.util.EmailService;
@@ -207,12 +208,22 @@ public class UserService {
                 return new Response(false, "Administrateur introuvable.");
             }
 
-            String publicKeyBase64 = dao.getPublicKeyByEmail(email);
-            if (publicKeyBase64 == null || publicKeyBase64.isEmpty()) {
-                return new Response(false, "Clé publique introuvable pour cet administrateur.");
+            // Load admin public key from TrustStore (PKCS12) instead of database
+            String truststorePath = ma.ensate.util.ConfigLoader.get("ADMIN_TRUSTSTORE_PATH", "security/server-admin-truststore.p12");
+            String truststorePassword = ma.ensate.util.ConfigLoader.get("ADMIN_TRUSTSTORE_PASSWORD", "serverpass");
+            
+            java.io.File truststoreFile = new java.io.File(truststorePath);
+            if (!truststoreFile.exists()) {
+                logger.error("Admin TrustStore introuvable : " + truststorePath);
+                return new Response(false, "Erreur serveur : TrustStore admin introuvable.");
+            }
+            
+            KeyStoreManager trustStoreManager = new KeyStoreManager(truststoreFile, truststorePassword);
+            java.security.PublicKey publicKey = trustStoreManager.getPublicKey(email);
+            if (publicKey == null) {
+                return new Response(false, "Certificat introuvable pour cet administrateur dans le TrustStore.");
             }
 
-            java.security.PublicKey publicKey = ma.ensate.security.KeySerializer.deserializePublicKey(publicKeyBase64);
             boolean isSignatureValid = ma.ensate.security.RSAVerifier.verifyBase64(challenge, signatureBase64, publicKey);
 
             if (!isSignatureValid) {

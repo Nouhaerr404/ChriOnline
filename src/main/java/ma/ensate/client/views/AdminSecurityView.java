@@ -234,7 +234,15 @@ public class AdminSecurityView {
 
     @FXML
     public void handleCommandesPlaceholder() {
-        ma.ensate.client.utils.NotificationUtils.showToast((Stage) logsTable.getScene().getWindow(), "Section Commandes en cours de développement");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ma/ensate/fxml/admin_commandes.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) logsTable.getScene().getWindow();
+            stage.getScene().setRoot(root);
+            stage.setTitle("ChriOnline - Gestion des Commandes");
+        } catch (Exception e) {
+            logger.error("Erreur navigation commandes: " + e.getMessage());
+        }
     }
 
     @FXML
