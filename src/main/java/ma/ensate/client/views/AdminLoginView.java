@@ -148,12 +148,7 @@ public class AdminLoginView {
         }).start();
     }
 
-    @FXML
-    private void handleBackToLogin() {
-        // Dans l'exécutable Admin, fermer l'application au lieu de retourner vers le login client
-        Stage stage = (Stage) emailField.getScene().getWindow();
-        stage.close();
-    }
+
 
     private PrivateKey loadPrivateKey(File file) throws Exception {
         String content = new String(java.nio.file.Files.readAllBytes(file.toPath()));

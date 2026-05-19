@@ -73,7 +73,6 @@
 
                                         <VBox spacing="10">
                                             <children>
-                                                <Button fx:id="adminLoginButton" maxWidth="Infinity" onAction="#allerAdminLogin" prefHeight="45" styleClass="outline-btn" text="🔐 CONNEXION ADMIN (RSA)" style="-fx-font-size: 12px;" />
                                                 <Button maxWidth="Infinity" onAction="#allerAccueil" prefHeight="45" styleClass="outline-btn" text="🏠 RETOUR À L'ACCUEIL" style="-fx-font-size: 12px;" />
                                             </children>
                                         </VBox>

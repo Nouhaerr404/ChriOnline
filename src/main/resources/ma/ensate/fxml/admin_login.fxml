@@ -68,11 +68,7 @@
                                                 prefHeight="50"
                                                 styleClass="secondary-btn"/>
 
-                                        <VBox spacing="10">
-                                            <children>
-                                                <Button fx:id="backToLoginButton" maxWidth="Infinity" onAction="#handleBackToLogin" prefHeight="45" styleClass="outline-btn" text="← RETOUR À LA CONNEXION" style="-fx-font-size: 12px;" />
-                                            </children>
-                                        </VBox>
+
                                     </children>
                                 </VBox>
                             </children>

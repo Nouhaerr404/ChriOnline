@@ -102,20 +102,7 @@ public class LoginView {
         }
     }
 
-    @FXML
-    private void allerAdminLogin() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/ma/ensate/fxml/admin_login.fxml"));
-            Parent root  = loader.load();
-            Stage  stage = (Stage) emailField.getScene().getWindow();
-            stage.getScene().setRoot(root);
-            stage.setTitle("ChriOnline — Connexion Admin");
-        } catch (Exception e) {
-            logger.error("Erreur navigation vers admin login : "
-                    + e.getMessage());
-        }
-    }
+
 
     @FXML
     private void allerAccueil() {
